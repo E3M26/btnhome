@@ -124,6 +124,7 @@ section{display:none}section.act{display:block}
 .kv span{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kv b{font-size:14.5px;text-align:right;white-space:nowrap}
 .kv.on{background:var(--on-soft);border-color:transparent}
+#flashCard .kv b{overflow:hidden;text-overflow:ellipsis;min-width:0}
 .kv.on b{color:var(--on)}
 .hlist{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
 .hrow{display:grid;grid-template-columns:minmax(0,1fr) 74px 104px;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid var(--line);min-height:62px;cursor:pointer}
@@ -354,6 +355,23 @@ section{display:none}section.act{display:block}
           <option value="serial">Web Serial (bilgisayar)</option>
         </select>
       </div>
+    </div>
+    <div class="card" id="flashCard">
+      <h2>Köprü yazılımı yükle</h2>
+      <p class="hint" style="margin-top:0">Boş veya eski bir ESP32-S3'e köprü yazılımını telefondan yükler. Kartın içindeki program silinip yerine köprü yazılımı yazılır; ayarlar (NVS) korunur.</p>
+      <div class="kvs" style="margin-bottom:10px">
+        <div class="kv" style="grid-column:1/-1"><span>Hedef kart</span><b id="flTarget">Seçilmedi</b></div>
+        <div class="kv" style="grid-column:1/-1"><span>Yazılım</span><b id="flFile">kopru.bin (siteden)</b></div>
+      </div>
+      <div class="row" style="margin-bottom:10px">
+        <button class="grow" id="flPickDev">Kartı seç</button>
+        <button class="grow" id="flPickFile">Başka dosya seç</button>
+        <input type="file" id="flFileIn" accept=".bin,application/octet-stream" hidden>
+      </div>
+      <button class="pri bigbtn" id="flStart" style="margin-bottom:6px">Yüklemeyi başlat</button>
+      <div class="progress"><div id="flProg"></div></div>
+      <p class="hint" id="flStatus" style="margin-bottom:6px">Hazır.</p>
+      <div class="log mono" id="flLog" hidden style="max-height:180px"></div>
     </div>
     <div class="card">
       <h2>Kayıt</h2>
@@ -697,7 +715,7 @@ async function connect(pre, Cls = pickTransport(), auto = false) {
 // Daha önce izin verilmiş ESP32-S3 takılıysa seçim penceresi açmadan bağlan.
 let autoBusy = false, autoLastFail = 0, autoLastNote = '';
 async function autoConnect(reason) {
-  if (link || autoBusy || settings.autoConnect === false || document.visibilityState !== 'visible') return;
+  if (link || autoBusy || flashing || settings.autoConnect === false || document.visibilityState !== 'visible') return;
   autoBusy = true;
   try {
     const list = (await knownDevices()).filter(x => x.vid === 0x303a);
@@ -1594,6 +1612,161 @@ async function savePhoto(file) {
 }
 const blobToDataUrl = b => new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(b); });
 
+// ====================================================================== köprü yazılımı yükleme (esptool-js)
+// Android: S3'ün kendi USB'si WebUSB üzerinden web-serial-polyfill ile seri port gibi açılır.
+// Bilgisayar: Web Serial. Yazılım: Arduino "Export Compiled Binary" ile çıkan *.merged.bin, adres 0x0.
+const ESPTOOL_URLS = ['https://unpkg.com/esptool-js@0.7.0/bundle.js', 'https://cdn.jsdelivr.net/npm/esptool-js@0.7.0/bundle.js'];
+const POLYFILL_URLS = ['https://unpkg.com/web-serial-polyfill@1.0.15/dist/serial.js', 'https://cdn.jsdelivr.net/npm/web-serial-polyfill@1.0.15/dist/serial.js'];
+async function importAny(urls) {
+  let last;
+  for (const u of urls) { try { return await import(u); } catch (e) { last = e; } }
+  throw new Error('Yükleme aracı indirilemedi (internet bağlantısını kontrol edin): ' + (last?.message || last));
+}
+const FW_URL = 'kopru.bin';
+let flashing = false;
+const fl = { dev: null, isUsb: false, file: null };
+
+// Küçük MD5 (yazılan verinin karttan geri okunup doğrulanması için).
+function md5hex(bytes) {
+  const K = new Uint32Array(64), S = [7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21];
+  for (let i = 0; i < 64; i++) K[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 2 ** 32) >>> 0;
+  const len = bytes.length, nblk = ((len + 8) >> 6) + 1;
+  const w = new Uint32Array(nblk * 16);
+  for (let i = 0; i < len; i++) w[i >> 2] |= bytes[i] << ((i % 4) * 8);
+  w[len >> 2] |= 0x80 << ((len % 4) * 8);
+  w[nblk * 16 - 2] = (len * 8) >>> 0;
+  w[nblk * 16 - 1] = Math.floor(len / 0x20000000);
+  let a0 = 0x67452301, b0 = 0xefcdab89, c0 = 0x98badcfe, d0 = 0x10325476;
+  for (let o = 0; o < w.length; o += 16) {
+    let a = a0, b = b0, c = c0, d = d0;
+    for (let i = 0; i < 64; i++) {
+      let f, g;
+      if (i < 16) { f = (b & c) | (~b & d); g = i; }
+      else if (i < 32) { f = (d & b) | (~d & c); g = (5 * i + 1) % 16; }
+      else if (i < 48) { f = b ^ c ^ d; g = (3 * i + 5) % 16; }
+      else { f = c ^ (b | ~d); g = (7 * i) % 16; }
+      const t = d; d = c; c = b;
+      const x = (a + f + K[i] + w[o + g]) >>> 0, r = S[(i >> 4) * 4 + (i % 4)];
+      b = (b + ((x << r) | (x >>> (32 - r)))) >>> 0;
+      a = t;
+    }
+    a0 = (a0 + a) >>> 0; b0 = (b0 + b) >>> 0; c0 = (c0 + c) >>> 0; d0 = (d0 + d) >>> 0;
+  }
+  return [a0, b0, c0, d0].map(v => [0, 8, 16, 24].map(sh => ((v >>> sh) & 255).toString(16).padStart(2, '0')).join('')).join('');
+}
+
+function flLog(line) {
+  const box = $('#flLog');
+  box.hidden = false;
+  box.textContent += line + '\n';
+  box.scrollTop = box.scrollHeight;
+  logLine('[yükleme] ' + line);
+}
+function flStatus(t) { $('#flStatus').textContent = t; }
+function flRender() {
+  $('#flTarget').textContent = fl.dev ? (fl.isUsb ? (fl.dev.productName || 'USB cihazı') : 'Seri port') : 'Seçilmedi';
+  $('#flFile').textContent = fl.file ? `${fl.file.name} (${Math.round(fl.file.size / 1024)} KB)` : 'kopru.bin (siteden)';
+}
+
+async function flPickDevice() {
+  const useUsb = pickTransport() === UsbCdcLink;
+  try {
+    if (useUsb) {
+      // Daha önce izin verilmiş tek bir Espressif cihazı varsa onu kullan, yoksa listeden seçtir.
+      const known = (await navigator.usb.getDevices()).filter(d => d.vendorId === 0x303a);
+      fl.dev = known.length === 1 && !flPickDevice.force ? known[0] : await navigator.usb.requestDevice({ filters: [{ vendorId: 0x303a }] });
+      fl.isUsb = true;
+    } else {
+      fl.dev = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
+      fl.isUsb = false;
+    }
+  } catch (e) {
+    if (e.name !== 'NotFoundError') toast('Kart seçilemedi: ' + e.message, 4000);
+  }
+  flPickDevice.force = true;  // ikinci basışta her zaman listeyi aç
+  flRender();
+}
+
+async function flLoadImage() {
+  let buf;
+  if (fl.file) buf = new Uint8Array(await fl.file.arrayBuffer());
+  else {
+    const r = await fetch(FW_URL, { cache: 'no-store' });
+    if (!r.ok) throw new Error(`Sitede ${FW_URL} bulunamadı (HTTP ${r.status}). Dosyayı index.html'in yanına yükleyin ya da "Başka dosya seç" kullanın.`);
+    buf = new Uint8Array(await r.arrayBuffer());
+  }
+  if (buf.length < 64 * 1024 || buf[0] !== 0xE9)
+    throw new Error('Bu dosya birleştirilmiş (merged) ESP32 yazılımı gibi görünmüyor. Arduino\'da "Export Compiled Binary" ile çıkan *.merged.bin dosyasını kullanın.');
+  return buf;
+}
+
+async function flStart() {
+  if (flashing) return;
+  if (!fl.dev) { toast('Önce "Kartı seç" ile hedef kartı seçin'); return; }
+  if (!confirm('Seçilen ESP32-S3\'ün içindeki program silinip köprü yazılımı yazılacak. Yükleme bitene kadar kabloyu çıkarmayın. Devam edilsin mi?')) return;
+  const btn = $('#flStart'), bar = $('#flProg');
+  flashing = true;
+  btn.disabled = true;
+  bar.style.width = '0';
+  $('#flLog').textContent = '';
+  let transport = null;
+  try {
+    flStatus('Yazılım dosyası okunuyor…');
+    const image = await flLoadImage();
+    flLog(`Dosya: ${image.length} bayt, MD5 ${md5hex(image)}`);
+
+    if (link) { flLog('Köprü bağlantısı kapatılıyor…'); await link.close(); }
+
+    flStatus('Yükleme aracı indiriliyor…');
+    const { ESPLoader, Transport } = await importAny(ESPTOOL_URLS);
+    let port = fl.dev;
+    if (fl.isUsb) {
+      if (fl.dev.opened) { try { await fl.dev.close(); } catch (e) {} }
+      const { SerialPort } = await importAny(POLYFILL_URLS);
+      port = new SerialPort(fl.dev);
+    }
+    transport = new Transport(port, false);
+    const terminal = { clean() {}, writeLine: t => flLog(t), write: t => flLog(t) };
+    const loader = new ESPLoader({ transport, baudrate: 115200, terminal });
+
+    flStatus('Karta bağlanılıyor (yükleme moduna alınıyor)…');
+    const chip = await loader.main();
+    flLog('Bulunan çip: ' + chip);
+    if (!/ESP32-S3/i.test(chip)) throw new Error(`Bu kart ESP32-S3 değil (${chip}). Yükleme durduruldu.`);
+
+    flStatus('Yazılıyor…');
+    await loader.writeFlash({
+      fileArray: [{ data: image, address: 0x0 }],
+      flashMode: 'keep', flashFreq: 'keep', flashSize: 'keep',
+      eraseAll: false, compress: true,
+      reportProgress: (i, written, total) => {
+        const pct = Math.round(written / total * 100);
+        bar.style.width = pct + '%';
+        flStatus(`Yazılıyor… %${pct}`);
+      },
+      calculateMD5Hash: md5hex,
+    });
+    flStatus('Doğrulandı, kart yeniden başlatılıyor…');
+    await loader.after('hard_reset');
+    try { await transport.disconnect(); } catch (e) {}
+    transport = null;
+    bar.style.width = '100%';
+    flStatus('Yükleme tamamlandı. Kart açılınca otomatik bağlanılacak.');
+    toast('Köprü yazılımı yüklendi');
+    try { navigator.vibrate?.([60, 80, 60]); } catch (e) {}
+  } catch (e) {
+    flStatus('Hata: ' + (e.message || e));
+    flLog('HATA: ' + (e.message || e));
+    if (/sync|connect|Failed to connect|timed? ?out/i.test(String(e.message)))
+      flLog('İpucu: Kartın BOOT düğmesini basılı tutarak kabloyu takın, sonra yeniden deneyin.');
+  } finally {
+    if (transport) { try { await transport.disconnect(); } catch (e) {} }
+    flashing = false;
+    btn.disabled = false;
+    setTimeout(() => autoConnect('yükleme sonrası'), 3000);
+  }
+}
+
 // ====================================================================== olaylar
 function switchTab(tab) {
   activeTab = tab;
@@ -1697,6 +1870,10 @@ $('#sheetBody').addEventListener('keydown', e => {
 $('#sheetClose').addEventListener('click', closeSheet);
 $('#sheetBack').addEventListener('click', closeSheet);
 
+$('#flPickDev').addEventListener('click', flPickDevice);
+$('#flPickFile').addEventListener('click', () => $('#flFileIn').click());
+$('#flFileIn').addEventListener('change', e => { fl.file = e.target.files[0] || null; e.target.value = ''; flRender(); });
+$('#flStart').addEventListener('click', flStart);
 $('#hsort').addEventListener('click', e => { const b = e.target.closest('[data-hsort]'); if (b) { hSort = b.dataset.hsort; scheduleRender(); } });
 $('#hlist').addEventListener('click', e => { const r = e.target.closest('[data-open]'); if (r) openSheet(r.dataset.open); });
 $('#filters').addEventListener('click', e => {
