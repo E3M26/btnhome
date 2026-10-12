@@ -3,113 +3,194 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b7a75">
-<title>BTNHome Köprü</title>
+<meta name="theme-color" content="#9a3412">
+<title>BTNHome</title>
 <style>
-:root{--bg:#f3f5f7;--card:#fff;--fg:#14202b;--mut:#66727e;--line:#dde3e9;--acc:#0b7a75;--acc2:#e3f3f2;--on:#1e9b53;--onbg:#e3f5ea;--off:#9aa5b1;--warn:#b7700b;--warnbg:#fdf2e1;--bad:#c0392b;--badbg:#fbe9e7;--chip:#eef1f4;--shadow:0 1px 2px rgba(0,0,0,.06)}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1419;--card:#172028;--fg:#e4ebf1;--mut:#8f9dab;--line:#283541;--acc:#3cc2b9;--acc2:#12312f;--on:#45d184;--onbg:#123222;--off:#5d6b78;--warn:#e3a540;--warnbg:#33270f;--bad:#ef6b5b;--badbg:#3a1a16;--chip:#212c36;--shadow:none}}
+:root{
+  --bg:#f6f1ec;--card:#fff;--card2:#fbf7f3;--fg:#24170f;--mut:#7d6b5d;--line:#eadcd0;
+  --acc:#c2410c;--acc-2:#9a3412;--acc-soft:#fde6d8;--acc-ink:#fff;
+  --on:#e8590c;--on-soft:#ffe8d9;--ok:#1f9d55;--warn:#b7700b;--bad:#c0392b;--bad-soft:#fbe9e7;
+  --chip:#f3ebe4;--shadow:0 1px 2px rgba(60,30,10,.06),0 6px 18px rgba(60,30,10,.06);
+  --r:20px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#13100e;--card:#1d1916;--card2:#241e1a;--fg:#f4ece5;--mut:#a7968a;--line:#342a24;
+  --acc:#ea580c;--acc-2:#c2410c;--acc-soft:#3a2216;--acc-ink:#fff;
+  --on:#fb7a2c;--on-soft:#3b2214;--ok:#46d184;--warn:#e3a540;--bad:#ef6b5b;--bad-soft:#3a1a16;
+  --chip:#2a221d;--shadow:none;
+}}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-.top{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--line)}
-header{display:flex;align-items:center;gap:10px;padding:10px 16px}
-header h1{font-size:17px;margin:0;flex:1;letter-spacing:-.01em}
-header h1 small{display:block;font-size:11.5px;font-weight:500;color:var(--mut);letter-spacing:0}
-nav{display:flex;gap:2px;padding:0 10px;overflow-x:auto;scrollbar-width:none}
-nav button{border:0;background:none;border-bottom:2px solid transparent;border-radius:0;padding:9px 10px;color:var(--mut);font-weight:600;min-height:0;white-space:nowrap}
-nav button.act{color:var(--acc);border-bottom-color:var(--acc)}
-main{padding:14px 16px 140px;max-width:860px;margin:0 auto}
-section{display:none}section.act{display:block}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:contain}
+svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 button,input,select,textarea{font:inherit;color:inherit}
-button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 12px;cursor:pointer;min-height:38px;font-weight:500}
-button:disabled{opacity:.45;cursor:default}
-button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
-button.sm{min-height:32px;padding:4px 10px;font-size:13.5px}
+button{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 14px;cursor:pointer;min-height:44px;font-weight:600;touch-action:manipulation}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.4;cursor:default;transform:none}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+button.sm{min-height:40px;padding:6px 12px;font-size:14px}
 button.danger{color:var(--bad)}
-input[type=text],select,textarea{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 10px;min-height:38px;width:100%}
-textarea{min-height:140px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
-label.chk{display:flex;align-items:center;gap:8px;user-select:none}
+input[type=text],select,textarea{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 12px;min-height:46px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:-1px}
+input[type=checkbox]{width:22px;height:22px;accent-color:var(--acc)}
+textarea{min-height:150px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+label.chk{display:flex;align-items:center;gap:10px;user-select:none;min-height:40px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .grow{flex:1;min-width:0}
-.pill{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--chip);color:var(--mut);white-space:nowrap;font-weight:600}
-.pill.ok{background:var(--onbg);color:var(--on)}
-.pill.warn{background:var(--warnbg);color:var(--warn)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:10px}
-.hint{color:var(--mut);font-size:13px;margin:6px 0 12px}
-.banner{border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13.5px;background:var(--warnbg);color:var(--warn)}
-.banner.bad{background:var(--badbg);color:var(--bad)}
-h2{font-size:15px;margin:4px 0 8px}
 .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
 .mut{color:var(--mut)}
-.empty{text-align:center;color:var(--mut);padding:36px 12px}
-/* modül kartı */
-.mod-head{display:flex;align-items:flex-start;gap:10px}
-.mod-head input[type=checkbox]{width:20px;height:20px;margin-top:2px;accent-color:var(--acc)}
-.mod-title{flex:1;min-width:0}
-.mod-title b{font-size:15.5px}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--off);margin-right:6px;vertical-align:1px}
-.dot.on{background:var(--on)}.dot.mid{background:var(--warn)}
-.type{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--acc2);color:var(--acc);margin-left:6px;vertical-align:2px}
-.meta{font-size:12.5px;color:var(--mut);margin-top:2px;overflow-wrap:anywhere}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:10px}
-.seg button{border:0;border-radius:0;min-height:32px;padding:4px 12px;font-size:13.5px;background:none}
-.seg button+button{border-left:1px solid var(--line)}
-.seg button.act{background:var(--acc);color:#fff}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.chip{font-size:12.5px;padding:3px 9px;border-radius:8px;background:var(--chip);white-space:nowrap}
-.chip b{font-weight:700}
-.chip.on{background:var(--onbg);color:var(--on)}
-.ctl{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:grid;gap:8px}
-.relay{display:flex;align-items:center;gap:8px}
-.relay span{width:64px;font-weight:600;font-size:13.5px}
-.relay button{flex:1}
-.relay button.onb{border-color:var(--on);color:var(--on)}
-.log{max-height:220px;overflow:auto;background:var(--chip);border-radius:10px;padding:8px;margin-top:8px;white-space:pre-wrap;word-break:break-all}
-.foot{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-/* grup çubuğu */
-#group{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:none;box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+.hint{color:var(--mut);font-size:13px;margin:6px 0 10px}
+h2{font-size:16px;margin:2px 0 10px}
+
+/* ÜST ÇUBUK */
+.top{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#c2410c 0%,#9a3412 100%);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(154,52,18,.25)}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.logo{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:22px}
+.brand h1{font-size:18px;margin:0;letter-spacing:-.01em}
+.brand small{display:block;font-size:12px;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:99px;display:flex;align-items:center;gap:8px;padding:8px 14px;min-height:42px}
+.conn[data-state=off]{background:#fff;color:var(--acc-2);border-color:#fff}
+.cdot{width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.5}
+.conn[data-state=on] .cdot{background:#5cf09a;opacity:1;box-shadow:0 0 0 3px rgba(92,240,154,.25)}
+.conn[data-state=wait] .cdot{background:#ffd27a;opacity:1;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.3}}
+
+main{padding:14px 14px calc(110px + env(safe-area-inset-bottom));max-width:900px;margin:0 auto}
+section{display:none}section.act{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:12px}
+.banner{border-radius:16px;padding:12px 14px;margin-bottom:12px;font-size:14px;background:var(--bad-soft);color:var(--bad)}
+
+/* ÖZET */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 8px;text-align:center;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:24px;line-height:1.1;letter-spacing:-.02em}
+.stat span{font-size:11.5px;color:var(--mut);font-weight:600}
+.stat.hot b{color:var(--on)}
+
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;padding:2px}
+.filters::-webkit-scrollbar{display:none}
+.fchip{border-radius:99px;min-height:38px;padding:6px 14px;font-size:14px;white-space:nowrap;background:var(--card)}
+.fchip.act{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.selbtn.act{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* KUTUCUKLAR */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+.tile{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);position:relative;cursor:pointer;transition:border-color .2s,box-shadow .2s;user-select:none}
+.tile.on{border-color:var(--on);box-shadow:0 0 0 1px var(--on),0 10px 26px rgba(234,88,12,.18)}
+.tile.dim{opacity:.62}
+.tile.sel{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-soft)}
+.t-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.t-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:var(--chip);color:var(--mut);transition:.2s}
+.tile.on .t-ic{background:var(--on);color:#fff}
+.t-badge{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:99px;background:var(--chip);color:var(--mut);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.t-badge i{width:8px;height:8px;border-radius:50%;background:#9a8b80}
+.t-badge.live i{background:var(--ok)}
+.t-badge.stale i{background:var(--warn)}
+.t-check{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);background:var(--card);display:grid;place-items:center;color:#fff;font-size:15px}
+.tile.sel .t-check{background:var(--acc);border-color:var(--acc)}
+.t-name{font-weight:700;font-size:16px;line-height:1.25;overflow-wrap:anywhere}
+.t-sub{font-size:12.5px;color:var(--mut);margin-top:-6px}
+.t-sens{display:flex;flex-wrap:wrap;gap:5px;min-height:0}
+.t-sens:empty{display:none}
+.sens{font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px;background:var(--chip);color:var(--mut);display:inline-flex;align-items:center;gap:4px}
+.sens.hot{background:var(--on-soft);color:var(--on)}
+.sws{display:grid;gap:8px;margin-top:auto}
+.sws.two{grid-template-columns:1fr 1fr}
+.sw{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border-radius:16px;min-height:62px;padding:9px 12px;background:var(--card2);text-align:left}
+.sw span{font-size:12px;color:var(--mut);font-weight:600}
+.sw b{font-size:15px}
+.sw.on{background:var(--on);border-color:var(--on);color:#fff}
+.sw.on span{color:rgba(255,255,255,.85)}
+.ro{opacity:.75}
+.shut{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:auto}
+.shut button{min-height:58px;font-size:22px;border-radius:16px;background:var(--card2);display:grid;place-items:center;padding:0}
+.shut button.on{background:var(--on);border-color:var(--on);color:#fff}
+.empty{text-align:center;color:var(--mut);padding:40px 16px}
+.empty .big{font-size:52px;color:var(--acc);margin-bottom:8px}
+
+/* ALT GEZİNME */
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+#tabs button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;color:var(--mut);padding:6px 2px;min-height:56px;border-radius:14px}
+#tabs button svg{font-size:23px}
+#tabs button.act{color:var(--acc)}
+#tabs button.act svg{background:var(--acc-soft);border-radius:12px;padding:4px 14px;width:auto;box-sizing:content-box;height:1em}
+
+/* GRUP ÇUBUĞU */
+#group{position:fixed;left:10px;right:10px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:19;background:var(--fg);color:var(--bg);border-radius:20px;padding:10px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:880px;margin:0 auto}
 #group.show{display:block}
-#group .row{max-width:860px;margin:0 auto}
-/* tarama */
-.cam{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:3/4;max-height:60vh;margin:0 auto 10px;max-width:480px}
+#group .gh{display:flex;align-items:center;justify-content:space-between;padding:0 4px 8px;font-weight:700}
+#group .gh button{background:none;border:0;color:inherit;min-height:32px;padding:4px 8px;opacity:.8;font-size:13.5px}
+#group .gb{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+#group .gb button{background:rgba(127,127,127,.18);border:0;color:inherit;min-height:44px;padding:4px;font-size:13.5px;border-radius:12px}
+#group .gb button.hot{background:var(--acc);color:#fff}
+
+/* AYRINTI PANELİ */
+#sheetBack{position:fixed;inset:0;background:rgba(10,6,3,.5);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+#sheetBack.show{opacity:1;pointer-events:auto}
+#sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--bg);border-radius:26px 26px 0 0;max-height:90vh;overflow:auto;transform:translateY(105%);transition:transform .25s cubic-bezier(.2,.8,.2,1);padding:0 16px calc(20px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+#sheet.show{transform:none}
+.grab{position:sticky;top:0;background:var(--bg);padding:10px 0 6px;display:flex;align-items:center;justify-content:center;z-index:2}
+.grab i{width:44px;height:5px;border-radius:9px;background:var(--line)}
+.grab button{position:absolute;right:0;top:6px;border-radius:50%;width:40px;height:40px;min-height:40px;padding:0;display:grid;place-items:center;font-size:18px}
+.d-head{display:flex;gap:12px;align-items:center;margin:4px 0 12px}
+.d-head .t-ic{width:52px;height:52px;font-size:28px}
+.d-head b{font-size:19px;display:block}
+.meta{font-size:12.5px;color:var(--mut);overflow-wrap:anywhere}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--chip);border-radius:16px;padding:4px;gap:4px;margin-bottom:12px}
+.seg button{border:0;background:none;min-height:44px;border-radius:12px;color:var(--mut)}
+.seg button.act{background:var(--card);color:var(--acc);box-shadow:var(--shadow)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;padding:6px 10px;border-radius:10px;background:var(--card);border:1px solid var(--line);white-space:nowrap}
+.chip b{font-weight:700}
+.chip.on{background:var(--on-soft);color:var(--on);border-color:transparent}
+.big2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big2 .sw{min-height:84px;padding:12px 14px}
+.big2 .sw b{font-size:18px}
+.dshut{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.dshut button{min-height:76px;border-radius:18px;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--card)}
+.dshut button svg{font-size:26px}
+.dshut button.on{background:var(--on);border-color:var(--on);color:#fff}
+.log{max-height:240px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;white-space:pre-wrap;word-break:break-all}
+.dfoot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* QR */
+.cam{position:relative;background:#000;border-radius:24px;overflow:hidden;aspect-ratio:3/4;max-height:58vh;margin:0 auto 12px;max-width:480px}
 .cam video{width:100%;height:100%;object-fit:cover;display:block}
-.cam .frame{position:absolute;inset:18%;border:3px solid rgba(255,255,255,.85);border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
-.cam .msg{position:absolute;left:0;right:0;bottom:10px;text-align:center;color:#fff;font-size:13px;text-shadow:0 1px 2px #000}
+.cam .frame{position:absolute;inset:20%;border:3px solid #fb923c;border-radius:20px;box-shadow:0 0 0 999px rgba(0,0,0,.4)}
+.cam .msg{position:absolute;left:0;right:0;bottom:14px;text-align:center;color:#fff;font-size:14px;font-weight:600;text-shadow:0 1px 3px #000}
+.scanhero{text-align:center;padding:18px 10px 6px}
+.scanhero .big{font-size:56px;color:var(--acc)}
 .scanned{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
 .scanned:last-child{border-bottom:0}
-#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:10px;font-size:13.5px;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
-#toast.show{opacity:1}
-.progress{height:8px;background:var(--chip);border-radius:99px;overflow:hidden;margin:8px 0}
+#toast{position:fixed;left:50%;top:calc(76px + env(safe-area-inset-top));transform:translate(-50%,-8px);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:14px;font-size:14px;font-weight:600;z-index:40;opacity:0;transition:.2s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.progress{height:10px;background:var(--chip);border-radius:99px;overflow:hidden;margin:10px 0}
 .progress div{height:100%;width:0;background:var(--acc);transition:width .2s}
-#logbox{height:55vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;white-space:pre-wrap;word-break:break-all}
+#logbox{height:52vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;white-space:pre-wrap;word-break:break-all}
+.type{font-size:11px;font-weight:700;padding:2px 7px;border-radius:7px;background:var(--acc-soft);color:var(--acc);margin-left:6px;vertical-align:2px}
 </style>
 </head>
 <body>
-<div class="top">
-  <header>
-    <h1>BTNHome Köprü<small id="bridgeInfo">ESP32-S3 bağlı değil</small></h1>
-    <span class="pill" id="connPill">Bağlı değil</span>
-    <button class="pri" id="connectBtn">Bağlan</button>
-  </header>
-  <nav id="tabs">
-    <button data-tab="modules" class="act">Modüller</button>
-    <button data-tab="scan">QR Okut</button>
-    <button data-tab="discover">Keşif</button>
-    <button data-tab="ir">IR</button>
-    <button data-tab="log">Kayıt</button>
-  </nav>
-</div>
+<header class="top">
+  <div class="brand">
+    <div class="logo"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></div>
+    <div style="min-width:0"><h1>BTNHome</h1><small id="bridgeInfo">Köprü bağlı değil</small></div>
+  </div>
+  <button class="conn" id="connectBtn" data-state="off"><span class="cdot"></span><span id="connText">Bağlan</span></button>
+</header>
 
 <main>
   <div id="envBanner"></div>
 
-  <!-- MODÜLLER -->
-  <section id="tab-modules" class="act">
-    <div class="row" style="margin-bottom:10px">
-      <label class="chk grow"><input type="checkbox" id="selAll"> Tümünü seç</label>
-      <span class="mut" id="modCount"></span>
+  <!-- PANO -->
+  <section id="tab-dash" class="act">
+    <div class="stats" id="stats"></div>
+    <div class="toolbar">
+      <div class="filters" id="filters"></div>
+      <button class="sm selbtn" id="selModeBtn">Seç</button>
     </div>
-    <div id="list"></div>
+    <div class="grid" id="dash"></div>
   </section>
 
   <!-- QR -->
@@ -119,29 +200,33 @@ h2{font-size:15px;margin:4px 0 8px}
       <div class="frame"></div>
       <div class="msg" id="camMsg">QR kodu çerçeveye getirin</div>
     </div>
-    <div class="row" style="justify-content:center;margin-bottom:12px">
-      <button class="pri" id="scanStart">Kamerayı aç</button>
-      <button id="scanStop" hidden>Kamerayı kapat</button>
+    <div class="scanhero" id="scanHero">
+      <div class="big"><svg viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 8h3v3H8zM13 13h3v3h-3zM13 8h3M8 13v3"/></svg></div>
+      <p class="mut" style="margin:4px 0 14px">Modül etiketindeki QR kodu okutun, modül panoya eklensin.</p>
     </div>
-    <label class="chk" style="justify-content:center;margin-bottom:12px"><input type="checkbox" id="autoListen" checked> Okutulan modülü hemen dinlemeye al</label>
+    <div class="row" style="justify-content:center;margin-bottom:12px">
+      <button class="pri" id="scanStart" style="min-width:220px;min-height:52px">Kamerayı aç</button>
+      <button id="scanStop" hidden style="min-width:220px;min-height:52px">Kamerayı kapat</button>
+    </div>
+    <div class="card"><label class="chk"><input type="checkbox" id="autoListen" checked> Okutulan modülü hemen dinlemeye al</label></div>
     <div class="card" id="scannedCard" hidden>
       <h2>Bu oturumda okutulanlar</h2>
       <div id="scannedList"></div>
     </div>
     <div class="card">
       <h2>Elle ekle</h2>
-      <div class="row">
-        <input type="text" id="manMac" class="grow mono" placeholder="AA:BB:CC:DD:EE:FF" autocapitalize="characters">
-        <input type="text" id="manName" class="grow" placeholder="Ad (örn. Salon panjur)">
-        <button id="manAdd">Ekle</button>
+      <div style="display:grid;gap:8px">
+        <input type="text" id="manMac" class="mono" placeholder="AA:BB:CC:DD:EE:FF" autocapitalize="characters">
+        <input type="text" id="manName" placeholder="Ad (örn. Salon panjur)">
+        <button class="pri" id="manAdd">Ekle</button>
       </div>
     </div>
     <div class="card">
       <h2>Liste yedeği</h2>
       <p class="hint">Modül listesi bu telefonda saklanır. Başka telefona taşımak için dışa aktarın.</p>
       <div class="row">
-        <button id="exportBtn">Dışa aktar (JSON)</button>
-        <button id="importBtn">İçe aktar</button>
+        <button id="exportBtn" class="grow">Dışa aktar</button>
+        <button id="importBtn" class="grow">İçe aktar</button>
         <input type="file" id="importFile" accept="application/json,.json" hidden>
       </div>
     </div>
@@ -165,9 +250,9 @@ h2{font-size:15px;margin:4px 0 8px}
     </div>
     <div class="card">
       <h2>Tuş gönder</h2>
-      <div class="row">
-        <input type="text" id="irRemote" class="grow" placeholder="Kumanda (örn. TV)">
-        <input type="text" id="irKey" class="grow" placeholder="Tuş (örn. power)">
+      <div style="display:grid;gap:8px">
+        <input type="text" id="irRemote" placeholder="Kumanda (örn. TV)">
+        <input type="text" id="irKey" placeholder="Tuş (örn. power)">
         <button class="pri" id="irSend">Gönder</button>
       </div>
       <p class="hint" id="irSendStatus"></p>
@@ -175,22 +260,20 @@ h2{font-size:15px;margin:4px 0 8px}
     <div class="card">
       <h2>Kumanda veritabanı yükle</h2>
       <textarea id="irDb" spellcheck="false" placeholder='{"remotes":{"TV":{"power":{"proto":"NEC","hex":"20DF10EF","bits":32}}}}'></textarea>
-      <div class="row" style="margin-top:8px">
-        <label class="chk grow"><input type="checkbox" id="irReplace"> Mevcut veritabanını tamamen değiştir</label>
-        <button class="pri" id="irUpload">Yükle</button>
-      </div>
+      <label class="chk" style="margin-top:6px"><input type="checkbox" id="irReplace"> Mevcut veritabanını tamamen değiştir</label>
+      <button class="pri" id="irUpload" style="width:100%;margin-top:6px">Yükle</button>
       <div class="progress"><div id="irProg"></div></div>
       <p class="hint" id="irUpStatus">En fazla 16 KB. Varsayılan olarak mevcut kayıtlarla birleştirilir.</p>
     </div>
   </section>
 
-  <!-- KAYIT -->
+  <!-- AYARLAR / KAYIT -->
   <section id="tab-log">
     <div class="card">
       <h2>Ayarlar</h2>
       <label class="chk"><input type="checkbox" id="lrOn" checked> Uzun menzil (LR) isteklerini kabul et</label>
-      <div class="row" style="margin-top:10px">
-        <span class="mut">Bağlantı yöntemi</span>
+      <div class="row" style="margin-top:8px">
+        <span class="mut grow">Bağlantı yöntemi</span>
         <select id="transportSel" style="width:auto">
           <option value="auto">Otomatik</option>
           <option value="usb">WebUSB (Android)</option>
@@ -198,33 +281,53 @@ h2{font-size:15px;margin:4px 0 8px}
         </select>
       </div>
     </div>
-    <div class="row" style="margin-bottom:8px">
-      <input type="text" id="rawCmd" class="grow mono" placeholder="Köprüye ham komut (örn. LIST)">
-      <button id="rawSend">Gönder</button>
-      <button id="logClear">Temizle</button>
-      <label class="chk"><input type="checkbox" id="logRx"> Paketleri de yaz</label>
+    <div class="card">
+      <h2>Kayıt</h2>
+      <div class="row" style="margin-bottom:8px">
+        <input type="text" id="rawCmd" class="grow mono" placeholder="Köprüye ham komut (örn. LIST)">
+        <button id="rawSend">Gönder</button>
+      </div>
+      <div class="row" style="margin-bottom:8px">
+        <label class="chk grow"><input type="checkbox" id="logRx"> Paketleri de yaz</label>
+        <button id="logClear" class="sm">Temizle</button>
+      </div>
+      <div id="logbox" class="mono"></div>
     </div>
-    <div id="logbox" class="mono"></div>
   </section>
 </main>
 
 <div id="group">
-  <div class="row">
-    <b id="groupCount" style="margin-right:4px"></b>
-    <button class="sm" data-g="listen">Dinle</button>
-    <button class="sm" data-g="manage">Yönet</button>
-    <button class="sm" data-g="off">Kapat</button>
-    <button class="sm" data-g="r1on">R1 Aç</button>
-    <button class="sm" data-g="r1off">R1 Kapat</button>
-    <button class="sm" data-g="r2on">R2 Aç</button>
-    <button class="sm" data-g="r2off">R2 Kapat</button>
-    <button class="sm" data-g="clear">Seçimi bırak</button>
+  <div class="gh"><span id="groupCount"></span><span><button data-g="all">Tümünü seç</button><button data-g="clear">Bitti</button></span></div>
+  <div class="gb">
+    <button data-g="r1on" class="hot">R1 Aç</button>
+    <button data-g="r1off">R1 Kapat</button>
+    <button data-g="r2on" class="hot">R2 Aç</button>
+    <button data-g="r2off">R2 Kapat</button>
+    <button data-g="listen">Dinle</button>
+    <button data-g="manage">Yönet</button>
+    <button data-g="off">Kapat</button>
+    <button data-g="alloff">Hepsi kapalı</button>
   </div>
+</div>
+
+<nav id="tabs">
+  <button data-tab="dash" class="act"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="8" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="15" width="7" height="6" rx="2"/></svg>Pano</button>
+  <button data-tab="scan"><svg viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 8h3v3H8zM13 13h3v3h-3z"/></svg>QR Okut</button>
+  <button data-tab="discover"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/></svg>Keşif</button>
+  <button data-tab="ir"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="3"/><circle cx="12" cy="7" r="1.5"/><path d="M10 12h4M10 15h4M10 18h4"/></svg>IR</button>
+  <button data-tab="log"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ayarlar</button>
+</nav>
+
+<div id="sheetBack"></div>
+<div id="sheet" role="dialog" aria-modal="true">
+  <div class="grab"><i></i><button id="sheetClose" aria-label="Kapat">✕</button></div>
+  <div id="sheetBody"></div>
 </div>
 <div id="toast"></div>
 <canvas id="qrCanvas" hidden></canvas>
 
 <script>
+
 'use strict';
 // ====================================================================== yardımcılar
 const $ = s => document.querySelector(s);
@@ -423,7 +526,7 @@ function pickTransport() {
 }
 
 async function connect() {
-  if (link) { await link.close(); return; }
+  if (link) { if (confirm('Köprü bağlantısı kesilsin mi?')) await link.close(); return; }
   const Cls = pickTransport();
   if (!Cls) { toast('Bu tarayıcı USB erişimi sunmuyor. Android Chrome kullanın.'); return; }
   const l = new Cls(onUsbData, onUsbClose);
@@ -468,12 +571,10 @@ function onUsbData(bytes) {
 }
 
 function setConn(state, text) {
-  const pill = $('#connPill'), btn = $('#connectBtn');
-  pill.className = 'pill' + (state === 'on' ? ' ok' : state === 'wait' ? ' warn' : '');
-  pill.textContent = text || (state === 'on' ? 'Bağlı' : 'Bağlı değil');
-  btn.textContent = state === 'off' ? 'Bağlan' : 'Kes';
-  btn.classList.toggle('pri', state === 'off');
-  $('#bridgeInfo').textContent = bridge ? `S3 ${bridge.mac} · kanal ${bridge.ch} · ${bridge.fw}` : 'ESP32-S3 bağlı değil';
+  const btn = $('#connectBtn');
+  btn.dataset.state = state;
+  $('#connText').textContent = text || (state === 'on' ? 'Bağlı' : 'Bağlan');
+  $('#bridgeInfo').textContent = bridge ? `Köprü ${bridge.mac} · kanal ${bridge.ch}` : 'Köprü bağlı değil';
 }
 
 function syncBridge() {
@@ -718,8 +819,12 @@ function relay(m, n, on) {
 }
 
 // ====================================================================== çizim
-let activeTab = 'modules';
+let activeTab = 'dash';
 let renderQueued = false;
+let selectMode = false;
+let filter = 'all';
+let sheetMac = null;
+
 function scheduleRender() {
   if (renderQueued) return;
   renderQueued = true;
@@ -727,56 +832,232 @@ function scheduleRender() {
 }
 
 function render() {
-  renderList();
+  renderStats();
+  renderDash();
+  renderSheet();
   renderGroup();
   if (activeTab === 'discover') renderDiscover();
   if (activeTab === 'ir') renderIrTargets();
 }
 
-function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, m.sel, connected()].join('|'); }
+const SVG = p => `<svg viewBox="0 0 24 24">${p}</svg>`;
+const ICON = {
+  bulb: SVG('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>'),
+  shutter: SVG('<path d="M3 4h18M5 4v13h14V4M5 8h14M5 12h14"/><path d="M12 17v4"/>'),
+  motion: SVG('<circle cx="14" cy="4" r="2"/><path d="m8 21 3-6 3 2.5V21M6 12l3.5-4 4 1 2.5 3 3 1"/>'),
+  plug: SVG('<path d="M9 2v6M15 2v6M7 8h10v4a5 5 0 0 1-10 0z"/><path d="M12 17v5"/>'),
+  up: SVG('<path d="m6 15 6-6 6 6"/>'),
+  down: SVG('<path d="m6 9 6 6 6-6"/>'),
+  stop: SVG('<rect x="7" y="7" width="10" height="10" rx="2"/>'),
+  qr: SVG('<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 8h3v3H8zM13 13h3v3h-3z"/>'),
+};
+
+const isShutter = m => m.type === '2R' && m.shutter;
+const isOnline = m => m.lastSeen && Date.now() - m.lastSeen < 15000;
+const relayOn = (m, n) => m.state['R' + n] === '1';
+const anyOn = m => relayOn(m, 1) || (m.type !== '1R' && relayOn(m, 2));
+function tileIcon(m) {
+  if (isShutter(m)) return ICON.shutter;
+  if (m.type === '1R') return ('M' in m.state || 'G1' in m.state) ? ICON.motion : ICON.plug;
+  if (m.type === '2R') return ICON.bulb;
+  return ICON.plug;
+}
+const MODE_LABEL = { off: 'Kapalı', listen: 'Dinle', manage: 'Yönet' };
+
+// ---------------------------------------------------------------- özet ve filtre
+const FILTERS = [['all', 'Tümü'], ['on', 'Açık olanlar'], ['online', 'Çevrimiçi'], ['2R', '2 röle'], ['1R', '1 röle + sensör'], ['manage', 'Yönetilen']];
+function passes(m) {
+  switch (filter) {
+    case 'on': return anyOn(m);
+    case 'online': return isOnline(m);
+    case '2R': return m.type === '2R';
+    case '1R': return m.type === '1R';
+    case 'manage': return m.mode === 'manage';
+    default: return true;
+  }
+}
+
+function renderStats() {
+  const all = [...modules.values()];
+  const online = all.filter(isOnline).length;
+  let on = 0;
+  for (const m of all) { if (relayOn(m, 1)) on++; if (m.type !== '1R' && relayOn(m, 2)) on++; }
+  const managed = all.filter(m => m.mode === 'manage').length;
+  const html = `
+    <div class="stat"><b>${all.length}</b><span>Modül</span></div>
+    <div class="stat"><b>${online}</b><span>Çevrimiçi</span></div>
+    <div class="stat${on ? ' hot' : ''}"><b>${on}</b><span>Açık röle</span></div>
+    <div class="stat"><b>${managed}<small style="font-size:13px;color:var(--mut)">/${MAX_MANAGED}</small></b><span>Yönetimde</span></div>`;
+  const el = $('#stats');
+  if (el.innerHTML !== html) el.innerHTML = html;
+  const fh = FILTERS.map(([k, l]) => `<button class="fchip${filter === k ? ' act' : ''}" data-filter="${k}">${l}</button>`).join('');
+  const fe = $('#filters');
+  if (fe.dataset.f !== filter) { fe.innerHTML = fh; fe.dataset.f = filter; }
+  $('#selModeBtn').classList.toggle('act', selectMode);
+  $('#selModeBtn').textContent = selectMode ? 'Seçiliyor' : 'Seç';
+}
+
+// ---------------------------------------------------------------- pano kutucukları
+function tileSig(m) { return [m.mode, m.type, m.shutter, m.name, selectMode].join('|'); }
+
+function buildTile(m) {
+  const el = document.createElement('div');
+  el.className = 'tile';
+  el.dataset.mac = m.mac;
+  el.dataset.act = 'open';
+  const ro = m.mode !== 'manage' ? ' ro' : '';
+  let ctl;
+  if (isShutter(m)) {
+    ctl = `<div class="shut">
+      <button class="${ro}" data-act="up" data-k="up" aria-label="Aç (yukarı)">${ICON.up}</button>
+      <button class="${ro}" data-act="stop" aria-label="Durdur">${ICON.stop}</button>
+      <button class="${ro}" data-act="down" data-k="down" aria-label="Kapat (aşağı)">${ICON.down}</button></div>`;
+  } else {
+    const ns = m.type === '1R' ? [1] : [1, 2];
+    ctl = `<div class="sws${ns.length > 1 ? ' two' : ''}">${ns.map(n => `
+      <button class="sw${ro}" data-act="tog${n}" data-k="sw${n}"><span>${ns.length > 1 ? 'Röle ' + n : 'Röle'}</span><b data-k="sv${n}">—</b></button>`).join('')}</div>`;
+  }
+  el.innerHTML = `
+    <div class="t-top"><span class="t-ic">${tileIcon(m)}</span>${selectMode ? '<span class="t-check" data-k="chk"></span>' : `<span class="t-badge" data-k="badge"><i></i>${MODE_LABEL[m.mode]}</span>`}</div>
+    <div class="t-name">${esc(m.name)}</div>
+    <div class="t-sub" data-k="sub"></div>
+    <div class="t-sens" data-k="sens"></div>
+    ${ctl}`;
+  return el;
+}
+
+function updateTile(el, m) {
+  const on = anyOn(m);
+  el.classList.toggle('on', on);
+  el.classList.toggle('dim', m.mode === 'off');
+  el.classList.toggle('sel', selectMode && m.sel);
+  const chk = el.querySelector('[data-k=chk]');
+  if (chk) chk.textContent = m.sel ? '✓' : '';
+  const badge = el.querySelector('[data-k=badge]');
+  if (badge) {
+    const age = m.lastSeen ? Date.now() - m.lastSeen : Infinity;
+    badge.className = 't-badge' + (age < 15000 ? ' live' : age < 60000 ? ' stale' : '');
+  }
+  const typeTxt = m.type === '2R' ? (isShutter(m) ? 'Panjur' : '2 röle') : m.type === '1R' ? '1 röle + sensör' : 'Tür bilinmiyor';
+  const sub = `${typeTxt} · ${m.lastSeen ? ago(m.lastSeen) : (m.mode === 'off' ? 'kapalı' : 'bekleniyor')}`;
+  const subEl = el.querySelector('[data-k=sub]');
+  if (subEl.textContent !== sub) subEl.textContent = sub;
+
+  const s = m.state, sens = [];
+  if (s.M === '1') sens.push('<span class="sens hot">Hareket</span>');
+  if (s.G1 === '1' && !('M' in s)) sens.push('<span class="sens hot">Giriş</span>');
+  if (s.S1 === '1') sens.push('<span class="sens hot">Anahtar 1</span>');
+  if (s.S2 === '1') sens.push('<span class="sens hot">Anahtar 2</span>');
+  if (m.cpu !== null) sens.push(`<span class="sens">${m.cpu.toFixed(0)}°C</span>`);
+  if (m.rssi !== null && m.lastSeen) sens.push(`<span class="sens">${m.rssi} dBm</span>`);
+  const sh = sens.join('');
+  const se = el.querySelector('[data-k=sens]');
+  if (se.innerHTML !== sh) se.innerHTML = sh;
+
+  for (const n of [1, 2]) {
+    const b = el.querySelector(`[data-k=sw${n}]`);
+    if (!b) continue;
+    const known = ('R' + n) in s;
+    b.classList.toggle('on', relayOn(m, n));
+    b.querySelector(`[data-k=sv${n}]`).textContent = known ? (relayOn(m, n) ? 'Açık' : 'Kapalı') : '—';
+  }
+  el.querySelector('[data-k=up]')?.classList.toggle('on', relayOn(m, 1));
+  el.querySelector('[data-k=down]')?.classList.toggle('on', relayOn(m, 2));
+}
+
+function renderDash() {
+  const box = $('#dash');
+  if (!modules.size) {
+    if (!box.querySelector('.empty')) box.innerHTML = `<div class="empty" style="grid-column:1/-1">
+      <div class="big">${ICON.qr}</div>
+      <b style="font-size:17px;color:var(--fg)">Henüz modül yok</b>
+      <p>Modül etiketlerini okutarak panonuzu oluşturun.</p>
+      <button class="pri" data-goto="scan" style="min-width:200px">QR Okut</button></div>`;
+    return;
+  }
+  box.querySelector('.empty')?.remove();
+  const seen = new Set();
+  let prev = null;
+  for (const m of modules.values()) {
+    if (!passes(m)) continue;
+    seen.add(m.mac);
+    let el = box.querySelector(`.tile[data-mac="${m.mac}"]`);
+    const sig = tileSig(m);
+    if (!el || el.dataset.sig !== sig) {
+      const fresh = buildTile(m);
+      fresh.dataset.sig = sig;
+      if (el) el.replaceWith(fresh);
+      el = fresh;
+    }
+    const want = prev ? prev.nextSibling : box.firstChild;
+    if (el !== want) box.insertBefore(el, want);
+    updateTile(el, m);
+    prev = el;
+  }
+  for (const el of [...box.children]) if (!seen.has(el.dataset.mac)) el.remove();
+  if (!seen.size) box.innerHTML = '<div class="empty" style="grid-column:1/-1">Bu filtrede modül yok.</div>';
+}
+
+// ---------------------------------------------------------------- ayrıntı paneli
+function openSheet(mac) {
+  sheetMac = mac;
+  $('#sheetBody').innerHTML = '';
+  $('#sheet').classList.add('show');
+  $('#sheetBack').classList.add('show');
+  $('#sheet').scrollTop = 0;
+  render();
+}
+function closeSheet() {
+  sheetMac = null;
+  $('#sheet').classList.remove('show');
+  $('#sheetBack').classList.remove('show');
+}
+
+function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, connected()].join('|'); }
 
 function buildCard(m) {
   const el = document.createElement('div');
-  el.className = 'card';
   el.dataset.mac = m.mac;
   const manage = m.mode === 'manage';
-  const two = m.type !== '1R';
-  const relayRow = n => `
-    <div class="relay"><span>Röle ${n}</span>
-      <button class="sm" data-act="r${n}on" data-k="R${n}on">Aç</button>
-      <button class="sm" data-act="r${n}off">Kapat</button></div>`;
+  const ns = m.type === '1R' ? [1] : [1, 2];
+  let ctl = '';
+  if (manage) {
+    if (isShutter(m)) {
+      ctl = `<div class="dshut">
+        <button data-act="up" data-k="up">${ICON.up}Aç</button>
+        <button data-act="stop">${ICON.stop}Durdur</button>
+        <button data-act="down" data-k="down">${ICON.down}Kapat</button></div>`;
+    } else {
+      ctl = `<div class="big2">${ns.map(n => `
+        <button class="sw" data-act="tog${n}" data-k="sw${n}"><span>${ns.length > 1 ? 'Röle ' + n : 'Röle'}</span><b data-k="sv${n}">—</b></button>`).join('')}</div>`;
+    }
+  }
   el.innerHTML = `
-    <div class="mod-head">
-      <input type="checkbox" data-act="sel" ${m.sel ? 'checked' : ''} aria-label="Seç">
-      <div class="mod-title">
-        <div><span class="dot" data-k="dot"></span><b>${esc(m.name)}</b>${m.type ? `<span class="type">${esc(m.type)}</span>` : ''}</div>
-        <div class="meta mono">${esc(m.mac)}</div>
-        <div class="meta" data-k="meta"></div>
-      </div>
-    </div>
+    <div class="d-head"><span class="t-ic">${tileIcon(m)}</span>
+      <div class="grow"><b>${esc(m.name)}${m.type ? `<span class="type">${esc(m.type)}</span>` : ''}</b>
+        <div class="meta mono">${esc(m.mac)}</div></div></div>
     <div class="seg" role="group" aria-label="Çalışma biçimi">
       <button data-act="mode" data-v="off" class="${m.mode === 'off' ? 'act' : ''}">Kapalı</button>
       <button data-act="mode" data-v="listen" class="${m.mode === 'listen' ? 'act' : ''}">Dinle</button>
       <button data-act="mode" data-v="manage" class="${manage ? 'act' : ''}">Yönet</button>
     </div>
-    <div class="chips" data-k="chips"></div>
-    ${manage ? `<div class="ctl">
-      ${relayRow(1)}
-      ${two ? relayRow(2) : ''}
+    ${manage ? `<div class="card">${ctl}</div>` : ''}
+    <div class="card"><h2>Durum</h2><div class="meta" data-k="meta" style="margin-bottom:10px"></div><div class="chips" data-k="chips"></div></div>
+    ${manage ? `<div class="card" style="display:grid;gap:10px">
       ${m.type === '2R' ? `
-        <label class="chk"><input type="checkbox" data-act="shutter" ${m.shutter ? 'checked' : ''}> Panjur/motor kilidi (iki röle asla birlikte açılmaz)</label>
+        <label class="chk"><input type="checkbox" data-act="shutter" ${m.shutter ? 'checked' : ''}> Panjur/motor modu (iki röle asla birlikte açılmaz)</label>
         <div class="row"><span class="mut grow">Röle modu</span>
           <button class="sm" data-act="modeS">Seri (kilitli)</button>
           <button class="sm" data-act="modeI">Bağımsız</button></div>` : ''}
-      <div class="row"><input type="text" class="grow mono" data-k="custom" placeholder="Özel metin komutu (en fazla 63)" maxlength="63">
-        <button class="sm" data-act="custom">Gönder</button></div>
+      <div class="row"><input type="text" class="grow mono" data-k="custom" placeholder="Özel komut (en fazla 63)" maxlength="63">
+        <button data-act="custom">Gönder</button></div>
     </div>` : ''}
-    <div class="foot">
+    <div class="dfoot">
       <button class="sm" data-act="log">${m.open ? 'Geçmişi gizle' : 'Paket geçmişi'}</button>
       <button class="sm" data-act="rename">Adını değiştir</button>
       <button class="sm danger" data-act="del">Sil</button>
     </div>
-    ${m.open ? '<div class="log mono" data-k="log"></div>' : ''}`;
+    ${m.open ? '<div class="log mono" data-k="log" style="margin-top:10px"></div>' : ''}`;
   return el;
 }
 
@@ -785,11 +1066,7 @@ function chip(label, value, on) {
 }
 
 function updateCard(el, m) {
-  const age = m.lastSeen ? Date.now() - m.lastSeen : Infinity;
-  el.querySelector('[data-k=dot]').className = 'dot' + (age < 15000 ? ' on' : age < 60000 ? ' mid' : '');
-  const paired = m.pairedWith
-    ? (bridge && m.pairedWith === bridge.mac ? 'bu köprü' : m.pairedWith)
-    : 'bilinmiyor';
+  const paired = m.pairedWith ? (bridge && m.pairedWith === bridge.mac ? 'bu köprü' : m.pairedWith) : 'bilinmiyor';
   const parts = [ago(m.lastSeen)];
   if (m.rssi !== null && m.lastSeen) parts.push(`${m.rssi} dBm (${m.via === 'D' ? 'doğrudan' : 'dinleme'})`);
   if (m.lastSeen) parts.push('ana kart: ' + paired);
@@ -798,19 +1075,15 @@ function updateCard(el, m) {
 
   const s = m.state, c = [];
   const b = (k, label, on = 'Açık', off = 'Kapalı') => { if (k in s) c.push(chip(label, s[k] === '1' ? on : off, s[k] === '1')); };
-  b('R1', 'Röle 1');
-  b('R2', 'Röle 2');
-  b('S1', 'Anahtar 1', 'Var', 'Yok');
-  b('S2', 'Anahtar 2', 'Var', 'Yok');
-  b('G1', 'Giriş', '1', '0');
-  b('K1', 'Tuş', 'Basılı', 'Bırakık');
-  b('M', 'Hareket', 'Var', 'Yok');
+  b('R1', 'Röle 1'); b('R2', 'Röle 2');
+  b('S1', 'Anahtar 1', 'Var', 'Yok'); b('S2', 'Anahtar 2', 'Var', 'Yok');
+  b('G1', 'Giriş', '1', '0'); b('K1', 'Tuş', 'Basılı', 'Bırakık'); b('M', 'Hareket', 'Var', 'Yok');
   if ('A0' in s) c.push(chip('Analog', String(+s.A0)));
   if ('DM' in s) c.push(chip('Mod', s.DM === '1' ? 'Bağımsız' : 'Seri', false));
   if ('LR' in s) c.push(chip('Menzil', s.LR === '1' ? 'LR' : '11b', s.LR === '1'));
   if (m.peerRssi !== null) c.push(chip('Modülün duyduğu', m.peerRssi + ' dBm'));
   if (m.cpu !== null) c.push(chip('CPU', m.cpu.toFixed(1) + ' °C'));
-  const chipsHtml = c.join('') || '<span class="mut" style="font-size:13px">' +
+  const chipsHtml = c.join('') || '<span class="mut" style="font-size:13.5px">' +
     (m.mode === 'off' ? 'Veri almak için Dinle veya Yönet seçin.' :
      !connected() ? 'Köprü bağlı değil.' :
      m.mode === 'listen' ? 'Dinleniyor… Modül bir ana karta bağlı değilse yayın yapmaz; o durumda Yönet seçin.' :
@@ -819,10 +1092,14 @@ function updateCard(el, m) {
   if (chipsEl.innerHTML !== chipsHtml) chipsEl.innerHTML = chipsHtml;
 
   for (const n of [1, 2]) {
-    const btn = el.querySelector(`[data-k=R${n}on]`);
-    if (btn) btn.classList.toggle('onb', s['R' + n] === '1');
+    const btn = el.querySelector(`[data-k=sw${n}]`);
+    if (!btn) continue;
+    btn.classList.toggle('on', relayOn(m, n));
+    btn.querySelector(`[data-k=sv${n}]`).textContent = ('R' + n) in s ? (relayOn(m, n) ? 'Açık' : 'Kapalı') : '—';
   }
-  el.querySelectorAll('.ctl button').forEach(x => x.disabled = !connected());
+  el.querySelector('[data-k=up]')?.classList.toggle('on', relayOn(m, 1));
+  el.querySelector('[data-k=down]')?.classList.toggle('on', relayOn(m, 2));
+  el.querySelectorAll('.big2 button, .dshut button, [data-act=modeS], [data-act=modeI], [data-act=custom]').forEach(x => x.disabled = !connected());
   const log = el.querySelector('[data-k=log]');
   if (log) {
     const t = m.log.join('\n') || 'Henüz paket yok.';
@@ -830,42 +1107,31 @@ function updateCard(el, m) {
   }
 }
 
-function renderList() {
-  const list = $('#list');
-  const seen = new Set();
-  let prev = null;
-  for (const m of modules.values()) {
-    seen.add(m.mac);
-    let el = list.querySelector(`[data-mac="${m.mac}"]`);
-    const sig = cardSig(m);
-    if (!el || el.dataset.sig !== sig) {
-      const fresh = buildCard(m);
-      fresh.dataset.sig = sig;
-      if (el) {
-        const typed = el.querySelector('[data-k=custom]');
-        const nt = fresh.querySelector('[data-k=custom]');
-        if (typed && nt) nt.value = typed.value;
-        el.replaceWith(fresh);
-      }
-      el = fresh;
-    }
-    const want = prev ? prev.nextSibling : list.firstChild;
-    if (el !== want) list.insertBefore(el, want);
-    updateCard(el, m);
-    prev = el;
+function renderSheet() {
+  if (!sheetMac) return;
+  const m = modules.get(sheetMac);
+  if (!m) { closeSheet(); return; }
+  const body = $('#sheetBody');
+  let el = body.firstElementChild;
+  const sig = cardSig(m);
+  if (!el || el.dataset.sig !== sig) {
+    const fresh = buildCard(m);
+    fresh.dataset.sig = sig;
+    const typed = el?.querySelector('[data-k=custom]');
+    const nt = fresh.querySelector('[data-k=custom]');
+    if (typed && nt) nt.value = typed.value;
+    body.replaceChildren(fresh);
+    el = fresh;
   }
-  for (const el of [...list.children]) if (!seen.has(el.dataset.mac)) el.remove();
-  if (!modules.size) list.innerHTML = '<div class="empty">Henüz modül yok.<br>QR Okut sekmesinden modül etiketlerini okutun.</div>';
-  const managed = [...modules.values()].filter(m => m.mode === 'manage').length;
-  $('#modCount').textContent = modules.size ? `${modules.size} modül · ${managed}/${MAX_MANAGED} yönetimde` : '';
-  $('#selAll').checked = modules.size > 0 && [...modules.values()].every(m => m.sel);
+  updateCard(el, m);
 }
 
+// ---------------------------------------------------------------- grup / keşif / IR listesi
 function renderGroup() {
   const sel = [...modules.values()].filter(m => m.sel);
-  $('#group').classList.toggle('show', sel.length > 0 && activeTab === 'modules');
-  $('#groupCount').textContent = sel.length + ' seçili';
-  document.querySelectorAll('#group [data-g^=r]').forEach(b => b.disabled = !connected());
+  $('#group').classList.toggle('show', selectMode && activeTab === 'dash');
+  $('#groupCount').textContent = sel.length ? sel.length + ' modül seçili' : 'Kutucuklara dokunarak seçin';
+  document.querySelectorAll('#group .gb button').forEach(b => b.disabled = !sel.length || (/^r|alloff/.test(b.dataset.g) && !connected()));
 }
 
 function renderDiscover() {
@@ -882,7 +1148,7 @@ function renderDiscover() {
       <div class="grow"><b class="mono">${esc(d.mac)}</b>${guess ? `<span class="type">${guess}</span>` : ''}
         <div class="meta">${esc(ago(d.seen))} · ${d.rssi} dBm · hedef ${esc(d.dst)}</div>
         <div class="meta mono">${esc(d.text.slice(0, 64))}</div></div>
-      <button class="sm" data-add="${esc(d.mac)}">Ekle</button></div></div>`;
+      <button class="pri sm" data-add="${esc(d.mac)}">Ekle</button></div></div>`;
   }).join('');
 }
 
@@ -1027,25 +1293,33 @@ function switchTab(tab) {
   document.querySelectorAll('main section').forEach(s => s.classList.toggle('act', s.id === 'tab-' + tab));
   if (tab !== 'scan' && scan.stream) stopScan();
   if (tab === 'log') { const box = $('#logbox'); box.textContent = logLines.join('\n'); box.scrollTop = box.scrollHeight; }
+  window.scrollTo(0, 0);
   render();
 }
 
 $('#tabs').addEventListener('click', e => { const b = e.target.closest('button[data-tab]'); if (b) switchTab(b.dataset.tab); });
 $('#connectBtn').addEventListener('click', connect);
 
-$('#list').addEventListener('click', e => {
-  const t = e.target.closest('[data-act]');
-  if (!t) return;
-  const m = modules.get(t.closest('[data-mac]')?.dataset.mac);
-  if (!m) return;
-  const act = t.dataset.act;
+function doAction(m, act, t) {
+  const needManage = () => {
+    if (m.mode === 'manage') return true;
+    if (!sheetMac) openSheet(m.mac);
+    toast('Kontrol için önce "Yönet" seçin');
+    return false;
+  };
   switch (act) {
-    case 'sel': m.sel = t.checked; scheduleRender(); break;
+    case 'tog1':
+    case 'tog2': {
+      if (!needManage()) return;
+      const n = +act[3];
+      relay(m, n, !relayOn(m, n));
+      try { navigator.vibrate?.(15); } catch (e) {}
+      break;
+    }
+    case 'up': if (needManage()) relay(m, 1, true); break;
+    case 'down': if (needManage()) relay(m, 2, true); break;
+    case 'stop': if (needManage() && sendTx(m, 'R1=R')) sendTx(m, 'R2=R'); break;
     case 'mode': setMode(m, t.dataset.v); break;
-    case 'r1on': relay(m, 1, true); break;
-    case 'r1off': relay(m, 1, false); break;
-    case 'r2on': relay(m, 2, true); break;
-    case 'r2off': relay(m, 2, false); break;
     case 'shutter': m.shutter = t.checked; save(); scheduleRender(); break;
     case 'modeS': sendTx(m, 'MODE:S') && toast('Seri moda geçiş istendi (röleler kapalıyken uygulanır)'); break;
     case 'modeI':
@@ -1068,30 +1342,67 @@ $('#list').addEventListener('click', e => {
       if (confirm(`${m.name} silinsin mi?`)) {
         if (connected() && m.mode !== 'off') { send(`PEER\t${m.mac}\t0`); send(`WATCH\t${m.mac}\t0`); }
         modules.delete(m.mac);
+        closeSheet();
         save();
         scheduleRender();
       }
       break;
   }
+}
+
+$('#dash').addEventListener('click', e => {
+  const g = e.target.closest('[data-goto]');
+  if (g) { switchTab(g.dataset.goto); return; }
+  const tile = e.target.closest('.tile');
+  if (!tile) return;
+  const m = modules.get(tile.dataset.mac);
+  if (!m) return;
+  if (selectMode) { m.sel = !m.sel; try { navigator.vibrate?.(10); } catch (err) {} scheduleRender(); return; }
+  const t = e.target.closest('[data-act]');
+  if (!t || t.dataset.act === 'open') openSheet(m.mac);
+  else doAction(m, t.dataset.act, t);
 });
 
-$('#list').addEventListener('keydown', e => {
+$('#sheetBody').addEventListener('click', e => {
+  const t = e.target.closest('[data-act]');
+  const m = modules.get(sheetMac);
+  if (t && m) doAction(m, t.dataset.act, t);
+});
+$('#sheetBody').addEventListener('keydown', e => {
   if (e.key === 'Enter' && e.target.matches('[data-k=custom]')) e.target.closest('.row').querySelector('[data-act=custom]').click();
 });
+$('#sheetClose').addEventListener('click', closeSheet);
+$('#sheetBack').addEventListener('click', closeSheet);
 
-$('#selAll').addEventListener('change', e => { for (const m of modules.values()) m.sel = e.target.checked; scheduleRender(); });
+$('#filters').addEventListener('click', e => {
+  const b = e.target.closest('[data-filter]');
+  if (!b) return;
+  filter = b.dataset.filter;
+  scheduleRender();
+});
+
+$('#selModeBtn').addEventListener('click', () => {
+  selectMode = !selectMode;
+  if (!selectMode) for (const m of modules.values()) m.sel = false;
+  scheduleRender();
+});
 
 $('#group').addEventListener('click', e => {
   const b = e.target.closest('[data-g]');
   if (!b) return;
-  const sel = [...modules.values()].filter(m => m.sel);
   const g = b.dataset.g;
-  if (g === 'clear') { sel.forEach(m => m.sel = false); scheduleRender(); return; }
+  if (g === 'clear') { selectMode = false; for (const m of modules.values()) m.sel = false; scheduleRender(); return; }
+  if (g === 'all') { for (const m of modules.values()) if (passes(m)) m.sel = true; scheduleRender(); return; }
+  const sel = [...modules.values()].filter(m => m.sel);
   if (['listen', 'manage', 'off'].includes(g)) { sel.forEach(m => setMode(m, g)); return; }
   const targets = sel.filter(m => m.mode === 'manage');
   if (!targets.length) { toast('Seçililer arasında Yönet modunda modül yok'); return; }
-  const n = g[1] === '1' ? 1 : 2, on = g.endsWith('on');
-  for (const m of targets) relay(m, n, on);
+  for (const m of targets) {
+    if (g === 'alloff') { relay(m, 1, false); if (m.type !== '1R') relay(m, 2, false); continue; }
+    const n = g[1] === '1' ? 1 : 2, on = g.endsWith('on');
+    if (n === 2 && m.type === '1R') continue;
+    relay(m, n, on);
+  }
   toast(`${targets.length} modüle gönderildi`);
 });
 
@@ -1188,7 +1499,7 @@ $('#autoListen').checked = settings.autoListen;
 }
 setConn('off');
 render();
-setInterval(() => { if (activeTab === 'modules' || activeTab === 'discover') scheduleRender(); }, 1000);
+setInterval(() => { if (activeTab === 'dash' || activeTab === 'discover') scheduleRender(); }, 1000);
 </script>
 </body>
 </html>
