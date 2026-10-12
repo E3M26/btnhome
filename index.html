@@ -1,0 +1,1189 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b7a75">
+<title>BTNHome Köprü</title>
+<style>
+:root{--bg:#f3f5f7;--card:#fff;--fg:#14202b;--mut:#66727e;--line:#dde3e9;--acc:#0b7a75;--acc2:#e3f3f2;--on:#1e9b53;--onbg:#e3f5ea;--off:#9aa5b1;--warn:#b7700b;--warnbg:#fdf2e1;--bad:#c0392b;--badbg:#fbe9e7;--chip:#eef1f4;--shadow:0 1px 2px rgba(0,0,0,.06)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1419;--card:#172028;--fg:#e4ebf1;--mut:#8f9dab;--line:#283541;--acc:#3cc2b9;--acc2:#12312f;--on:#45d184;--onbg:#123222;--off:#5d6b78;--warn:#e3a540;--warnbg:#33270f;--bad:#ef6b5b;--badbg:#3a1a16;--chip:#212c36;--shadow:none}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+.top{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--line)}
+header{display:flex;align-items:center;gap:10px;padding:10px 16px}
+header h1{font-size:17px;margin:0;flex:1;letter-spacing:-.01em}
+header h1 small{display:block;font-size:11.5px;font-weight:500;color:var(--mut);letter-spacing:0}
+nav{display:flex;gap:2px;padding:0 10px;overflow-x:auto;scrollbar-width:none}
+nav button{border:0;background:none;border-bottom:2px solid transparent;border-radius:0;padding:9px 10px;color:var(--mut);font-weight:600;min-height:0;white-space:nowrap}
+nav button.act{color:var(--acc);border-bottom-color:var(--acc)}
+main{padding:14px 16px 140px;max-width:860px;margin:0 auto}
+section{display:none}section.act{display:block}
+button,input,select,textarea{font:inherit;color:inherit}
+button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 12px;cursor:pointer;min-height:38px;font-weight:500}
+button:disabled{opacity:.45;cursor:default}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+button.sm{min-height:32px;padding:4px 10px;font-size:13.5px}
+button.danger{color:var(--bad)}
+input[type=text],select,textarea{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 10px;min-height:38px;width:100%}
+textarea{min-height:140px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+label.chk{display:flex;align-items:center;gap:8px;user-select:none}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--chip);color:var(--mut);white-space:nowrap;font-weight:600}
+.pill.ok{background:var(--onbg);color:var(--on)}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:10px}
+.hint{color:var(--mut);font-size:13px;margin:6px 0 12px}
+.banner{border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13.5px;background:var(--warnbg);color:var(--warn)}
+.banner.bad{background:var(--badbg);color:var(--bad)}
+h2{font-size:15px;margin:4px 0 8px}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.mut{color:var(--mut)}
+.empty{text-align:center;color:var(--mut);padding:36px 12px}
+/* modül kartı */
+.mod-head{display:flex;align-items:flex-start;gap:10px}
+.mod-head input[type=checkbox]{width:20px;height:20px;margin-top:2px;accent-color:var(--acc)}
+.mod-title{flex:1;min-width:0}
+.mod-title b{font-size:15.5px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--off);margin-right:6px;vertical-align:1px}
+.dot.on{background:var(--on)}.dot.mid{background:var(--warn)}
+.type{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--acc2);color:var(--acc);margin-left:6px;vertical-align:2px}
+.meta{font-size:12.5px;color:var(--mut);margin-top:2px;overflow-wrap:anywhere}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:10px}
+.seg button{border:0;border-radius:0;min-height:32px;padding:4px 12px;font-size:13.5px;background:none}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.act{background:var(--acc);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font-size:12.5px;padding:3px 9px;border-radius:8px;background:var(--chip);white-space:nowrap}
+.chip b{font-weight:700}
+.chip.on{background:var(--onbg);color:var(--on)}
+.ctl{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:grid;gap:8px}
+.relay{display:flex;align-items:center;gap:8px}
+.relay span{width:64px;font-weight:600;font-size:13.5px}
+.relay button{flex:1}
+.relay button.onb{border-color:var(--on);color:var(--on)}
+.log{max-height:220px;overflow:auto;background:var(--chip);border-radius:10px;padding:8px;margin-top:8px;white-space:pre-wrap;word-break:break-all}
+.foot{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+/* grup çubuğu */
+#group{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--card);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:none;box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+#group.show{display:block}
+#group .row{max-width:860px;margin:0 auto}
+/* tarama */
+.cam{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:3/4;max-height:60vh;margin:0 auto 10px;max-width:480px}
+.cam video{width:100%;height:100%;object-fit:cover;display:block}
+.cam .frame{position:absolute;inset:18%;border:3px solid rgba(255,255,255,.85);border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+.cam .msg{position:absolute;left:0;right:0;bottom:10px;text-align:center;color:#fff;font-size:13px;text-shadow:0 1px 2px #000}
+.scanned{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.scanned:last-child{border-bottom:0}
+#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:10px;font-size:13.5px;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+.progress{height:8px;background:var(--chip);border-radius:99px;overflow:hidden;margin:8px 0}
+.progress div{height:100%;width:0;background:var(--acc);transition:width .2s}
+#logbox{height:55vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;white-space:pre-wrap;word-break:break-all}
+</style>
+</head>
+<body>
+<div class="top">
+  <header>
+    <h1>BTNHome Köprü<small id="bridgeInfo">ESP32-S3 bağlı değil</small></h1>
+    <span class="pill" id="connPill">Bağlı değil</span>
+    <button class="pri" id="connectBtn">Bağlan</button>
+  </header>
+  <nav id="tabs">
+    <button data-tab="modules" class="act">Modüller</button>
+    <button data-tab="scan">QR Okut</button>
+    <button data-tab="discover">Keşif</button>
+    <button data-tab="ir">IR</button>
+    <button data-tab="log">Kayıt</button>
+  </nav>
+</div>
+
+<main>
+  <div id="envBanner"></div>
+
+  <!-- MODÜLLER -->
+  <section id="tab-modules" class="act">
+    <div class="row" style="margin-bottom:10px">
+      <label class="chk grow"><input type="checkbox" id="selAll"> Tümünü seç</label>
+      <span class="mut" id="modCount"></span>
+    </div>
+    <div id="list"></div>
+  </section>
+
+  <!-- QR -->
+  <section id="tab-scan">
+    <div class="cam" id="cam" hidden>
+      <video id="video" playsinline muted></video>
+      <div class="frame"></div>
+      <div class="msg" id="camMsg">QR kodu çerçeveye getirin</div>
+    </div>
+    <div class="row" style="justify-content:center;margin-bottom:12px">
+      <button class="pri" id="scanStart">Kamerayı aç</button>
+      <button id="scanStop" hidden>Kamerayı kapat</button>
+    </div>
+    <label class="chk" style="justify-content:center;margin-bottom:12px"><input type="checkbox" id="autoListen" checked> Okutulan modülü hemen dinlemeye al</label>
+    <div class="card" id="scannedCard" hidden>
+      <h2>Bu oturumda okutulanlar</h2>
+      <div id="scannedList"></div>
+    </div>
+    <div class="card">
+      <h2>Elle ekle</h2>
+      <div class="row">
+        <input type="text" id="manMac" class="grow mono" placeholder="AA:BB:CC:DD:EE:FF" autocapitalize="characters">
+        <input type="text" id="manName" class="grow" placeholder="Ad (örn. Salon panjur)">
+        <button id="manAdd">Ekle</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Liste yedeği</h2>
+      <p class="hint">Modül listesi bu telefonda saklanır. Başka telefona taşımak için dışa aktarın.</p>
+      <div class="row">
+        <button id="exportBtn">Dışa aktar (JSON)</button>
+        <button id="importBtn">İçe aktar</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEŞİF -->
+  <section id="tab-discover">
+    <div class="card">
+      <label class="chk"><input type="checkbox" id="sniffAll"> Çevredeki tüm ESP-NOW göndericilerini göster</label>
+      <p class="hint" style="margin-bottom:0">Pasif dinlemedir, modüllere hiçbir şey gönderilmez. QR kodu olmayan modülleri bulmak için kullanın.</p>
+    </div>
+    <div id="discList"></div>
+  </section>
+
+  <!-- IR -->
+  <section id="tab-ir">
+    <div class="card">
+      <h2>Hedef modül</h2>
+      <select id="irTarget"></select>
+      <p class="hint">Yalnızca <b>Yönet</b> modundaki ve köprüden paket alan modüller IR komutu kabul eder.</p>
+    </div>
+    <div class="card">
+      <h2>Tuş gönder</h2>
+      <div class="row">
+        <input type="text" id="irRemote" class="grow" placeholder="Kumanda (örn. TV)">
+        <input type="text" id="irKey" class="grow" placeholder="Tuş (örn. power)">
+        <button class="pri" id="irSend">Gönder</button>
+      </div>
+      <p class="hint" id="irSendStatus"></p>
+    </div>
+    <div class="card">
+      <h2>Kumanda veritabanı yükle</h2>
+      <textarea id="irDb" spellcheck="false" placeholder='{"remotes":{"TV":{"power":{"proto":"NEC","hex":"20DF10EF","bits":32}}}}'></textarea>
+      <div class="row" style="margin-top:8px">
+        <label class="chk grow"><input type="checkbox" id="irReplace"> Mevcut veritabanını tamamen değiştir</label>
+        <button class="pri" id="irUpload">Yükle</button>
+      </div>
+      <div class="progress"><div id="irProg"></div></div>
+      <p class="hint" id="irUpStatus">En fazla 16 KB. Varsayılan olarak mevcut kayıtlarla birleştirilir.</p>
+    </div>
+  </section>
+
+  <!-- KAYIT -->
+  <section id="tab-log">
+    <div class="card">
+      <h2>Ayarlar</h2>
+      <label class="chk"><input type="checkbox" id="lrOn" checked> Uzun menzil (LR) isteklerini kabul et</label>
+      <div class="row" style="margin-top:10px">
+        <span class="mut">Bağlantı yöntemi</span>
+        <select id="transportSel" style="width:auto">
+          <option value="auto">Otomatik</option>
+          <option value="usb">WebUSB (Android)</option>
+          <option value="serial">Web Serial (bilgisayar)</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom:8px">
+      <input type="text" id="rawCmd" class="grow mono" placeholder="Köprüye ham komut (örn. LIST)">
+      <button id="rawSend">Gönder</button>
+      <button id="logClear">Temizle</button>
+      <label class="chk"><input type="checkbox" id="logRx"> Paketleri de yaz</label>
+    </div>
+    <div id="logbox" class="mono"></div>
+  </section>
+</main>
+
+<div id="group">
+  <div class="row">
+    <b id="groupCount" style="margin-right:4px"></b>
+    <button class="sm" data-g="listen">Dinle</button>
+    <button class="sm" data-g="manage">Yönet</button>
+    <button class="sm" data-g="off">Kapat</button>
+    <button class="sm" data-g="r1on">R1 Aç</button>
+    <button class="sm" data-g="r1off">R1 Kapat</button>
+    <button class="sm" data-g="r2on">R2 Aç</button>
+    <button class="sm" data-g="r2off">R2 Kapat</button>
+    <button class="sm" data-g="clear">Seçimi bırak</button>
+  </div>
+</div>
+<div id="toast"></div>
+<canvas id="qrCanvas" hidden></canvas>
+
+<script>
+'use strict';
+// ====================================================================== yardımcılar
+const $ = s => document.querySelector(s);
+const enc = new TextEncoder();
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isAndroid = /Android/i.test(navigator.userAgent);
+const STORE_KEY = 'btnhome.bridge.v1';
+const MAX_MANAGED = 20;
+
+function toast(msg, ms = 2200) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+function ago(ts) {
+  if (!ts) return 'hiç görülmedi';
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  if (s < 60) return s + ' sn önce';
+  if (s < 3600) return Math.floor(s / 60) + ' dk önce';
+  return Math.floor(s / 3600) + ' sa önce';
+}
+
+function extractMac(text) {
+  const m = String(text).toUpperCase().match(/[0-9A-F]{2}([:\-. ]?)[0-9A-F]{2}(?:\1[0-9A-F]{2}){4}/);
+  if (!m) return null;
+  const hex = m[0].replace(/[^0-9A-F]/g, '');
+  if (hex.length !== 12 || /^0+$/.test(hex) || /^F+$/.test(hex)) return null;
+  return hex.match(/../g).join(':');
+}
+
+function toHex(bytes) { return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('').toUpperCase(); }
+function fromHex(h) { const o = new Uint8Array(h.length >> 1); for (let i = 0; i < o.length; i++) o[i] = parseInt(h.substr(i * 2, 2), 16); return o; }
+
+function fields(text) {
+  const out = {};
+  for (const part of text.split('#')) {
+    const i = part.indexOf(':');
+    if (i > 0) out[part.slice(0, i).trim()] = part.slice(i + 1).trim();
+  }
+  return out;
+}
+
+// ====================================================================== kalıcı durum
+const modules = new Map();     // mac -> modül
+const discovered = new Map();  // mac -> {mac, rssi, text, dst, seen}
+const settings = { lr: true, sniffAll: false, transport: 'auto', autoListen: true };
+
+function save() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      settings,
+      modules: [...modules.values()].map(m => ({ mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type }))
+    }));
+  } catch (e) { /* depolama kapalı olabilir */ }
+}
+
+function newModule(mac, name, mode = 'off') {
+  return { mac, name: name || 'Modül ' + mac.slice(-5).replace(':', ''), mode, shutter: false, type: '',
+           state: {}, sel: false, open: false, lastSeen: 0, rssi: null, via: '', pairedWith: '', cpu: null,
+           peerRssi: null, txOk: 0, txFail: 0, log: [], dmAckAt: 0 };
+}
+
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (!d) return;
+    Object.assign(settings, d.settings || {});
+    for (const x of d.modules || []) {
+      const mac = extractMac(x.mac);
+      if (!mac) continue;
+      const m = newModule(mac, x.name, ['off', 'listen', 'manage'].includes(x.mode) ? x.mode : 'off');
+      m.shutter = !!x.shutter;
+      m.type = x.type || '';
+      modules.set(mac, m);
+    }
+  } catch (e) { /* bozuk kayıt: yok say */ }
+}
+
+// ====================================================================== USB taşıyıcıları
+class SerialLink {
+  constructor(onData, onClose) { this.onData = onData; this.onClose = onClose; this.closed = false; }
+  async open() {
+    this.port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
+    await this.port.open({ baudRate: 115200, bufferSize: 16384 });
+    try { await this.port.setSignals({ dataTerminalReady: true, requestToSend: false }); } catch (e) {}
+    this.writer = this.port.writable.getWriter();
+    this.readLoop();
+  }
+  async readLoop() {
+    while (!this.closed && this.port.readable) {
+      this.reader = this.port.readable.getReader();
+      try {
+        for (;;) {
+          const { value, done } = await this.reader.read();
+          if (done) break;
+          if (value) this.onData(value);
+        }
+      } catch (e) { /* cihaz çıkarıldı */ }
+      finally { try { this.reader.releaseLock(); } catch (e) {} }
+      if (!this.closed) break;
+    }
+    this.finish();
+  }
+  async write(str) { await this.writer.write(enc.encode(str)); }
+  finish() { if (this.done) return; this.done = true; this.closed = true; this.onClose(); }
+  async close() {
+    this.closed = true;
+    try { await this.reader?.cancel(); } catch (e) {}
+    try { this.writer?.releaseLock(); } catch (e) {}
+    try { await this.port?.close(); } catch (e) {}
+    this.finish();
+  }
+}
+
+// Android Chrome'da CDC-ACM aygıtına WebUSB ile doğrudan erişim (Web Serial gerekmez).
+class UsbCdcLink {
+  constructor(onData, onClose) { this.onData = onData; this.onClose = onClose; this.closed = false; }
+  async open() {
+    const d = this.dev = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x303a }] });
+    await d.open();
+    if (!d.configuration) await d.selectConfiguration(1);
+    let ctrl = null, data = null;
+    for (const itf of d.configuration.interfaces) {
+      const alt = itf.alternates[0];
+      if (alt.interfaceClass === 0x02 && ctrl === null) ctrl = itf.interfaceNumber;
+      if (alt.interfaceClass === 0x0A && !data) data = { num: itf.interfaceNumber, alt };
+    }
+    if (!data) throw new Error('CDC veri arayüzü bulunamadı. Kart "USB CDC On Boot: Enabled" ile derlendi mi?');
+    if (ctrl !== null) { try { await d.claimInterface(ctrl); } catch (e) {} }
+    await d.claimInterface(data.num);
+    const epIn = data.alt.endpoints.find(e => e.direction === 'in' && e.type === 'bulk');
+    const epOut = data.alt.endpoints.find(e => e.direction === 'out' && e.type === 'bulk');
+    if (!epIn || !epOut) throw new Error('USB uç noktaları bulunamadı');
+    this.inEp = epIn.endpointNumber;
+    this.outEp = epOut.endpointNumber;
+    if (ctrl !== null) {
+      const setup = (request, value) => ({ requestType: 'class', recipient: 'interface', request, value, index: ctrl });
+      // 115200 8N1 ve DTR=1, RTS=0 (RTS'yi kaldırmak S3'ü yeniden başlatmaz)
+      try { await d.controlTransferOut(setup(0x20, 0), new Uint8Array([0x00, 0xC2, 0x01, 0x00, 0, 0, 8])); } catch (e) {}
+      try { await d.controlTransferOut(setup(0x22, 0x01)); } catch (e) {}
+    }
+    this.readLoop();
+  }
+  async readLoop() {
+    while (!this.closed) {
+      try {
+        const r = await this.dev.transferIn(this.inEp, 512);
+        if (r.data && r.data.byteLength) this.onData(new Uint8Array(r.data.buffer, r.data.byteOffset, r.data.byteLength));
+      } catch (e) { break; }
+    }
+    this.finish();
+  }
+  async write(str) { await this.dev.transferOut(this.outEp, enc.encode(str)); }
+  finish() { if (this.done) return; this.done = true; this.closed = true; this.onClose(); }
+  async close() {
+    this.closed = true;
+    try { await this.dev?.close(); } catch (e) {}
+    this.finish();
+  }
+}
+
+// ====================================================================== köprü bağlantısı
+let link = null;
+let bridge = null;             // {mac, ch, fw, lr}
+let rxText = '';
+let decoder = new TextDecoder();
+let writeChain = Promise.resolve();
+let helloTimer = null;
+let wakeLock = null;
+
+function connected() { return !!(link && bridge); }
+
+function send(line) {
+  if (!link) return Promise.resolve();
+  if ($('#logRx').checked || !/^(TX|RAW)\t/.test(line)) logLine('> ' + line);
+  writeChain = writeChain.then(() => link && link.write(line + '\n')).catch(e => logLine('! yazma hatası: ' + e.message));
+  return writeChain;
+}
+
+function pickTransport() {
+  const t = settings.transport;
+  if (t === 'usb' && navigator.usb) return UsbCdcLink;
+  if (t === 'serial' && navigator.serial) return SerialLink;
+  if (navigator.usb && (isAndroid || !navigator.serial)) return UsbCdcLink;
+  if (navigator.serial) return SerialLink;
+  if (navigator.usb) return UsbCdcLink;
+  return null;
+}
+
+async function connect() {
+  if (link) { await link.close(); return; }
+  const Cls = pickTransport();
+  if (!Cls) { toast('Bu tarayıcı USB erişimi sunmuyor. Android Chrome kullanın.'); return; }
+  const l = new Cls(onUsbData, onUsbClose);
+  try {
+    setConn('wait', 'Bağlanıyor…');
+    await l.open();
+  } catch (e) {
+    setConn('off');
+    if (e.name !== 'NotFoundError') toast('Bağlanılamadı: ' + e.message, 4000);
+    return;
+  }
+  link = l;
+  rxText = '';
+  decoder = new TextDecoder();
+  logLine('# USB açıldı (' + (Cls === UsbCdcLink ? 'WebUSB' : 'Web Serial') + ')');
+  send('HELLO');
+  clearTimeout(helloTimer);
+  helloTimer = setTimeout(() => { if (link && !bridge) { send('HELLO'); toast('Köprü yanıt vermedi, yeniden deneniyor…'); } }, 1800);
+  try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {}
+}
+
+function onUsbClose() {
+  link = null;
+  bridge = null;
+  clearTimeout(helloTimer);
+  setConn('off');
+  logLine('# USB bağlantısı kapandı');
+  try { wakeLock?.release(); } catch (e) {}
+  wakeLock = null;
+  scheduleRender();
+}
+
+function onUsbData(bytes) {
+  rxText += decoder.decode(bytes, { stream: true });
+  let i;
+  while ((i = rxText.indexOf('\n')) >= 0) {
+    const line = rxText.slice(0, i).replace(/\r$/, '');
+    rxText = rxText.slice(i + 1);
+    if (line) handleLine(line);
+  }
+  if (rxText.length > 8192) rxText = '';
+}
+
+function setConn(state, text) {
+  const pill = $('#connPill'), btn = $('#connectBtn');
+  pill.className = 'pill' + (state === 'on' ? ' ok' : state === 'wait' ? ' warn' : '');
+  pill.textContent = text || (state === 'on' ? 'Bağlı' : 'Bağlı değil');
+  btn.textContent = state === 'off' ? 'Bağlan' : 'Kes';
+  btn.classList.toggle('pri', state === 'off');
+  $('#bridgeInfo').textContent = bridge ? `S3 ${bridge.mac} · kanal ${bridge.ch} · ${bridge.fw}` : 'ESP32-S3 bağlı değil';
+}
+
+function syncBridge() {
+  send('CLEAR');
+  send('LR\t' + (settings.lr ? 1 : 0));
+  send('SNIFFALL\t' + (settings.sniffAll ? 1 : 0));
+  for (const m of modules.values()) applyMode(m, true);
+}
+
+function applyMode(m, initial) {
+  if (!connected()) return;
+  if (m.mode === 'off' && initial) return;
+  send(`WATCH\t${m.mac}\t${m.mode !== 'off' ? 1 : 0}`);
+  send(`PEER\t${m.mac}\t${m.mode === 'manage' ? 1 : 0}`);
+}
+
+function setMode(m, mode) {
+  if (mode === m.mode) return;
+  if (mode === 'manage') {
+    const n = [...modules.values()].filter(x => x.mode === 'manage').length;
+    if (n >= MAX_MANAGED) { toast(`En fazla ${MAX_MANAGED} modül aynı anda yönetilebilir`); return; }
+  }
+  m.mode = mode;
+  applyMode(m, false);
+  save();
+  scheduleRender();
+}
+
+// ====================================================================== gelen satırlar
+function handleLine(line) {
+  const p = line.split('\t');
+  switch (p[0]) {
+    case 'HELLO':
+      bridge = { mac: p[1], ch: p[2], fw: p[3], lr: p[4] === '1' };
+      clearTimeout(helloTimer);
+      setConn('on');
+      logLine('< ' + line);
+      syncBridge();
+      scheduleRender();
+      break;
+    case 'RX':
+      if ($('#logRx').checked) logLine('< ' + line);
+      onRx(p[1], p[2], +p[3], p[4], p.slice(5).join('\t'));
+      break;
+    case 'RXB':
+      if ($('#logRx').checked) logLine('< ' + line);
+      onRxBin(p[1], p[2], +p[3], p[4], p[5] || '');
+      break;
+    case 'TXS': {
+      const m = modules.get(p[1]);
+      if (m) { p[2] === '1' ? m.txOk++ : m.txFail++; scheduleRender(); }
+      break;
+    }
+    case 'ERR':
+      logLine('< ' + line);
+      toast('Köprü: ' + (p[2] || p[1]));
+      break;
+    default:
+      logLine('< ' + line);
+  }
+}
+
+function pushLog(m, text) {
+  const t = new Date();
+  m.log.unshift(`${t.toLocaleTimeString('tr-TR')}  ${text}`);
+  if (m.log.length > 40) m.log.length = 40;
+}
+
+function onRx(src, dst, rssi, via, text) {
+  const now = Date.now();
+  const m = modules.get(src);
+  if (m) {
+    m.lastSeen = now;
+    m.rssi = rssi;
+    m.via = via;
+    m.pairedWith = via === 'D' ? (bridge ? bridge.mac : '') : dst;
+    if (text.startsWith('CPU10:')) {
+      const f = fields(text);
+      m.cpu = f.CPUV === '1' ? (+f.CPU10) / 10 : null;
+    } else if (/^([0-9A-F]{2}:){5}[0-9A-F]{2} A0:/.test(text)) {
+      const a = text.match(/A0:\s*(-?\d+)/), r = text.match(/RS:\s*(-?\d+)/);
+      if (a) m.state.A0 = String(+a[1]);
+      if (r) m.peerRssi = +r[1];
+      if (!m.type) m.type = '2R';
+    } else if (/(^|#)R1:/.test(text)) {
+      const f = fields(text);
+      Object.assign(m.state, f);
+      if ('R2' in f) m.type = '2R';
+      else if ('G1' in f || f.V === '2') m.type = '1R';
+      if ('RS' in f) m.peerRssi = +f.RS;
+      // 2R bağımsız modda: köprü ana kart olarak onay verir (aksi halde kilit devrede kalır)
+      if (m.mode === 'manage' && via === 'D' && f.DM === '1' && now - m.dmAckAt > 30000) {
+        m.dmAckAt = now;
+        send(`TX\t${m.mac}\tDMACK:1`);
+      }
+    }
+    pushLog(m, `${via === 'D' ? '⇢ köprü' : '⇢ ' + dst}  ${text}`);
+    scheduleRender();
+    return;
+  }
+  const target = modules.get(dst);
+  if (target) {
+    // modülün mevcut ana kartından modüle giden komut (havadan dinlendi)
+    target.pairedWith = src;
+    pushLog(target, `⇠ ${src}  ${text}`);
+    scheduleRender();
+    return;
+  }
+  discovered.set(src, { mac: src, rssi, text, dst, seen: now });
+  if (activeTab === 'discover') scheduleRender();
+}
+
+// ====================================================================== IR (btn_ir_protocol.h)
+const pendingAcks = new Map();
+let irKeySession = 1 + Math.floor(Math.random() * 254);
+let irKeySeq = 1;
+
+function onRxBin(src, dst, rssi, via, hex) {
+  const b = fromHex(hex);
+  const m = modules.get(src);
+  if (b.length >= 8 && b[0] === 4 && via === 'D') {
+    const seq = b[2] | (b[3] << 8);
+    const key = `${src}|${b[1]}|${seq}`;
+    const resolve = pendingAcks.get(key);
+    if (resolve) { pendingAcks.delete(key); resolve(b[7]); }
+    if (m) pushLog(m, `IR ACK oturum ${b[1]} sıra ${seq} → ${b[7] === 0 ? 'tamam' : 'hata'}`);
+  } else if (m) {
+    pushLog(m, `ikili ${hex.slice(0, 40)}${hex.length > 40 ? '…' : ''}`);
+  }
+  if (m) { m.lastSeen = Date.now(); m.rssi = rssi; scheduleRender(); }
+}
+
+function irPacket(type, session, seq, total, data) {
+  const b = new Uint8Array(7 + data.length);
+  b[0] = type; b[1] = session;
+  b[2] = seq & 255; b[3] = seq >> 8;
+  b[4] = total & 255; b[5] = total >> 8;
+  b[6] = data.length;
+  b.set(data, 7);
+  return b;
+}
+
+function crc32(bytes) {
+  let crc = ~0 >>> 0;
+  for (const x of bytes) {
+    crc ^= x;
+    for (let i = 0; i < 8; i++) crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+  }
+  return (~crc) >>> 0;
+}
+
+async function irExchange(mac, pkt, retries = 4, timeout = 800) {
+  const key = `${mac}|${pkt[1]}|${pkt[2] | (pkt[3] << 8)}`;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const status = await new Promise(resolve => {
+      pendingAcks.set(key, resolve);
+      setTimeout(() => resolve(null), timeout);
+      send(`RAW\t${mac}\t${toHex(pkt)}`);
+    });
+    pendingAcks.delete(key);
+    if (status !== null) return status;
+  }
+  throw new Error('modülden onay gelmedi');
+}
+
+function irModule() {
+  const m = modules.get($('#irTarget').value);
+  if (!m) throw new Error('Hedef modül seçin');
+  if (m.mode !== 'manage') throw new Error('Modül Yönet modunda değil');
+  if (!connected()) throw new Error('Köprü bağlı değil');
+  return m;
+}
+
+async function irSendKey() {
+  const st = $('#irSendStatus');
+  try {
+    const m = irModule();
+    const remote = enc.encode($('#irRemote').value.trim());
+    const key = enc.encode($('#irKey').value.trim());
+    if (!remote.length || !key.length) throw new Error('Kumanda ve tuş adı girin');
+    if (remote.length > 64) throw new Error('Kumanda adı en fazla 64 bayt');
+    const data = new Uint8Array(remote.length + key.length + 2);
+    data.set(remote, 0); data.set(key, remote.length + 1);
+    if (data.length > 240) throw new Error('Ad çok uzun');
+    const seq = irKeySeq = (irKeySeq % 65535) + 1;
+    st.textContent = 'Gönderiliyor…';
+    const r = await irExchange(m.mac, irPacket(5, irKeySession, seq, 0, data));
+    st.textContent = r === 0 ? 'IR kodu gönderildi.' : 'Modül tuşu bulamadı veya gönderemedi.';
+  } catch (e) { st.textContent = e.message; }
+}
+
+async function irUpload() {
+  const st = $('#irUpStatus'), bar = $('#irProg'), btn = $('#irUpload');
+  try {
+    const m = irModule();
+    const json = $('#irDb').value.trim();
+    let obj;
+    try { obj = JSON.parse(json); } catch (e) { throw new Error('Geçersiz JSON: ' + e.message); }
+    if (!obj || typeof obj.remotes !== 'object' || Array.isArray(obj.remotes)) throw new Error('JSON içinde "remotes" nesnesi olmalı');
+    const data = enc.encode(JSON.stringify(obj));
+    if (data.length > 16384) throw new Error('Veritabanı 16 KB sınırını aşıyor');
+    const total = Math.ceil(data.length / 240);
+    const session = 1 + Math.floor(Math.random() * 254);
+    const begin = new Uint8Array(9);
+    const dv = new DataView(begin.buffer);
+    dv.setUint32(0, data.length, true);
+    dv.setUint32(4, crc32(data), true);
+    begin[8] = $('#irReplace').checked ? 1 : 0;
+    btn.disabled = true;
+    bar.style.width = '0';
+    st.textContent = 'Başlatılıyor…';
+    if (await irExchange(m.mac, irPacket(1, session, 0, total, begin)) !== 0) throw new Error('Modül yüklemeyi başlatmadı (bellek?)');
+    for (let i = 1; i <= total; i++) {
+      const chunk = data.subarray((i - 1) * 240, i * 240);
+      if (await irExchange(m.mac, irPacket(2, session, i, total, chunk)) !== 0) throw new Error(`Parça ${i} reddedildi`);
+      bar.style.width = (i / (total + 1) * 100) + '%';
+      st.textContent = `Parça ${i}/${total}`;
+    }
+    if (await irExchange(m.mac, irPacket(3, session, total + 1, total, new Uint8Array(0)), 4, 2500) !== 0)
+      throw new Error('Modül kaydedemedi (CRC, JSON ya da 16 KB sınırı)');
+    bar.style.width = '100%';
+    st.textContent = `Yüklendi: ${data.length} bayt, ${total} parça.`;
+  } catch (e) {
+    st.textContent = 'Hata: ' + e.message;
+  } finally { btn.disabled = false; }
+}
+
+// ====================================================================== modül komutları
+function sendTx(m, text) {
+  if (!connected()) { toast('Köprü bağlı değil'); return false; }
+  if (m.mode !== 'manage') { toast(m.name + ': önce Yönet moduna alın'); return false; }
+  send(`TX\t${m.mac}\t${text}`);
+  pushLog(m, `⇠ köprü  ${text}`);
+  return true;
+}
+
+function relay(m, n, on) {
+  if (n === 2 && m.type === '1R') return;
+  let t = `R${n}=${on ? 'S' : 'R'}`;
+  if (on && m.type === '2R' && m.shutter) t += '#SH:1';
+  sendTx(m, t);
+}
+
+// ====================================================================== çizim
+let activeTab = 'modules';
+let renderQueued = false;
+function scheduleRender() {
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => { renderQueued = false; render(); });
+}
+
+function render() {
+  renderList();
+  renderGroup();
+  if (activeTab === 'discover') renderDiscover();
+  if (activeTab === 'ir') renderIrTargets();
+}
+
+function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, m.sel, connected()].join('|'); }
+
+function buildCard(m) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.dataset.mac = m.mac;
+  const manage = m.mode === 'manage';
+  const two = m.type !== '1R';
+  const relayRow = n => `
+    <div class="relay"><span>Röle ${n}</span>
+      <button class="sm" data-act="r${n}on" data-k="R${n}on">Aç</button>
+      <button class="sm" data-act="r${n}off">Kapat</button></div>`;
+  el.innerHTML = `
+    <div class="mod-head">
+      <input type="checkbox" data-act="sel" ${m.sel ? 'checked' : ''} aria-label="Seç">
+      <div class="mod-title">
+        <div><span class="dot" data-k="dot"></span><b>${esc(m.name)}</b>${m.type ? `<span class="type">${esc(m.type)}</span>` : ''}</div>
+        <div class="meta mono">${esc(m.mac)}</div>
+        <div class="meta" data-k="meta"></div>
+      </div>
+    </div>
+    <div class="seg" role="group" aria-label="Çalışma biçimi">
+      <button data-act="mode" data-v="off" class="${m.mode === 'off' ? 'act' : ''}">Kapalı</button>
+      <button data-act="mode" data-v="listen" class="${m.mode === 'listen' ? 'act' : ''}">Dinle</button>
+      <button data-act="mode" data-v="manage" class="${manage ? 'act' : ''}">Yönet</button>
+    </div>
+    <div class="chips" data-k="chips"></div>
+    ${manage ? `<div class="ctl">
+      ${relayRow(1)}
+      ${two ? relayRow(2) : ''}
+      ${m.type === '2R' ? `
+        <label class="chk"><input type="checkbox" data-act="shutter" ${m.shutter ? 'checked' : ''}> Panjur/motor kilidi (iki röle asla birlikte açılmaz)</label>
+        <div class="row"><span class="mut grow">Röle modu</span>
+          <button class="sm" data-act="modeS">Seri (kilitli)</button>
+          <button class="sm" data-act="modeI">Bağımsız</button></div>` : ''}
+      <div class="row"><input type="text" class="grow mono" data-k="custom" placeholder="Özel metin komutu (en fazla 63)" maxlength="63">
+        <button class="sm" data-act="custom">Gönder</button></div>
+    </div>` : ''}
+    <div class="foot">
+      <button class="sm" data-act="log">${m.open ? 'Geçmişi gizle' : 'Paket geçmişi'}</button>
+      <button class="sm" data-act="rename">Adını değiştir</button>
+      <button class="sm danger" data-act="del">Sil</button>
+    </div>
+    ${m.open ? '<div class="log mono" data-k="log"></div>' : ''}`;
+  return el;
+}
+
+function chip(label, value, on) {
+  return `<span class="chip${on ? ' on' : ''}">${esc(label)} <b>${esc(value)}</b></span>`;
+}
+
+function updateCard(el, m) {
+  const age = m.lastSeen ? Date.now() - m.lastSeen : Infinity;
+  el.querySelector('[data-k=dot]').className = 'dot' + (age < 15000 ? ' on' : age < 60000 ? ' mid' : '');
+  const paired = m.pairedWith
+    ? (bridge && m.pairedWith === bridge.mac ? 'bu köprü' : m.pairedWith)
+    : 'bilinmiyor';
+  const parts = [ago(m.lastSeen)];
+  if (m.rssi !== null && m.lastSeen) parts.push(`${m.rssi} dBm (${m.via === 'D' ? 'doğrudan' : 'dinleme'})`);
+  if (m.lastSeen) parts.push('ana kart: ' + paired);
+  if (m.mode === 'manage' && (m.txOk || m.txFail)) parts.push(`gönderim ${m.txOk}/${m.txOk + m.txFail}`);
+  el.querySelector('[data-k=meta]').textContent = parts.join(' · ');
+
+  const s = m.state, c = [];
+  const b = (k, label, on = 'Açık', off = 'Kapalı') => { if (k in s) c.push(chip(label, s[k] === '1' ? on : off, s[k] === '1')); };
+  b('R1', 'Röle 1');
+  b('R2', 'Röle 2');
+  b('S1', 'Anahtar 1', 'Var', 'Yok');
+  b('S2', 'Anahtar 2', 'Var', 'Yok');
+  b('G1', 'Giriş', '1', '0');
+  b('K1', 'Tuş', 'Basılı', 'Bırakık');
+  b('M', 'Hareket', 'Var', 'Yok');
+  if ('A0' in s) c.push(chip('Analog', String(+s.A0)));
+  if ('DM' in s) c.push(chip('Mod', s.DM === '1' ? 'Bağımsız' : 'Seri', false));
+  if ('LR' in s) c.push(chip('Menzil', s.LR === '1' ? 'LR' : '11b', s.LR === '1'));
+  if (m.peerRssi !== null) c.push(chip('Modülün duyduğu', m.peerRssi + ' dBm'));
+  if (m.cpu !== null) c.push(chip('CPU', m.cpu.toFixed(1) + ' °C'));
+  const chipsHtml = c.join('') || '<span class="mut" style="font-size:13px">' +
+    (m.mode === 'off' ? 'Veri almak için Dinle veya Yönet seçin.' :
+     !connected() ? 'Köprü bağlı değil.' :
+     m.mode === 'listen' ? 'Dinleniyor… Modül bir ana karta bağlı değilse yayın yapmaz; o durumda Yönet seçin.' :
+     'Modülle eşleşiliyor…') + '</span>';
+  const chipsEl = el.querySelector('[data-k=chips]');
+  if (chipsEl.innerHTML !== chipsHtml) chipsEl.innerHTML = chipsHtml;
+
+  for (const n of [1, 2]) {
+    const btn = el.querySelector(`[data-k=R${n}on]`);
+    if (btn) btn.classList.toggle('onb', s['R' + n] === '1');
+  }
+  el.querySelectorAll('.ctl button').forEach(x => x.disabled = !connected());
+  const log = el.querySelector('[data-k=log]');
+  if (log) {
+    const t = m.log.join('\n') || 'Henüz paket yok.';
+    if (log.textContent !== t) log.textContent = t;
+  }
+}
+
+function renderList() {
+  const list = $('#list');
+  const seen = new Set();
+  let prev = null;
+  for (const m of modules.values()) {
+    seen.add(m.mac);
+    let el = list.querySelector(`[data-mac="${m.mac}"]`);
+    const sig = cardSig(m);
+    if (!el || el.dataset.sig !== sig) {
+      const fresh = buildCard(m);
+      fresh.dataset.sig = sig;
+      if (el) {
+        const typed = el.querySelector('[data-k=custom]');
+        const nt = fresh.querySelector('[data-k=custom]');
+        if (typed && nt) nt.value = typed.value;
+        el.replaceWith(fresh);
+      }
+      el = fresh;
+    }
+    const want = prev ? prev.nextSibling : list.firstChild;
+    if (el !== want) list.insertBefore(el, want);
+    updateCard(el, m);
+    prev = el;
+  }
+  for (const el of [...list.children]) if (!seen.has(el.dataset.mac)) el.remove();
+  if (!modules.size) list.innerHTML = '<div class="empty">Henüz modül yok.<br>QR Okut sekmesinden modül etiketlerini okutun.</div>';
+  const managed = [...modules.values()].filter(m => m.mode === 'manage').length;
+  $('#modCount').textContent = modules.size ? `${modules.size} modül · ${managed}/${MAX_MANAGED} yönetimde` : '';
+  $('#selAll').checked = modules.size > 0 && [...modules.values()].every(m => m.sel);
+}
+
+function renderGroup() {
+  const sel = [...modules.values()].filter(m => m.sel);
+  $('#group').classList.toggle('show', sel.length > 0 && activeTab === 'modules');
+  $('#groupCount').textContent = sel.length + ' seçili';
+  document.querySelectorAll('#group [data-g^=r]').forEach(b => b.disabled = !connected());
+}
+
+function renderDiscover() {
+  const box = $('#discList');
+  const items = [...discovered.values()].filter(d => !modules.has(d.mac)).sort((a, b) => b.seen - a.seen);
+  if (!items.length) {
+    box.innerHTML = `<div class="empty">${settings.sniffAll ? (connected() ? 'Dinleniyor… Henüz bilinmeyen gönderici yok.' : 'Köprü bağlı değil.') : 'Taramayı açın.'}</div>`;
+    return;
+  }
+  box.innerHTML = items.map(d => {
+    const f = fields(d.text);
+    const guess = 'R2' in f ? '2R' : ('G1' in f ? '1R' : '');
+    return `<div class="card"><div class="row">
+      <div class="grow"><b class="mono">${esc(d.mac)}</b>${guess ? `<span class="type">${guess}</span>` : ''}
+        <div class="meta">${esc(ago(d.seen))} · ${d.rssi} dBm · hedef ${esc(d.dst)}</div>
+        <div class="meta mono">${esc(d.text.slice(0, 64))}</div></div>
+      <button class="sm" data-add="${esc(d.mac)}">Ekle</button></div></div>`;
+  }).join('');
+}
+
+function renderIrTargets() {
+  const sel = $('#irTarget');
+  const cur = sel.value;
+  const opts = [...modules.values()].filter(m => m.mode === 'manage');
+  const html = opts.length
+    ? opts.map(m => `<option value="${m.mac}">${esc(m.name)} (${m.mac})</option>`).join('')
+    : '<option value="">Yönet modunda modül yok</option>';
+  if (sel.innerHTML !== html) { sel.innerHTML = html; if (opts.some(m => m.mac === cur)) sel.value = cur; }
+}
+
+// ====================================================================== kayıt
+const logLines = [];
+function logLine(s) {
+  const t = new Date().toLocaleTimeString('tr-TR');
+  logLines.push(`${t} ${s}`);
+  if (logLines.length > 400) logLines.splice(0, logLines.length - 400);
+  if (activeTab === 'log') {
+    const box = $('#logbox');
+    const stick = box.scrollTop + box.clientHeight >= box.scrollHeight - 30;
+    box.textContent = logLines.join('\n');
+    if (stick) box.scrollTop = box.scrollHeight;
+  }
+}
+
+// ====================================================================== modül ekleme / QR
+function addModule(mac, name, opts = {}) {
+  if (modules.has(mac)) return { mod: modules.get(mac), isNew: false };
+  const m = newModule(mac, name);
+  modules.set(mac, m);
+  if (opts.listen) setMode(m, 'listen');
+  discovered.delete(mac);
+  save();
+  scheduleRender();
+  return { mod: m, isNew: true };
+}
+
+const scan = { stream: null, timer: null, detector: null, busy: false, recent: new Map() };
+
+function loadJsQR() {
+  if (window.jsQR) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('QR çözücü yüklenemedi (internet gerekli)'));
+    document.head.appendChild(s);
+  });
+}
+
+async function startScan() {
+  if (!navigator.mediaDevices?.getUserMedia) { toast('Kamera bu sayfada kullanılamıyor (HTTPS gerekli)'); return; }
+  try {
+    scan.stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 960 } }, audio: false });
+  } catch (e) { toast('Kamera açılamadı: ' + e.message, 4000); return; }
+  const v = $('#video');
+  v.srcObject = scan.stream;
+  await v.play().catch(() => {});
+  $('#cam').hidden = false;
+  $('#scanStart').hidden = true;
+  $('#scanStop').hidden = false;
+  if (!scan.detector && 'BarcodeDetector' in window) {
+    try {
+      const f = await BarcodeDetector.getSupportedFormats();
+      if (f.includes('qr_code')) scan.detector = new BarcodeDetector({ formats: ['qr_code'] });
+    } catch (e) {}
+  }
+  if (!scan.detector) {
+    try { await loadJsQR(); } catch (e) { toast(e.message, 4000); stopScan(); return; }
+  }
+  scan.timer = setInterval(scanFrame, 220);
+}
+
+function stopScan() {
+  clearInterval(scan.timer);
+  scan.timer = null;
+  scan.stream?.getTracks().forEach(t => t.stop());
+  scan.stream = null;
+  $('#cam').hidden = true;
+  $('#scanStart').hidden = false;
+  $('#scanStop').hidden = true;
+}
+
+async function scanFrame() {
+  const v = $('#video');
+  if (scan.busy || !v.videoWidth) return;
+  scan.busy = true;
+  try {
+    let texts = [];
+    if (scan.detector) {
+      texts = (await scan.detector.detect(v)).map(r => r.rawValue);
+    } else if (window.jsQR) {
+      const c = $('#qrCanvas');
+      const k = Math.min(1, 720 / Math.max(v.videoWidth, v.videoHeight));
+      c.width = Math.round(v.videoWidth * k);
+      c.height = Math.round(v.videoHeight * k);
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(v, 0, 0, c.width, c.height);
+      const r = jsQR(ctx.getImageData(0, 0, c.width, c.height).data, c.width, c.height, { inversionAttempts: 'attemptBoth' });
+      if (r) texts = [r.data];
+    }
+    for (const t of texts) onQr(t);
+  } catch (e) { /* tek kare hatası */ }
+  finally { scan.busy = false; }
+}
+
+function onQr(text) {
+  const now = Date.now();
+  if (now - (scan.recent.get(text) || 0) < 3000) return;
+  scan.recent.set(text, now);
+  const mac = extractMac(text);
+  if (!mac) { $('#camMsg').textContent = 'QR kodunda MAC adresi yok'; return; }
+  let name = '';
+  try { const o = JSON.parse(text); name = o.name || o.ad || o.isim || ''; } catch (e) {}
+  const { mod, isNew } = addModule(mac, name, { listen: settings.autoListen });
+  try { navigator.vibrate?.(isNew ? 60 : [30, 60, 30]); } catch (e) {}
+  $('#camMsg').textContent = isNew ? `Eklendi: ${mac}` : `Zaten kayıtlı: ${mod.name}`;
+  if (isNew) addScannedRow(mod);
+}
+
+function addScannedRow(m) {
+  $('#scannedCard').hidden = false;
+  const row = document.createElement('div');
+  row.className = 'scanned';
+  row.innerHTML = `<span class="mono" style="white-space:nowrap">${m.mac}</span>
+    <input type="text" class="grow" value="${esc(m.name)}" aria-label="Modül adı">`;
+  row.querySelector('input').addEventListener('change', e => {
+    m.name = e.target.value.trim() || m.name;
+    save();
+    scheduleRender();
+  });
+  $('#scannedList').prepend(row);
+}
+
+// ====================================================================== olaylar
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('act', b.dataset.tab === tab));
+  document.querySelectorAll('main section').forEach(s => s.classList.toggle('act', s.id === 'tab-' + tab));
+  if (tab !== 'scan' && scan.stream) stopScan();
+  if (tab === 'log') { const box = $('#logbox'); box.textContent = logLines.join('\n'); box.scrollTop = box.scrollHeight; }
+  render();
+}
+
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button[data-tab]'); if (b) switchTab(b.dataset.tab); });
+$('#connectBtn').addEventListener('click', connect);
+
+$('#list').addEventListener('click', e => {
+  const t = e.target.closest('[data-act]');
+  if (!t) return;
+  const m = modules.get(t.closest('[data-mac]')?.dataset.mac);
+  if (!m) return;
+  const act = t.dataset.act;
+  switch (act) {
+    case 'sel': m.sel = t.checked; scheduleRender(); break;
+    case 'mode': setMode(m, t.dataset.v); break;
+    case 'r1on': relay(m, 1, true); break;
+    case 'r1off': relay(m, 1, false); break;
+    case 'r2on': relay(m, 2, true); break;
+    case 'r2off': relay(m, 2, false); break;
+    case 'shutter': m.shutter = t.checked; save(); scheduleRender(); break;
+    case 'modeS': sendTx(m, 'MODE:S') && toast('Seri moda geçiş istendi (röleler kapalıyken uygulanır)'); break;
+    case 'modeI':
+      if (confirm('Bağımsız modda iki röle aynı anda açılabilir. Panjur veya motor bağlıysa motoru yakabilir. Devam edilsin mi?\n\nNot: Mod yalnızca iki röle de kapalıyken değişir.'))
+        sendTx(m, 'MODE:I');
+      break;
+    case 'custom': {
+      const inp = t.closest('.row').querySelector('[data-k=custom]');
+      const v = inp.value.replace(/[\t\r\n]/g, ' ').trim();
+      if (v && sendTx(m, v)) inp.value = '';
+      break;
+    }
+    case 'log': m.open = !m.open; scheduleRender(); break;
+    case 'rename': {
+      const n = prompt('Modül adı', m.name);
+      if (n && n.trim()) { m.name = n.trim(); save(); scheduleRender(); }
+      break;
+    }
+    case 'del':
+      if (confirm(`${m.name} silinsin mi?`)) {
+        if (connected() && m.mode !== 'off') { send(`PEER\t${m.mac}\t0`); send(`WATCH\t${m.mac}\t0`); }
+        modules.delete(m.mac);
+        save();
+        scheduleRender();
+      }
+      break;
+  }
+});
+
+$('#list').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.matches('[data-k=custom]')) e.target.closest('.row').querySelector('[data-act=custom]').click();
+});
+
+$('#selAll').addEventListener('change', e => { for (const m of modules.values()) m.sel = e.target.checked; scheduleRender(); });
+
+$('#group').addEventListener('click', e => {
+  const b = e.target.closest('[data-g]');
+  if (!b) return;
+  const sel = [...modules.values()].filter(m => m.sel);
+  const g = b.dataset.g;
+  if (g === 'clear') { sel.forEach(m => m.sel = false); scheduleRender(); return; }
+  if (['listen', 'manage', 'off'].includes(g)) { sel.forEach(m => setMode(m, g)); return; }
+  const targets = sel.filter(m => m.mode === 'manage');
+  if (!targets.length) { toast('Seçililer arasında Yönet modunda modül yok'); return; }
+  const n = g[1] === '1' ? 1 : 2, on = g.endsWith('on');
+  for (const m of targets) relay(m, n, on);
+  toast(`${targets.length} modüle gönderildi`);
+});
+
+$('#discList').addEventListener('click', e => {
+  const b = e.target.closest('[data-add]');
+  if (!b) return;
+  const { mod } = addModule(b.dataset.add, '', { listen: true });
+  toast('Eklendi: ' + mod.name);
+});
+
+$('#scanStart').addEventListener('click', startScan);
+$('#scanStop').addEventListener('click', stopScan);
+$('#autoListen').addEventListener('change', e => { settings.autoListen = e.target.checked; save(); });
+
+$('#manAdd').addEventListener('click', () => {
+  const mac = extractMac($('#manMac').value);
+  if (!mac) { toast('Geçerli bir MAC adresi girin'); return; }
+  const { isNew, mod } = addModule(mac, $('#manName').value.trim(), { listen: settings.autoListen });
+  toast(isNew ? 'Eklendi: ' + mod.name : 'Bu modül zaten listede');
+  $('#manMac').value = ''; $('#manName').value = '';
+});
+
+$('#exportBtn').addEventListener('click', () => {
+  const data = JSON.stringify({ version: 1, modules: [...modules.values()].map(m => ({ mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type })) }, null, 2);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+  a.download = 'btnhome-moduller.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+$('#importBtn').addEventListener('click', () => $('#importFile').click());
+$('#importFile').addEventListener('change', async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    let n = 0;
+    for (const x of d.modules || []) {
+      const mac = extractMac(x.mac);
+      if (!mac || modules.has(mac)) continue;
+      const m = newModule(mac, x.name);
+      m.shutter = !!x.shutter; m.type = x.type || '';
+      modules.set(mac, m);
+      if (x.mode === 'listen' || x.mode === 'manage') setMode(m, x.mode);
+      n++;
+    }
+    save();
+    scheduleRender();
+    toast(n + ' modül içe aktarıldı');
+  } catch (err) { toast('Dosya okunamadı: ' + err.message); }
+  e.target.value = '';
+});
+
+$('#sniffAll').addEventListener('change', e => {
+  settings.sniffAll = e.target.checked;
+  save();
+  if (connected()) send('SNIFFALL\t' + (settings.sniffAll ? 1 : 0));
+  if (!settings.sniffAll) discovered.clear();
+  scheduleRender();
+});
+$('#lrOn').addEventListener('change', e => { settings.lr = e.target.checked; save(); if (connected()) send('LR\t' + (settings.lr ? 1 : 0)); });
+$('#transportSel').addEventListener('change', e => { settings.transport = e.target.value; save(); });
+
+$('#irSend').addEventListener('click', irSendKey);
+$('#irUpload').addEventListener('click', irUpload);
+
+$('#rawSend').addEventListener('click', () => {
+  const v = $('#rawCmd').value.trim();
+  if (!v) return;
+  if (!link) { toast('Köprü bağlı değil'); return; }
+  send(v.replace(/\s*\|\s*/g, '\t'));
+  $('#rawCmd').value = '';
+});
+$('#rawCmd').addEventListener('keydown', e => { if (e.key === 'Enter') $('#rawSend').click(); });
+$('#logClear').addEventListener('click', () => { logLines.length = 0; $('#logbox').textContent = ''; });
+
+navigator.usb?.addEventListener('disconnect', e => { if (link instanceof UsbCdcLink && link.dev === e.device) link.close(); });
+navigator.serial?.addEventListener('disconnect', e => { if (link instanceof SerialLink && link.port === e.target) link.close(); });
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible' && link && !wakeLock) { try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {} }
+});
+
+// ====================================================================== başlangıç
+load();
+$('#sniffAll').checked = settings.sniffAll;
+$('#lrOn').checked = settings.lr;
+$('#transportSel').value = settings.transport;
+$('#autoListen').checked = settings.autoListen;
+{
+  const notes = [];
+  if (!window.isSecureContext) notes.push('<div class="banner bad">Bu sayfa HTTPS üzerinden açılmalı; aksi halde USB ve kamera çalışmaz.</div>');
+  else if (!navigator.usb && !navigator.serial) notes.push('<div class="banner bad">Bu tarayıcı USB erişimi sunmuyor. Android\'de Google Chrome ile açın.</div>');
+  $('#envBanner').innerHTML = notes.join('');
+}
+setConn('off');
+render();
+setInterval(() => { if (activeTab === 'modules' || activeTab === 'discover') scheduleRender(); }, 1000);
+</script>
+</body>
+</html>
