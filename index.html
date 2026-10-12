@@ -106,6 +106,20 @@ section{display:none}section.act{display:block}
 .shut{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:auto}
 .shut button{min-height:58px;font-size:22px;border-radius:16px;background:var(--card2);display:grid;place-items:center;padding:0}
 .shut button.on{background:var(--on);border-color:var(--on);color:#fff}
+.keys{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.keys:empty{display:none}
+.key{display:flex;flex-direction:column;align-items:flex-start;gap:1px;font-size:11px;padding:7px 8px;overflow:hidden;border-radius:10px;background:var(--chip);color:var(--mut);min-width:0}
+.key i{width:8px;height:8px;border-radius:50%;background:#8a7b70;flex:none}
+.key span{display:flex;align-items:center;gap:5px;white-space:nowrap;font-weight:600}
+.key b{color:var(--fg);white-space:nowrap;font-size:13.5px}
+.key.on{background:var(--on-soft)}
+.key.on b{color:var(--on)}
+.kvs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-height:46px;min-width:0}
+.kv span{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kv b{font-size:14.5px;text-align:right;white-space:nowrap}
+.kv.on{background:var(--on-soft);border-color:transparent}
+.kv.on b{color:var(--on)}
 .empty{text-align:center;color:var(--mut);padding:40px 16px}
 .empty .big{font-size:52px;color:var(--acc);margin-bottom:8px}
 
@@ -922,7 +936,8 @@ function buildTile(m) {
     <div class="t-name">${esc(m.name)}</div>
     <div class="t-sub" data-k="sub"></div>
     <div class="t-sens" data-k="sens"></div>
-    ${ctl}`;
+    ${ctl}
+    <div class="keys" data-k="keys"></div>`;
   return el;
 }
 
@@ -946,8 +961,6 @@ function updateTile(el, m) {
   const s = m.state, sens = [];
   if (s.M === '1') sens.push('<span class="sens hot">Hareket</span>');
   if (s.G1 === '1' && !('M' in s)) sens.push('<span class="sens hot">Giriş</span>');
-  if (s.S1 === '1') sens.push('<span class="sens hot">Anahtar 1</span>');
-  if (s.S2 === '1') sens.push('<span class="sens hot">Anahtar 2</span>');
   if (m.cpu !== null) sens.push(`<span class="sens">${m.cpu.toFixed(0)}°C</span>`);
   if (m.rssi !== null && m.lastSeen) sens.push(`<span class="sens">${m.rssi} dBm</span>`);
   const sh = sens.join('');
@@ -963,6 +976,16 @@ function updateTile(el, m) {
   }
   el.querySelector('[data-k=up]')?.classList.toggle('on', relayOn(m, 1));
   el.querySelector('[data-k=down]')?.classList.toggle('on', relayOn(m, 2));
+
+  const key = (label, k, on = 'Açık', off = 'Kapalı') => {
+    const known = k in s, act = s[k] === '1';
+    return `<div class="key${act ? ' on' : ''}"><span>${label}</span><b>${known ? (act ? on : off) : '—'}</b></div>`;
+  };
+  let kh = '';
+  if (m.type === '2R') kh = key('Anahtar 1', 'S1') + key('Anahtar 2', 'S2');
+  else if (m.type === '1R') kh = key('Tuş', 'K1', 'Basılı', 'Bırakık') + key('Giriş', 'G1', 'Var', 'Yok');
+  const ke = el.querySelector('[data-k=keys]');
+  if (ke.innerHTML !== kh) ke.innerHTML = kh;
 }
 
 function renderDash() {
@@ -1042,7 +1065,7 @@ function buildCard(m) {
       <button data-act="mode" data-v="manage" class="${manage ? 'act' : ''}">Yönet</button>
     </div>
     ${manage ? `<div class="card">${ctl}</div>` : ''}
-    <div class="card"><h2>Durum</h2><div class="meta" data-k="meta" style="margin-bottom:10px"></div><div class="chips" data-k="chips"></div></div>
+    <div class="card"><h2>Durum</h2><div class="meta" data-k="meta" style="margin-bottom:10px"></div><div class="kvs" data-k="chips"></div></div>
     ${manage ? `<div class="card" style="display:grid;gap:10px">
       ${m.type === '2R' ? `
         <label class="chk"><input type="checkbox" data-act="shutter" ${m.shutter ? 'checked' : ''}> Panjur/motor modu (iki röle asla birlikte açılmaz)</label>
@@ -1074,16 +1097,19 @@ function updateCard(el, m) {
   el.querySelector('[data-k=meta]').textContent = parts.join(' · ');
 
   const s = m.state, c = [];
-  const b = (k, label, on = 'Açık', off = 'Kapalı') => { if (k in s) c.push(chip(label, s[k] === '1' ? on : off, s[k] === '1')); };
+  const kv = (label, val, on) => `<div class="kv${on ? ' on' : ''}"><span>${esc(label)}</span><b>${esc(val)}</b></div>`;
+  const b = (k, label, on = 'Açık', off = 'Kapalı') => { if (k in s) c.push(kv(label, s[k] === '1' ? on : off, s[k] === '1')); };
   b('R1', 'Röle 1'); b('R2', 'Röle 2');
-  b('S1', 'Anahtar 1', 'Var', 'Yok'); b('S2', 'Anahtar 2', 'Var', 'Yok');
-  b('G1', 'Giriş', '1', '0'); b('K1', 'Tuş', 'Basılı', 'Bırakık'); b('M', 'Hareket', 'Var', 'Yok');
-  if ('A0' in s) c.push(chip('Analog', String(+s.A0)));
-  if ('DM' in s) c.push(chip('Mod', s.DM === '1' ? 'Bağımsız' : 'Seri', false));
-  if ('LR' in s) c.push(chip('Menzil', s.LR === '1' ? 'LR' : '11b', s.LR === '1'));
-  if (m.peerRssi !== null) c.push(chip('Modülün duyduğu', m.peerRssi + ' dBm'));
-  if (m.cpu !== null) c.push(chip('CPU', m.cpu.toFixed(1) + ' °C'));
-  const chipsHtml = c.join('') || '<span class="mut" style="font-size:13.5px">' +
+  b('S1', 'Anahtar 1'); b('S2', 'Anahtar 2');
+  b('K1', 'Tuş', 'Basılı', 'Bırakık'); b('G1', 'Giriş', 'Var', 'Yok'); b('M', 'Hareket', 'Var', 'Yok');
+  if ('A0' in s) c.push(kv('Analog', String(+s.A0)));
+  if ('DM' in s) c.push(kv('Mod', s.DM === '1' ? 'Bağımsız' : 'Seri'));
+  if ('LR' in s) c.push(kv('Menzil', s.LR === '1' ? 'Uzun (LR)' : 'Normal', s.LR === '1'));
+  if (m.rssi !== null && m.lastSeen) c.push(kv('Sinyal', m.rssi + ' dBm'));
+  if (m.peerRssi !== null) c.push(kv('Modül sinyali', m.peerRssi + ' dBm'));
+  if (m.cpu !== null) c.push(kv('CPU', m.cpu.toFixed(1) + ' °C'));
+  if (c.length % 2) c.push('<div></div>');
+  const chipsHtml = c.join('') || '<span class="mut" style="font-size:13.5px;grid-column:1/-1">' +
     (m.mode === 'off' ? 'Veri almak için Dinle veya Yönet seçin.' :
      !connected() ? 'Köprü bağlı değil.' :
      m.mode === 'listen' ? 'Dinleniyor… Modül bir ana karta bağlı değilse yayın yapmaz; o durumda Yönet seçin.' :
