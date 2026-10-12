@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#9a3412">
-<title>BTNHome</title>
+<title>BTNHome by MNB</title>
 <style>
 :root{
   --bg:#f6f1ec;--card:#fff;--card2:#fbf7f3;--fg:#24170f;--mut:#7d6b5d;--line:#eadcd0;
@@ -47,6 +47,7 @@ h2{font-size:16px;margin:2px 0 10px}
 .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .logo{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:22px}
 .brand h1{font-size:18px;margin:0;letter-spacing:-.01em}
+.brand h1 .by{font-size:12.5px;font-weight:600;opacity:.8;letter-spacing:.04em;margin-left:2px}
 .brand small{display:block;font-size:12px;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .conn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:99px;display:flex;align-items:center;gap:8px;padding:8px 14px;min-height:42px}
 .conn[data-state=off]{background:#fff;color:var(--acc-2);border-color:#fff}
@@ -77,7 +78,7 @@ section{display:none}section.act{display:block}
 /* KUTUCUKLAR */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
 .tile{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);position:relative;cursor:pointer;transition:border-color .2s,box-shadow .2s;user-select:none}
-.tile.on{border-color:var(--on);box-shadow:0 0 0 1px var(--on),0 10px 26px rgba(234,88,12,.18)}
+.tile.on{border-color:var(--on);box-shadow:0 0 0 1px var(--on),0 10px 26px color-mix(in srgb, var(--on) 24%, transparent)}
 .tile.dim>*:not(.tseg){opacity:.55}
 .tile.sel{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-soft)}
 .t-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -144,6 +145,23 @@ section{display:none}section.act{display:block}
 .bars i:nth-child(1){height:25%}.bars i:nth-child(2){height:50%}.bars i:nth-child(3){height:75%}.bars i:nth-child(4){height:100%}
 .lv4 i.f,.lv3 i.f{background:var(--ok)}.lv2 i.f{background:var(--warn)}.lv1 i.f{background:var(--bad)}
 .hsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tile .t-ic{cursor:pointer;position:relative}
+.icgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.icopt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:84px;padding:8px 4px;font-size:12px;font-weight:600;background:var(--sheet);color:var(--mut);border-radius:16px}
+.icopt svg{font-size:28px;color:var(--fg)}
+.icopt.act{border-color:var(--pick);box-shadow:0 0 0 2px var(--pick);color:var(--pick)}
+.icopt.act svg{color:var(--pick)}
+.swgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px 8px;justify-items:center}
+.swatch{width:52px;height:52px;min-height:52px;border-radius:50%;padding:0;border:0;background:var(--c);display:grid;place-items:center;color:#fff;font-size:20px}
+.swatch.act{box-shadow:0 0 0 3px var(--sheet-in),0 0 0 6px var(--c)}
+.swname{font-size:11.5px;color:var(--mut);text-align:center;margin-top:4px}
+.lookprev{display:flex;align-items:center;gap:14px;margin:4px 0 12px}
+.lookprev .t-ic{width:60px;height:60px;font-size:32px;border-radius:18px;background:var(--pick);color:#fff}
+.lockbox{grid-column:1/-1;text-align:center;padding:48px 20px;background:var(--card);border:1px dashed var(--line);border-radius:24px;color:var(--mut)}
+.lockbox .big{width:76px;height:76px;margin:0 auto 14px;border-radius:24px;background:var(--acc-soft);color:var(--acc);display:grid;place-items:center;font-size:38px}
+.lockbox b{display:block;color:var(--fg);font-size:18px;margin-bottom:6px}
+.lockbox p{margin:0 0 18px}
+.locked .stats,.locked .toolbar,.locked .hsum,.locked .hint{display:none}
 .empty{text-align:center;color:var(--mut);padding:40px 16px}
 .empty .big{font-size:52px;color:var(--acc);margin-bottom:8px}
 
@@ -166,12 +184,13 @@ section{display:none}section.act{display:block}
 /* AYRINTI PANELİ */
 #sheetBack{position:fixed;inset:0;background:rgba(8,4,2,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
 #sheetBack.show{opacity:1;pointer-events:auto}
-#sheet,#connSheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--sheet);border-top:4px solid var(--acc);box-shadow:0 -12px 40px rgba(0,0,0,.45);border-radius:26px 26px 0 0;max-height:90vh;overflow:auto;transform:translateY(105%);transition:transform .25s cubic-bezier(.2,.8,.2,1);padding:0 16px calc(20px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
-#sheet.show,#connSheet.show{transform:none}
+#sheet,#connSheet,#lookSheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--sheet);border-top:4px solid var(--acc);box-shadow:0 -12px 40px rgba(0,0,0,.45);border-radius:26px 26px 0 0;max-height:90vh;overflow:auto;transform:translateY(105%);transition:transform .25s cubic-bezier(.2,.8,.2,1);padding:0 16px calc(20px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+#sheet.show,#connSheet.show,#lookSheet.show{transform:none}
+#lookSheet{z-index:33}
 .grab{position:sticky;top:0;background:var(--sheet);padding:10px 0 6px;display:flex;align-items:center;justify-content:center;z-index:2}
 .grab i{width:44px;height:5px;border-radius:9px;background:var(--mut);opacity:.5}
 .grab button{position:absolute;right:0;top:6px;border-radius:50%;width:40px;height:40px;min-height:40px;padding:0;display:grid;place-items:center;font-size:18px}
-#sheet .card,#connSheet .card{background:var(--sheet-in);box-shadow:none}
+#lookSheet .card,#sheet .card,#connSheet .card{background:var(--sheet-in);box-shadow:none}
 #connSheet .t-ic{background:var(--acc);color:#fff}
 .dev{display:flex;align-items:center;gap:12px;width:100%;text-align:left;min-height:64px;margin-bottom:8px;background:var(--sheet);border-radius:16px}
 .dev .t-ic{width:40px;height:40px;font-size:20px}
@@ -242,7 +261,7 @@ section{display:none}section.act{display:block}
 <header class="top">
   <div class="brand">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></div>
-    <div style="min-width:0"><h1>BTNHome</h1><small id="bridgeInfo">Köprü bağlı değil</small></div>
+    <div style="min-width:0"><h1>BTNHome <span class="by">by MNB</span></h1><small id="bridgeInfo">Köprü bağlı değil</small></div>
   </div>
   <button class="conn" id="connectBtn" data-state="off"><span class="cdot"></span><span id="connText">Bağlan</span></button>
 </header>
@@ -436,6 +455,10 @@ section{display:none}section.act{display:block}
   <div class="card"><label class="chk"><input type="checkbox" id="autoConn"> Kart takılınca otomatik bağlan</label>
     <p class="hint" id="autoNote" style="margin-bottom:0"></p></div>
 </div>
+<div id="lookSheet" role="dialog" aria-modal="true">
+  <div class="grab"><i></i><button id="lookClose" aria-label="Kapat">✕</button></div>
+  <div id="lookBody"></div>
+</div>
 <div id="photoView" role="dialog" aria-modal="true">
   <div class="pv-top"><b id="pvTitle"></b><button class="pv-x" id="pvClose" aria-label="Kapat">✕</button></div>
   <div class="pv-img" id="pvImg"></div>
@@ -507,7 +530,7 @@ function save() {
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify({
       settings,
-      modules: [...modules.values()].map(m => ({ mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type, hasPhoto: !!m.hasPhoto, photoAt: m.photoAt || 0 }))
+      modules: [...modules.values()].map(m => ({ mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type, hasPhoto: !!m.hasPhoto, photoAt: m.photoAt || 0, icon: m.icon || '', color: m.color || '' }))
     }));
   } catch (e) { /* depolama kapalı olabilir */ }
 }
@@ -531,6 +554,8 @@ function load() {
       m.type = x.type || '';
       m.hasPhoto = !!x.hasPhoto;
       m.photoAt = x.photoAt || 0;
+      m.icon = x.icon || '';
+      m.color = x.color || '';
       modules.set(mac, m);
     }
   } catch (e) { /* bozuk kayıt: yok say */ }
@@ -731,6 +756,9 @@ async function autoConnect(reason) {
 }
 
 function onUsbClose() {
+  if (sheetMac) closeSheet();
+  selectMode = false;
+  for (const m of modules.values()) m.sel = false;
   link = null;
   bridge = null;
   clearTimeout(helloTimer);
@@ -1028,6 +1056,8 @@ let hSort = 'name';
 const HSORTS = [['name', 'Ada göre'], ['temp', 'En sıcak'], ['sig', 'En zayıf sinyal']];
 function sigLevel(r) { return r >= -60 ? 4 : r >= -70 ? 3 : r >= -80 ? 2 : 1; }
 function renderHealth() {
+  if (renderLocked($('#hlist'), '#tab-health')) return;
+  $('#hlist').dataset.lock = '';
   const all = [...modules.values()].filter(m => m.mode !== 'off');
   const fresh = m => m.lastSeen && Date.now() - m.lastSeen < 60000;
   const temps = all.filter(m => m.cpu !== null).map(m => m.cpu);
@@ -1072,6 +1102,14 @@ const ICON = {
   shutter: SVG('<path d="M3 4h18M5 4v13h14V4M5 8h14M5 12h14"/><path d="M12 17v4"/>'),
   motion: SVG('<circle cx="14" cy="4" r="2"/><path d="m8 21 3-6 3 2.5V21M6 12l3.5-4 4 1 2.5 3 3 1"/>'),
   plug: SVG('<path d="M9 2v6M15 2v6M7 8h10v4a5 5 0 0 1-10 0z"/><path d="M12 17v5"/>'),
+  socket: SVG('<circle cx="12" cy="12" r="9"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/>'),
+  ir: SVG('<rect x="8" y="7" width="8" height="15" rx="2.5"/><circle cx="12" cy="11" r="1.3"/><path d="M10.5 15h3M10.5 18h3"/><path d="M8.5 4.5a5 5 0 0 1 7 0M6.3 2.5a8 8 0 0 1 11.4 0"/>'),
+  fan: SVG('<circle cx="12" cy="12" r="2"/><path d="M12 10c-1-4 0-7 3-7 2.5 0 2.5 4-3 7M14 12c4-1 7 0 7 3 0 2.5-4 2.5-7-3M12 14c1 4 0 7-3 7-2.5 0-2.5-4 3-7M10 12c-4 1-7 0-7-3 0-2.5 4-2.5 7 3"/>'),
+  ac: SVG('<path d="M12 2v20M3.5 7l17 10M3.5 17l17-10"/><path d="m9 3.5 3 2 3-2M9 20.5l3-2 3 2"/>'),
+  tv: SVG('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/>'),
+  heat: SVG('<path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-3 2-4.5 2-7 1.5 1 2.5 2.5 3 4 .6-2.2.4-4.6 0-7z"/>'),
+  water: SVG('<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>'),
+  lock: SVG('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'),
   up: SVG('<path d="m6 15 6-6 6 6"/>'),
   down: SVG('<path d="m6 9 6 6 6-6"/>'),
   stop: SVG('<rect x="7" y="7" width="10" height="10" rx="2"/>'),
@@ -1082,11 +1120,25 @@ const isShutter = m => m.type === '2R' && m.shutter;
 const isOnline = m => m.lastSeen && Date.now() - m.lastSeen < 15000;
 const relayOn = (m, n) => m.state['R' + n] === '1';
 const anyOn = m => relayOn(m, 1) || (m.type !== '1R' && relayOn(m, 2));
-function tileIcon(m) {
+const ICON_CHOICES = [['auto', 'Otomatik'], ['bulb', 'Tek lamba'], ['bulb2', 'Çift lamba'], ['plug', 'Fiş'],
+  ['socket', 'Priz'], ['ir', 'IR kumanda'], ['shutter', 'Panjur'], ['fan', 'Fan'], ['ac', 'Klima'], ['tv', 'TV'],
+  ['heat', 'Isıtıcı'], ['water', 'Su / vana'], ['lock', 'Kilit']];
+const COLORS = [['#ea580c', 'Turuncu'], ['#dc2626', 'Kırmızı'], ['#db2777', 'Pembe'], ['#9333ea', 'Mor'], ['#4f46e5', 'Lacivert'],
+  ['#2563eb', 'Mavi'], ['#0891b2', 'Turkuaz'], ['#16a34a', 'Yeşil'], ['#ca8a04', 'Altın'], ['#64748b', 'Gri']];
+const modColor = m => m.color || COLORS[0][0];
+function colorVars(m, base = 'var(--card)') {
+  if (!m.color) return '';
+  return `--on:${m.color};--on-soft:color-mix(in srgb, ${m.color} 22%, ${base})`;
+}
+function autoIcon(m) {
   if (isShutter(m)) return ICON.shutter;
   if (m.type === '1R') return ICON.bulb;
   if (m.type === '2R') return ICON.bulb2;
   return ICON.plug;
+}
+function tileIcon(m) {
+  if (m.icon && m.icon !== 'auto' && ICON[m.icon]) return ICON[m.icon];
+  return autoIcon(m);
 }
 const MODE_LABEL = { off: 'Kapalı', listen: 'Dinle', manage: 'Yönet' };
 
@@ -1124,12 +1176,13 @@ function renderStats() {
 }
 
 // ---------------------------------------------------------------- pano kutucukları
-function tileSig(m) { return [m.mode, m.type, m.shutter, m.name, selectMode].join('|'); }
+function tileSig(m) { return [m.mode, m.type, m.shutter, m.name, m.icon, m.color, selectMode].join('|'); }
 
 function buildTile(m) {
   const el = document.createElement('div');
   el.className = 'tile';
   el.dataset.mac = m.mac;
+  el.style.cssText = colorVars(m);
   el.dataset.act = 'open';
   const ro = m.mode !== 'manage' ? ' ro' : '';
   let ctl;
@@ -1144,7 +1197,7 @@ function buildTile(m) {
       <button class="sw${ro}" data-act="tog${n}" data-k="sw${n}"><span>${ns.length > 1 ? 'Röle ' + n : 'Röle'}</span><b data-k="sv${n}">—</b></button>`).join('')}</div>`;
   }
   el.innerHTML = `
-    <div class="t-top"><span class="t-ic">${tileIcon(m)}</span>${selectMode ? '<span class="t-check" data-k="chk"></span>' : '<span class="t-badge" data-k="badge"><i></i><em data-k="bt"></em></span>'}</div>
+    <div class="t-top"><span class="t-ic" data-act="look" title="Simge ve renk">${tileIcon(m)}</span>${selectMode ? '<span class="t-check" data-k="chk"></span>' : '<span class="t-badge" data-k="badge"><i></i><em data-k="bt"></em></span>'}</div>
     <div class="t-name">${esc(m.name)}</div>
     <div class="t-sub" data-k="sub"></div>
     <div class="t-sens" data-k="sens"></div>
@@ -1202,7 +1255,25 @@ function updateTile(el, m) {
   if (ke.innerHTML !== kh) ke.innerHTML = kh;
 }
 
+function lockHtml() {
+  const n = modules.size;
+  return `<div class="lockbox"><div class="big">${ICON.usb}</div>
+    <b>Köprü bağlı değil</b>
+    <p>Modülleri görmek ve yönetmek için ESP32-S3 köprüsünü telefona takın.${n ? `<br>Kayıtlı ${n} modül bağlanınca burada görünecek.` : ''}</p>
+    <button class="pri" data-connect style="min-width:200px">Bağlan</button></div>`;
+}
+function renderLocked(box, sec) {
+  const on = connected();
+  $(sec).classList.toggle('locked', !on);
+  if (on) { box.querySelector('.lockbox')?.remove(); return false; }
+  const html = lockHtml();
+  if (box.dataset.lock !== html) { box.innerHTML = html; box.dataset.lock = html; }
+  return true;
+}
+
 function renderDash() {
+  if (renderLocked($('#dash'), '#tab-dash')) return;
+  $('#dash').dataset.lock = '';
   const box = $('#dash');
   if (!modules.size) {
     if (!box.querySelector('.empty')) box.innerHTML = `<div class="empty" style="grid-column:1/-1">
@@ -1237,6 +1308,7 @@ function renderDash() {
 
 // ---------------------------------------------------------------- ayrıntı paneli
 function openSheet(mac) {
+  if (!connected()) { toast('Önce köprüyü bağlayın'); return; }
   sheetMac = mac;
   $('#sheetBody').innerHTML = '';
   $('#sheet').classList.add('show');
@@ -1244,18 +1316,48 @@ function openSheet(mac) {
   $('#sheet').scrollTop = 0;
   render();
 }
+let lookMac = null;
+function openLook(m) {
+  lookMac = m.mac;
+  renderLook();
+  $('#lookSheet').classList.add('show');
+  $('#sheetBack').classList.add('show');
+  $('#lookSheet').scrollTop = 0;
+}
+function closeLook() {
+  lookMac = null;
+  $('#lookSheet').classList.remove('show');
+  if (!sheetMac && !$('#connSheet').classList.contains('show')) $('#sheetBack').classList.remove('show');
+}
+function renderLook() {
+  const m = modules.get(lookMac);
+  if (!m) { closeLook(); return; }
+  const cur = m.icon || 'auto', col = modColor(m);
+  $('#lookBody').style.setProperty('--pick', col);
+  $('#lookBody').innerHTML = `
+    <div class="lookprev"><span class="t-ic">${tileIcon(m)}</span>
+      <div class="grow"><b style="font-size:19px;display:block">${esc(m.name)}</b><div class="meta">Simgeye dokunarak açılır · seçim hemen uygulanır</div></div></div>
+    <div class="card"><h2>Simge</h2><div class="icgrid">${ICON_CHOICES.map(([k, l]) => `
+      <button class="icopt${cur === k ? ' act' : ''}" data-icon="${k}">${k === 'auto' ? autoIcon(m) : ICON[k]}<span>${l}</span></button>`).join('')}</div></div>
+    <div class="card"><h2>Açık renk</h2><div class="swgrid">${COLORS.map(([c, l]) => `
+      <div><button class="swatch${col === c ? ' act' : ''}" style="--c:${c}" data-color="${c}" aria-label="${l}">${col === c ? '✓' : ''}</button><div class="swname">${l}</div></div>`).join('')}</div></div>
+    <button class="bigbtn" id="lookReset" style="width:100%">Varsayılana dön</button>`;
+}
+
 function closeSheet() {
+  closeLook();
   sheetMac = null;
   $('#sheet').classList.remove('show');
   $('#connSheet').classList.remove('show');
   $('#sheetBack').classList.remove('show');
 }
 
-function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, m.hasPhoto, connected()].join('|'); }
+function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, m.hasPhoto, m.icon, m.color, connected()].join('|'); }
 
 function buildCard(m) {
   const el = document.createElement('div');
   el.dataset.mac = m.mac;
+  el.style.cssText = colorVars(m, 'var(--sheet)');
   const manage = m.mode === 'manage';
   const ns = m.type === '1R' ? [1] : [1, 2];
   let ctl = '';
@@ -1271,7 +1373,7 @@ function buildCard(m) {
     }
   }
   el.innerHTML = `
-    <div class="d-head"><span class="t-ic">${tileIcon(m)}</span>
+    <div class="d-head"><span class="t-ic" data-act="look" style="cursor:pointer;background:var(--on);color:#fff" title="Simge ve renk">${tileIcon(m)}</span>
       <div class="grow"><b>${esc(m.name)}${m.type ? `<span class="type">${esc(m.type)}</span>` : ''}</b>
         <div class="meta mono">${esc(m.mac)}</div></div></div>
     <div class="seg" role="group" aria-label="Çalışma biçimi">
@@ -1833,6 +1935,7 @@ function doAction(m, act, t) {
       break;
     }
     case 'photo': openPhoto(m); break;
+    case 'look': openLook(m); break;
     case 'del':
       if (confirm(`${m.name} silinsin mi?`)) {
         photoDB.del(m.mac).catch(() => {});
@@ -1846,7 +1949,9 @@ function doAction(m, act, t) {
   }
 }
 
+document.addEventListener('click', e => { if (e.target.closest('[data-connect]')) openConnSheet(); });
 $('#dash').addEventListener('click', e => {
+  if (e.target.closest('[data-connect]')) return;
   const g = e.target.closest('[data-goto]');
   if (g) { switchTab(g.dataset.goto); return; }
   const tile = e.target.closest('.tile');
@@ -1874,6 +1979,20 @@ $('#flPickDev').addEventListener('click', flPickDevice);
 $('#flPickFile').addEventListener('click', () => $('#flFileIn').click());
 $('#flFileIn').addEventListener('change', e => { fl.file = e.target.files[0] || null; e.target.value = ''; flRender(); });
 $('#flStart').addEventListener('click', flStart);
+$('#lookClose').addEventListener('click', closeLook);
+$('#lookBody').addEventListener('click', e => {
+  const m = modules.get(lookMac);
+  if (!m) return;
+  const ic = e.target.closest('[data-icon]'), co = e.target.closest('[data-color]');
+  if (ic) m.icon = ic.dataset.icon === 'auto' ? '' : ic.dataset.icon;
+  else if (co) m.color = co.dataset.color === COLORS[0][0] ? '' : co.dataset.color;
+  else if (e.target.closest('#lookReset')) { m.icon = ''; m.color = ''; }
+  else return;
+  try { navigator.vibrate?.(10); } catch (err) {}
+  save();
+  renderLook();
+  scheduleRender();
+});
 $('#hsort').addEventListener('click', e => { const b = e.target.closest('[data-hsort]'); if (b) { hSort = b.dataset.hsort; scheduleRender(); } });
 $('#hlist').addEventListener('click', e => { const r = e.target.closest('[data-open]'); if (r) openSheet(r.dataset.open); });
 $('#filters').addEventListener('click', e => {
@@ -1941,7 +2060,7 @@ $('#pvDel').addEventListener('click', async () => {
 $('#exportBtn').addEventListener('click', async () => {
   const out = [];
   for (const m of modules.values()) {
-    const x = { mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type };
+    const x = { mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type, icon: m.icon || '', color: m.color || '' };
     if (m.hasPhoto) { try { const b = await photoDB.get(m.mac); if (b) { x.photo = await blobToDataUrl(b); x.photoAt = m.photoAt; } } catch (e) {} }
     out.push(x);
   }
@@ -1964,6 +2083,8 @@ $('#importFile').addEventListener('change', async e => {
       if (!mac || modules.has(mac)) continue;
       const m = newModule(mac, x.name);
       m.shutter = !!x.shutter; m.type = x.type || '';
+      m.icon = ICON_CHOICES.some(c => c[0] === x.icon) ? x.icon : '';
+      m.color = COLORS.some(c => c[0] === x.color) ? x.color : '';
       modules.set(mac, m);
       if (typeof x.photo === 'string' && x.photo.startsWith('data:image/')) {
         try { await photoDB.put(mac, await (await fetch(x.photo)).blob()); m.hasPhoto = true; m.photoAt = x.photoAt || Date.now(); } catch (err) {}
