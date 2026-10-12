@@ -310,7 +310,7 @@ function load() {
 class SerialLink {
   constructor(onData, onClose) { this.onData = onData; this.onClose = onClose; this.closed = false; }
   async open() {
-    this.port = await navigator.serial.requestPort({ filters: [{ usbVendorId: 0x303a }] });
+    this.port = await navigator.serial.requestPort({ filters: [] });
     await this.port.open({ baudRate: 115200, bufferSize: 16384 });
     try { await this.port.setSignals({ dataTerminalReady: true, requestToSend: false }); } catch (e) {}
     this.writer = this.port.writable.getWriter();
@@ -346,7 +346,7 @@ class SerialLink {
 class UsbCdcLink {
   constructor(onData, onClose) { this.onData = onData; this.onClose = onClose; this.closed = false; }
   async open() {
-    const d = this.dev = await navigator.usb.requestDevice({ filters: [{ vendorId: 0x303a }] });
+    const d = this.dev = await navigator.usb.requestDevice({ filters: [] });
     await d.open();
     if (!d.configuration) await d.selectConfiguration(1);
     let ctrl = null, data = null;
@@ -355,7 +355,12 @@ class UsbCdcLink {
       if (alt.interfaceClass === 0x02 && ctrl === null) ctrl = itf.interfaceNumber;
       if (alt.interfaceClass === 0x0A && !data) data = { num: itf.interfaceNumber, alt };
     }
-    if (!data) throw new Error('CDC veri arayüzü bulunamadı. Kart "USB CDC On Boot: Enabled" ile derlendi mi?');
+    if (!data) {
+      const id = `${d.productName || 'Cihaz'} (VID ${d.vendorId.toString(16).padStart(4, '0')})`;
+      throw new Error(d.vendorId === 0x303a
+        ? id + ': seri arayüz yok. Firmware "USB CDC On Boot: Enabled" ile yüklenmeli.'
+        : id + ' ESP32-S3\'ün kendi USB portu değil. Kablonuzu kartın "USB" yazan portuna takın (UART/COM değil).');
+    }
     if (ctrl !== null) { try { await d.claimInterface(ctrl); } catch (e) {} }
     await d.claimInterface(data.num);
     const epIn = data.alt.endpoints.find(e => e.direction === 'in' && e.type === 'bulk');
