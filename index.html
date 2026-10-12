@@ -125,15 +125,33 @@ section{display:none}section.act{display:block}
 .kv b{font-size:14.5px;text-align:right;white-space:nowrap}
 .kv.on{background:var(--on-soft);border-color:transparent}
 .kv.on b{color:var(--on)}
+.hlist{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) 74px 104px;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid var(--line);min-height:62px;cursor:pointer}
+.hrow:first-child{border-top:0}
+.hhead{cursor:default;min-height:40px;background:var(--card2);font-size:12px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.03em}
+.hname{display:flex;align-items:center;gap:10px;min-width:0}
+.hname .dotc{width:10px;height:10px;border-radius:50%;background:#8a7b70;flex:none}
+.hname .dotc.live{background:var(--ok)}.hname .dotc.stale{background:var(--warn)}
+.hname b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hname small{color:var(--mut);font-size:12px}
+.hval{text-align:right;font-weight:700;font-size:15px;white-space:nowrap}
+.hval.na{color:var(--mut);font-weight:500}
+.t-ok{color:var(--fg)}.t-warm{color:var(--warn)}.t-hot{color:var(--bad)}
+.sig{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.bars{display:inline-flex;gap:2px;align-items:flex-end;height:16px}
+.bars i{width:4px;background:var(--line);border-radius:1.5px}
+.bars i:nth-child(1){height:25%}.bars i:nth-child(2){height:50%}.bars i:nth-child(3){height:75%}.bars i:nth-child(4){height:100%}
+.lv4 i.f,.lv3 i.f{background:var(--ok)}.lv2 i.f{background:var(--warn)}.lv1 i.f{background:var(--bad)}
+.hsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .empty{text-align:center;color:var(--mut);padding:40px 16px}
 .empty .big{font-size:52px;color:var(--acc);margin-bottom:8px}
 
 /* ALT GEZİNME */
-#tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
-#tabs button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;color:var(--mut);padding:6px 2px;min-height:56px;border-radius:14px}
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+#tabs button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;white-space:nowrap;color:var(--mut);padding:6px 2px;min-height:56px;border-radius:14px}
 #tabs button svg{font-size:23px}
 #tabs button.act{color:var(--acc)}
-#tabs button.act svg{background:var(--acc-soft);border-radius:12px;padding:4px 14px;width:auto;box-sizing:content-box;height:1em}
+#tabs button.act svg{background:var(--acc-soft);border-radius:12px;padding:4px 10px;width:auto;box-sizing:content-box;height:1em}
 
 /* GRUP ÇUBUĞU */
 #group{position:fixed;left:10px;right:10px;bottom:calc(80px + env(safe-area-inset-bottom));z-index:19;background:var(--fg);color:var(--bg);border-radius:20px;padding:10px;display:none;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:880px;margin:0 auto}
@@ -225,6 +243,14 @@ section{display:none}section.act{display:block}
       <button class="sm selbtn" id="selModeBtn">Seç</button>
     </div>
     <div class="grid" id="dash"></div>
+  </section>
+
+  <!-- SAĞLIK -->
+  <section id="tab-health">
+    <div class="hsum" id="hsum"></div>
+    <div class="toolbar"><div class="filters" id="hsort"></div></div>
+    <div class="hlist" id="hlist"></div>
+    <p class="hint">Sinyal, köprünün modülü duyduğu güçtür. −60 dBm ve üstü çok iyi, −80 dBm altı zayıftır. Sıcaklık modül işlemcisinin (CPU) sıcaklığıdır.</p>
   </section>
 
   <!-- QR -->
@@ -346,6 +372,7 @@ section{display:none}section.act{display:block}
 
 <nav id="tabs">
   <button data-tab="dash" class="act"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="8" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="15" width="7" height="6" rx="2"/></svg>Pano</button>
+  <button data-tab="health"><svg viewBox="0 0 24 24"><path d="M14 4v10.5a4 4 0 1 1-4 0V4a2 2 0 1 1 4 0z"/><path d="M12 17.5V9"/><path d="M18 5v14M21 9v10" stroke-opacity=".55"/></svg>Sağlık</button>
   <button data-tab="scan"><svg viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 8h3v3H8zM13 13h3v3h-3z"/></svg>QR Okut</button>
   <button data-tab="discover"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19 5a10 10 0 0 1 0 14M5 19A10 10 0 0 1 5 5"/></svg>Keşif</button>
   <button data-tab="ir"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="3"/><circle cx="12" cy="7" r="1.5"/><path d="M10 12h4M10 15h4M10 18h4"/></svg>IR</button>
@@ -924,6 +951,47 @@ function render() {
   renderGroup();
   if (activeTab === 'discover') renderDiscover();
   if (activeTab === 'ir') renderIrTargets();
+  if (activeTab === 'health') renderHealth();
+}
+
+// ---------------------------------------------------------------- sağlık (sıcaklık / sinyal)
+let hSort = 'name';
+const HSORTS = [['name', 'Ada göre'], ['temp', 'En sıcak'], ['sig', 'En zayıf sinyal']];
+function sigLevel(r) { return r >= -60 ? 4 : r >= -70 ? 3 : r >= -80 ? 2 : 1; }
+function renderHealth() {
+  const all = [...modules.values()].filter(m => m.mode !== 'off');
+  const fresh = m => m.lastSeen && Date.now() - m.lastSeen < 60000;
+  const temps = all.filter(m => m.cpu !== null).map(m => m.cpu);
+  const sigs = all.filter(m => fresh(m) && m.rssi !== null).map(m => m.rssi);
+  const sum = `
+    <div class="stat"><b>${temps.length ? Math.max(...temps).toFixed(0) + '°' : '—'}</b><span>En sıcak</span></div>
+    <div class="stat"><b>${sigs.length ? Math.round(sigs.reduce((a, b) => a + b, 0) / sigs.length) : '—'}</b><span>Ort. sinyal</span></div>
+    <div class="stat${sigs.some(r => r < -80) ? ' hot' : ''}"><b>${sigs.filter(r => r < -80).length}</b><span>Zayıf sinyal</span></div>`;
+  if ($('#hsum').innerHTML !== sum) $('#hsum').innerHTML = sum;
+  const sh = HSORTS.map(([k, l]) => `<button class="fchip${hSort === k ? ' act' : ''}" data-hsort="${k}">${l}</button>`).join('');
+  if ($('#hsort').innerHTML !== sh) $('#hsort').innerHTML = sh;
+
+  const rows = [...all];
+  if (hSort === 'name') rows.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+  if (hSort === 'temp') rows.sort((a, b) => (b.cpu ?? -999) - (a.cpu ?? -999));
+  if (hSort === 'sig') rows.sort((a, b) => (fresh(a) ? a.rssi ?? 0 : 1) - (fresh(b) ? b.rssi ?? 0 : 1));
+  let html = '<div class="hrow hhead"><span>Modül</span><span class="hval" style="font-weight:700;font-size:12px">Sıcaklık</span><span class="hval" style="font-weight:700;font-size:12px">Sinyal</span></div>';
+  if (!rows.length) html += '<div class="empty">Dinlenen veya yönetilen modül yok.</div>';
+  for (const m of rows) {
+    const age = m.lastSeen ? Date.now() - m.lastSeen : Infinity;
+    const dot = age < 15000 ? ' live' : age < 60000 ? ' stale' : '';
+    const t = m.cpu;
+    const tcls = t === null ? 'na' : t >= 85 ? 't-hot' : t >= 70 ? 't-warm' : 't-ok';
+    const r = fresh(m) ? m.rssi : null;
+    const lv = r === null ? 0 : sigLevel(r);
+    const bars = [1, 2, 3, 4].map(i => `<i class="${i <= lv ? 'f' : ''}"></i>`).join('');
+    html += `<div class="hrow" data-open="${m.mac}">
+      <span class="hname"><i class="dotc${dot}"></i><span style="min-width:0"><b>${esc(m.name)}</b><small>${m.type === '2R' ? '2 röle' : m.type === '1R' ? '1 röle' : '—'} · ${ago(m.lastSeen)}</small></span></span>
+      <span class="hval ${tcls}">${t === null ? '—' : t.toFixed(1) + '°C'}</span>
+      <span class="sig"><span class="hval${r === null ? ' na' : ''}">${r === null ? '—' : r + ' dBm'}</span><span class="bars lv${lv}">${bars}</span></span>
+    </div>`;
+  }
+  if ($('#hlist').innerHTML !== html) $('#hlist').innerHTML = html;
 }
 
 const SVG = p => `<svg viewBox="0 0 24 24">${p}</svg>`;
@@ -1490,6 +1558,8 @@ $('#sheetBody').addEventListener('keydown', e => {
 $('#sheetClose').addEventListener('click', closeSheet);
 $('#sheetBack').addEventListener('click', closeSheet);
 
+$('#hsort').addEventListener('click', e => { const b = e.target.closest('[data-hsort]'); if (b) { hSort = b.dataset.hsort; scheduleRender(); } });
+$('#hlist').addEventListener('click', e => { const r = e.target.closest('[data-open]'); if (r) openSheet(r.dataset.open); });
 $('#filters').addEventListener('click', e => {
   const b = e.target.closest('[data-filter]');
   if (!b) return;
@@ -1616,7 +1686,7 @@ $('#autoListen').checked = settings.autoListen;
 setConn('off');
 render();
 autoConnect();
-setInterval(() => { if (activeTab === 'dash' || activeTab === 'discover') scheduleRender(); }, 1000);
+setInterval(() => { if (activeTab === 'health' || activeTab === 'dash' || activeTab === 'discover') scheduleRender(); }, 1000);
 </script>
 </body>
 </html>
