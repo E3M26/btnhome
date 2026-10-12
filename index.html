@@ -204,7 +204,21 @@ section{display:none}section.act{display:block}
 .dshut button svg{font-size:26px}
 .dshut button.on{background:var(--on);border-color:var(--on);color:#fff}
 .log{max-height:240px;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;white-space:pre-wrap;word-break:break-all}
-.dfoot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.dfoot{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#photoView{position:fixed;inset:0;z-index:50;background:#0b0806;color:#fff;display:none;flex-direction:column}
+#photoView.show{display:flex}
+#photoView .pv-top{display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top)) 16px 12px}
+#photoView .pv-top b{flex:1;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#photoView .pv-img{flex:1;display:grid;place-items:center;overflow:hidden;padding:0 12px}
+#photoView img{max-width:100%;max-height:100%;border-radius:16px;object-fit:contain}
+#photoView .pv-empty{text-align:center;color:#c9b9ad;padding:20px}
+#photoView .pv-empty svg{font-size:60px;color:#fb923c;margin-bottom:10px}
+#photoView .pv-bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px calc(16px + env(safe-area-inset-bottom))}
+#photoView button{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:#fff}
+#photoView button.pri{background:var(--acc);border-color:var(--acc)}
+#photoView button.danger{color:#ff9b8f}
+#photoView .pv-x{width:44px;height:44px;padding:0;border-radius:50%;font-size:18px}
+#photoView .pv-meta{font-size:12.5px;color:#c9b9ad;text-align:center;padding-top:8px}
 
 /* QR */
 .cam{position:relative;background:#000;border-radius:24px;overflow:hidden;aspect-ratio:3/4;max-height:58vh;margin:0 auto 12px;max-width:480px}
@@ -401,7 +415,20 @@ section{display:none}section.act{display:block}
     </ol>
   </div>
   <button class="pri bigbtn" id="pickDev">USB cihazını seç</button>
-  <div class="card"><label class="chk"><input type="checkbox" id="autoConn"> Kart takılınca otomatik bağlan</label></div>
+  <div class="card"><label class="chk"><input type="checkbox" id="autoConn"> Kart takılınca otomatik bağlan</label>
+    <p class="hint" id="autoNote" style="margin-bottom:0"></p></div>
+</div>
+<div id="photoView" role="dialog" aria-modal="true">
+  <div class="pv-top"><b id="pvTitle"></b><button class="pv-x" id="pvClose" aria-label="Kapat">✕</button></div>
+  <div class="pv-img" id="pvImg"></div>
+  <div class="pv-meta" id="pvMeta"></div>
+  <div class="pv-bar">
+    <button class="pri" id="pvShoot">Fotoğraf çek</button>
+    <button id="pvPick">Galeriden seç</button>
+    <button id="pvDel" class="danger" style="grid-column:1/-1">Fotoğrafı sil</button>
+  </div>
+  <input type="file" id="pvCam" accept="image/*" capture="environment" hidden>
+  <input type="file" id="pvGal" accept="image/*" hidden>
 </div>
 <div id="toast"></div>
 <canvas id="qrCanvas" hidden></canvas>
@@ -462,7 +489,7 @@ function save() {
   try {
     localStorage.setItem(STORE_KEY, JSON.stringify({
       settings,
-      modules: [...modules.values()].map(m => ({ mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type }))
+      modules: [...modules.values()].map(m => ({ mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type, hasPhoto: !!m.hasPhoto, photoAt: m.photoAt || 0 }))
     }));
   } catch (e) { /* depolama kapalı olabilir */ }
 }
@@ -484,6 +511,8 @@ function load() {
       const m = newModule(mac, x.name, ['off', 'listen', 'manage'].includes(x.mode) ? x.mode : 'off');
       m.shutter = !!x.shutter;
       m.type = x.type || '';
+      m.hasPhoto = !!x.hasPhoto;
+      m.photoAt = x.photoAt || 0;
       modules.set(mac, m);
     }
   } catch (e) { /* bozuk kayıt: yok say */ }
@@ -609,7 +638,7 @@ async function knownDevices() {
   const Cls = pickTransport();
   try {
     if (Cls === UsbCdcLink) return (await navigator.usb.getDevices()).map(d => ({ Cls, dev: d,
-      name: d.productName || 'USB cihazı', vid: d.vendorId, info: d.manufacturerName || '' }));
+      name: d.productName || 'USB cihazı', vid: d.vendorId, serial: d.serialNumber || '', info: d.manufacturerName || '' }));
     if (Cls === SerialLink) return (await navigator.serial.getPorts()).map(p => {
       const i = p.getInfo ? p.getInfo() : {};
       return { Cls, dev: p, name: i.usbVendorId === 0x303a ? 'ESP32-S3' : 'Seri port', vid: i.usbVendorId, info: '' };
@@ -627,23 +656,33 @@ async function openConnSheet() {
     <button class="dev" data-dev="${i}"><span class="t-ic">${ICON.usb}</span>
       <span class="grow"><b>${esc(d.name)}</b><span class="meta">${d.vid === 0x303a ? 'Espressif · dokunun, hemen bağlanır' : esc(d.info || 'USB cihazı')}</span></span></button>`).join('');
   openConnSheet.list = list;
+  const esp = list.filter(d => d.vid === 0x303a);
+  $('#autoNote').textContent = esp.length
+    ? 'Bu telefonda izinli köprü var. Sayfa açıkken kartı taktığınızda birkaç saniye içinde kendiliğinden bağlanır.'
+    : 'Henüz izinli köprü yok. Bir kez "USB cihazını seç" ile bağlandıktan sonra otomatik bağlanma çalışır.';
   $('#connSheet').classList.add('show');
   $('#sheetBack').classList.add('show');
 }
 
-async function connect(pre, Cls = pickTransport()) {
-  if (link) return;
-  if (!Cls) { toast('Bu tarayıcı USB erişimi sunmuyor. Android Chrome kullanın.'); return; }
+async function connect(pre, Cls = pickTransport(), auto = false) {
+  if (link) return true;
+  if (!Cls) { toast('Bu tarayıcı USB erişimi sunmuyor. Android Chrome kullanın.'); return false; }
   const l = new Cls(onUsbData, onUsbClose);
   try {
     setConn('wait', 'Bağlanıyor…');
     await l.open(pre);
   } catch (e) {
+    l.closed = true; l.done = true;
+    try { await l.dev?.close(); } catch (err) {}
     setConn('off');
-    if (e.name !== 'NotFoundError') toast('Bağlanılamadı: ' + e.message, 4000);
-    return;
+    logLine('! Bağlanılamadı: ' + (e.message || e.name));
+    if (e.name !== 'NotFoundError' && !auto) toast('Bağlanılamadı: ' + e.message, 4000);
+    return false;
   }
   link = l;
+  const serial = l.dev?.serialNumber;
+  if (serial && settings.bridgeSerial !== serial) { settings.bridgeSerial = serial; save(); }
+  if (auto) toast('Köprüye otomatik bağlanıldı');
   closeSheet();
   rxText = '';
   decoder = new TextDecoder();
@@ -652,13 +691,25 @@ async function connect(pre, Cls = pickTransport()) {
   clearTimeout(helloTimer);
   helloTimer = setTimeout(() => { if (link && !bridge) { send('HELLO'); toast('Köprü yanıt vermedi, yeniden deneniyor…'); } }, 1800);
   try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {}
+  return true;
 }
 
 // Daha önce izin verilmiş ESP32-S3 takılıysa seçim penceresi açmadan bağlan.
-async function autoConnect() {
-  if (link || settings.autoConnect === false) return;
-  const d = (await knownDevices()).find(x => x.vid === 0x303a);
-  if (d) connect(d.dev, d.Cls);
+let autoBusy = false, autoLastFail = 0, autoLastNote = '';
+async function autoConnect(reason) {
+  if (link || autoBusy || settings.autoConnect === false || document.visibilityState !== 'visible') return;
+  autoBusy = true;
+  try {
+    const list = (await knownDevices()).filter(x => x.vid === 0x303a);
+    // Önce en son bağlanılan kart (seri numarasıyla), yoksa izinli ilk Espressif cihazı.
+    const d = list.find(x => settings.bridgeSerial && x.serial === settings.bridgeSerial) || list[0];
+    const note = d ? `bulundu: ${d.name}` : 'izinli köprü takılı değil';
+    if (note !== autoLastNote) { logLine(`# Otomatik bağlantı (${reason}): ${note}`); autoLastNote = note; }
+    if (!d) return;
+    if (Date.now() - autoLastFail < 8000) return;
+    const ok = await connect(d.dev, d.Cls, true);
+    if (!ok) autoLastFail = Date.now();
+  } finally { autoBusy = false; }
 }
 
 function onUsbClose() {
@@ -998,6 +1049,7 @@ const SVG = p => `<svg viewBox="0 0 24 24">${p}</svg>`;
 const ICON = {
   bulb2: `<svg viewBox="0 0 30 24" style="width:1.3em"><g transform="translate(-5 0)"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></g><g transform="translate(11 0)"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></g></svg>`,
   usb: SVG('<path d="M12 2v14M12 2l-3 3M12 2l3 3M8 9v3l4 3M16 7v4l-4 3"/><circle cx="12" cy="19" r="2.5"/><rect x="6.5" y="7" width="3" height="2"/><circle cx="16" cy="6.5" r="1.3"/>'),
+  camera: SVG('<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>'),
   bulb: SVG('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>'),
   shutter: SVG('<path d="M3 4h18M5 4v13h14V4M5 8h14M5 12h14"/><path d="M12 17v4"/>'),
   motion: SVG('<circle cx="14" cy="4" r="2"/><path d="m8 21 3-6 3 2.5V21M6 12l3.5-4 4 1 2.5 3 3 1"/>'),
@@ -1181,7 +1233,7 @@ function closeSheet() {
   $('#sheetBack').classList.remove('show');
 }
 
-function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, connected()].join('|'); }
+function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, m.hasPhoto, connected()].join('|'); }
 
 function buildCard(m) {
   const el = document.createElement('div');
@@ -1222,6 +1274,7 @@ function buildCard(m) {
     </div>` : ''}
     <div class="dfoot">
       <button class="sm" data-act="log">${m.open ? 'Geçmişi gizle' : 'Paket geçmişi'}</button>
+      <button class="sm" data-act="photo">${m.hasPhoto ? 'Kurulum fotoğrafı ✓' : 'Kurulum fotoğrafı'}</button>
       <button class="sm" data-act="rename">Adını değiştir</button>
       <button class="sm danger" data-act="del">Sil</button>
     </div>
@@ -1457,6 +1510,90 @@ function addScannedRow(m) {
   $('#scannedList').prepend(row);
 }
 
+// ====================================================================== kurulum fotoğrafı
+// Modül başına tek fotoğraf; telefonda IndexedDB'de saklanır, sunucuya gitmez.
+const photoDB = {
+  db: null,
+  open() {
+    if (this.db) return Promise.resolve(this.db);
+    return new Promise((res, rej) => {
+      const r = indexedDB.open('btnhome', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('photos');
+      r.onsuccess = () => { this.db = r.result; res(this.db); };
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async run(mode, fn) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const t = db.transaction('photos', mode);
+      const req = fn(t.objectStore('photos'));
+      t.oncomplete = () => res(req && req.result);
+      t.onerror = () => rej(t.error);
+    });
+  },
+  get(mac) { return this.run('readonly', st => st.get(mac)); },
+  put(mac, blob) { return this.run('readwrite', st => st.put(blob, mac)); },
+  del(mac) { return this.run('readwrite', st => st.delete(mac)); },
+};
+
+let pvMod = null, pvUrl = null;
+async function openPhoto(m) {
+  pvMod = m;
+  $('#pvTitle').textContent = m.name + ' · kurulum yeri';
+  $('#photoView').classList.add('show');
+  await showPhoto();
+}
+async function showPhoto() {
+  const m = pvMod;
+  if (pvUrl) { URL.revokeObjectURL(pvUrl); pvUrl = null; }
+  let blob = null;
+  try { blob = await photoDB.get(m.mac); } catch (e) {}
+  if (blob) {
+    pvUrl = URL.createObjectURL(blob);
+    $('#pvImg').innerHTML = `<img src="${pvUrl}" alt="${esc(m.name)} kurulum yeri">`;
+    $('#pvMeta').textContent = m.photoAt ? 'Çekim: ' + new Date(m.photoAt).toLocaleString('tr-TR') : '';
+    $('#pvShoot').textContent = 'Yeniden çek';
+  } else {
+    $('#pvImg').innerHTML = `<div class="pv-empty">${ICON.camera}<div>Bu modül için henüz fotoğraf yok.<br>Buatın, panonun ya da kablo bağlantılarının fotoğrafını ekleyin.</div></div>`;
+    $('#pvMeta').textContent = '';
+    $('#pvShoot').textContent = 'Fotoğraf çek';
+  }
+  $('#pvDel').hidden = !blob;
+  if (!!blob !== !!m.hasPhoto) { m.hasPhoto = !!blob; save(); scheduleRender(); }
+}
+function closePhoto() {
+  $('#photoView').classList.remove('show');
+  if (pvUrl) { URL.revokeObjectURL(pvUrl); pvUrl = null; }
+  $('#pvImg').innerHTML = '';
+  pvMod = null;
+}
+// Fotoğrafı en uzun kenar 1600 px olacak şekilde küçültüp JPEG olarak sakla (~200-400 KB).
+async function shrinkImage(file) {
+  const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }).catch(() => createImageBitmap(file));
+  const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bmp.width * k);
+  c.height = Math.round(bmp.height * k);
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  return new Promise(res => c.toBlob(res, 'image/jpeg', 0.82));
+}
+async function savePhoto(file) {
+  if (!file || !pvMod) return;
+  const m = pvMod;
+  try {
+    const blob = await shrinkImage(file);
+    await photoDB.put(m.mac, blob);
+    m.hasPhoto = true;
+    m.photoAt = Date.now();
+    save();
+    scheduleRender();
+    await showPhoto();
+    toast('Fotoğraf kaydedildi');
+  } catch (e) { toast('Fotoğraf kaydedilemedi: ' + e.message, 4000); }
+}
+const blobToDataUrl = b => new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(b); });
+
 // ====================================================================== olaylar
 function switchTab(tab) {
   activeTab = tab;
@@ -1481,8 +1618,8 @@ $('#knownList').addEventListener('click', e => {
 });
 $('#connSheet [data-close]').addEventListener('click', closeSheet);
 $('#autoConn').addEventListener('change', e => { settings.autoConnect = e.target.checked; save(); });
-navigator.usb?.addEventListener('connect', () => setTimeout(autoConnect, 400));
-navigator.serial?.addEventListener('connect', () => setTimeout(autoConnect, 400));
+navigator.usb?.addEventListener('connect', () => setTimeout(() => autoConnect('kart takıldı'), 600));
+navigator.serial?.addEventListener('connect', () => setTimeout(() => autoConnect('kart takıldı'), 600));
 
 function doAction(m, act, t) {
   const needManage = () => {
@@ -1522,8 +1659,10 @@ function doAction(m, act, t) {
       if (n && n.trim()) { m.name = n.trim(); save(); scheduleRender(); }
       break;
     }
+    case 'photo': openPhoto(m); break;
     case 'del':
       if (confirm(`${m.name} silinsin mi?`)) {
+        photoDB.del(m.mac).catch(() => {});
         if (connected() && m.mode !== 'off') { send(`PEER\t${m.mac}\t0`); send(`WATCH\t${m.mac}\t0`); }
         modules.delete(m.mac);
         closeSheet();
@@ -1611,8 +1750,25 @@ $('#manAdd').addEventListener('click', () => {
   $('#manMac').value = ''; $('#manName').value = '';
 });
 
-$('#exportBtn').addEventListener('click', () => {
-  const data = JSON.stringify({ version: 1, modules: [...modules.values()].map(m => ({ mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type })) }, null, 2);
+$('#pvClose').addEventListener('click', closePhoto);
+$('#pvShoot').addEventListener('click', () => $('#pvCam').click());
+$('#pvPick').addEventListener('click', () => $('#pvGal').click());
+for (const id of ['#pvCam', '#pvGal']) $(id).addEventListener('change', e => { savePhoto(e.target.files[0]); e.target.value = ''; });
+$('#pvDel').addEventListener('click', async () => {
+  if (!pvMod || !confirm('Kurulum fotoğrafı silinsin mi?')) return;
+  try { await photoDB.del(pvMod.mac); } catch (e) {}
+  pvMod.hasPhoto = false; pvMod.photoAt = 0;
+  save(); scheduleRender(); showPhoto();
+});
+
+$('#exportBtn').addEventListener('click', async () => {
+  const out = [];
+  for (const m of modules.values()) {
+    const x = { mac: m.mac, name: m.name, mode: m.mode, shutter: m.shutter, type: m.type };
+    if (m.hasPhoto) { try { const b = await photoDB.get(m.mac); if (b) { x.photo = await blobToDataUrl(b); x.photoAt = m.photoAt; } } catch (e) {} }
+    out.push(x);
+  }
+  const data = JSON.stringify({ version: 2, modules: out }, null, 2);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
   a.download = 'btnhome-moduller.json';
@@ -1632,6 +1788,9 @@ $('#importFile').addEventListener('change', async e => {
       const m = newModule(mac, x.name);
       m.shutter = !!x.shutter; m.type = x.type || '';
       modules.set(mac, m);
+      if (typeof x.photo === 'string' && x.photo.startsWith('data:image/')) {
+        try { await photoDB.put(mac, await (await fetch(x.photo)).blob()); m.hasPhoto = true; m.photoAt = x.photoAt || Date.now(); } catch (err) {}
+      }
       if (x.mode === 'listen' || x.mode === 'manage') setMode(m, x.mode);
       n++;
     }
@@ -1668,7 +1827,9 @@ $('#logClear').addEventListener('click', () => { logLines.length = 0; $('#logbox
 navigator.usb?.addEventListener('disconnect', e => { if (link instanceof UsbCdcLink && link.dev === e.device) link.close(); });
 navigator.serial?.addEventListener('disconnect', e => { if (link instanceof SerialLink && link.port === e.target) link.close(); });
 document.addEventListener('visibilitychange', async () => {
-  if (document.visibilityState === 'visible' && link && !wakeLock) { try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {} }
+  if (document.visibilityState !== 'visible') return;
+  if (link && !wakeLock) { try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {} }
+  autoConnect('sayfaya dönüldü');
 });
 
 // ====================================================================== başlangıç
@@ -1685,7 +1846,9 @@ $('#autoListen').checked = settings.autoListen;
 }
 setConn('off');
 render();
-autoConnect();
+autoConnect('sayfa açıldı');
+// Bazı Android sürümlerinde 'takıldı' olayı gelmiyor; sayfa açıkken izinli köprüyü düzenli yokla.
+setInterval(() => autoConnect('yoklama'), 3000);
 setInterval(() => { if (activeTab === 'health' || activeTab === 'dash' || activeTab === 'discover') scheduleRender(); }, 1000);
 </script>
 </body>
