@@ -147,12 +147,21 @@ section{display:none}section.act{display:block}
 /* AYRINTI PANELİ */
 #sheetBack{position:fixed;inset:0;background:rgba(8,4,2,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
 #sheetBack.show{opacity:1;pointer-events:auto}
-#sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--sheet);border-top:4px solid var(--acc);box-shadow:0 -12px 40px rgba(0,0,0,.45);border-radius:26px 26px 0 0;max-height:90vh;overflow:auto;transform:translateY(105%);transition:transform .25s cubic-bezier(.2,.8,.2,1);padding:0 16px calc(20px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
-#sheet.show{transform:none}
+#sheet,#connSheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--sheet);border-top:4px solid var(--acc);box-shadow:0 -12px 40px rgba(0,0,0,.45);border-radius:26px 26px 0 0;max-height:90vh;overflow:auto;transform:translateY(105%);transition:transform .25s cubic-bezier(.2,.8,.2,1);padding:0 16px calc(20px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+#sheet.show,#connSheet.show{transform:none}
 .grab{position:sticky;top:0;background:var(--sheet);padding:10px 0 6px;display:flex;align-items:center;justify-content:center;z-index:2}
 .grab i{width:44px;height:5px;border-radius:9px;background:var(--mut);opacity:.5}
 .grab button{position:absolute;right:0;top:6px;border-radius:50%;width:40px;height:40px;min-height:40px;padding:0;display:grid;place-items:center;font-size:18px}
-#sheet .card{background:var(--sheet-in);box-shadow:none}
+#sheet .card,#connSheet .card{background:var(--sheet-in);box-shadow:none}
+#connSheet .t-ic{background:var(--acc);color:#fff}
+.dev{display:flex;align-items:center;gap:12px;width:100%;text-align:left;min-height:64px;margin-bottom:8px;background:var(--sheet);border-radius:16px}
+.dev .t-ic{width:40px;height:40px;font-size:20px}
+.dev b{display:block}
+.dev:last-child{margin-bottom:0}
+.steps{margin:0;padding:0;list-style:none;counter-reset:st;display:grid;gap:10px}
+.steps li{display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.steps li::before{counter-increment:st;content:counter(st);flex:none;width:26px;height:26px;border-radius:50%;background:var(--acc-soft);color:var(--acc);font-weight:700;display:grid;place-items:center;font-size:13px}
+.bigbtn{width:100%;min-height:56px;font-size:16px;margin:4px 0 12px}
 #sheet .seg{background:var(--sheet-in);border:1px solid var(--line)}
 #sheet .seg button.act{background:var(--acc);color:#fff}
 #sheet .kv{background:var(--sheet)}
@@ -348,6 +357,25 @@ section{display:none}section.act{display:block}
   <div class="grab"><i></i><button id="sheetClose" aria-label="Kapat">✕</button></div>
   <div id="sheetBody"></div>
 </div>
+<div id="connSheet" role="dialog" aria-modal="true">
+  <div class="grab"><i></i><button data-close aria-label="Kapat">✕</button></div>
+  <div class="d-head"><span class="t-ic" id="connIc"></span>
+    <div class="grow"><b>Köprüye bağlan</b><div class="meta">ESP32-S3 USB köprüsü</div></div></div>
+  <div class="card" id="knownCard" hidden>
+    <h2>Daha önce bağlanan</h2>
+    <div id="knownList"></div>
+  </div>
+  <div class="card">
+    <h2>Yeni cihaz</h2>
+    <ol class="steps">
+      <li><span>Telefonda <b>OTG</b> açık olsun (Ayarlar → Ek ayarlar → OTG).</span></li>
+      <li><span>Kabloyu kartın <b>"USB"</b> yazan portuna takın.</span></li>
+      <li><span>Aşağıdaki düğmeye basın, Chrome'un açtığı listeden <b>ESP32-S3</b>'ü seçin.</span></li>
+    </ol>
+  </div>
+  <button class="pri bigbtn" id="pickDev">USB cihazını seç</button>
+  <div class="card"><label class="chk"><input type="checkbox" id="autoConn"> Kart takılınca otomatik bağlan</label></div>
+</div>
 <div id="toast"></div>
 <canvas id="qrCanvas" hidden></canvas>
 
@@ -401,7 +429,7 @@ function fields(text) {
 // ====================================================================== kalıcı durum
 const modules = new Map();     // mac -> modül
 const discovered = new Map();  // mac -> {mac, rssi, text, dst, seen}
-const settings = { lr: true, sniffAll: false, transport: 'auto', autoListen: true };
+const settings = { lr: true, sniffAll: false, transport: 'auto', autoListen: true, autoConnect: true };
 
 function save() {
   try {
@@ -437,8 +465,8 @@ function load() {
 // ====================================================================== USB taşıyıcıları
 class SerialLink {
   constructor(onData, onClose) { this.onData = onData; this.onClose = onClose; this.closed = false; }
-  async open() {
-    this.port = await navigator.serial.requestPort({ filters: [] });
+  async open(pre) {
+    this.port = pre || await navigator.serial.requestPort({ filters: [] });
     await this.port.open({ baudRate: 115200, bufferSize: 16384 });
     try { await this.port.setSignals({ dataTerminalReady: true, requestToSend: false }); } catch (e) {}
     this.writer = this.port.writable.getWriter();
@@ -473,9 +501,9 @@ class SerialLink {
 // Android Chrome'da CDC-ACM aygıtına WebUSB ile doğrudan erişim (Web Serial gerekmez).
 class UsbCdcLink {
   constructor(onData, onClose) { this.onData = onData; this.onClose = onClose; this.closed = false; }
-  async open() {
-    const d = this.dev = await navigator.usb.requestDevice({ filters: [] });
-    await d.open();
+  async open(pre) {
+    const d = this.dev = pre || await navigator.usb.requestDevice({ filters: [] });
+    if (!d.opened) await d.open();
     if (!d.configuration) await d.selectConfiguration(1);
     let ctrl = null, data = null;
     for (const itf of d.configuration.interfaces) {
@@ -550,20 +578,46 @@ function pickTransport() {
   return null;
 }
 
-async function connect() {
-  if (link) { if (confirm('Köprü bağlantısı kesilsin mi?')) await link.close(); return; }
+async function knownDevices() {
   const Cls = pickTransport();
+  try {
+    if (Cls === UsbCdcLink) return (await navigator.usb.getDevices()).map(d => ({ Cls, dev: d,
+      name: d.productName || 'USB cihazı', vid: d.vendorId, info: d.manufacturerName || '' }));
+    if (Cls === SerialLink) return (await navigator.serial.getPorts()).map(p => {
+      const i = p.getInfo ? p.getInfo() : {};
+      return { Cls, dev: p, name: i.usbVendorId === 0x303a ? 'ESP32-S3' : 'Seri port', vid: i.usbVendorId, info: '' };
+    });
+  } catch (e) {}
+  return [];
+}
+
+async function openConnSheet() {
+  $('#connIc').innerHTML = ICON.usb;
+  $('#autoConn').checked = settings.autoConnect !== false;
+  const list = await knownDevices();
+  $('#knownCard').hidden = !list.length;
+  $('#knownList').innerHTML = list.map((d, i) => `
+    <button class="dev" data-dev="${i}"><span class="t-ic">${ICON.usb}</span>
+      <span class="grow"><b>${esc(d.name)}</b><span class="meta">${d.vid === 0x303a ? 'Espressif · dokunun, hemen bağlanır' : esc(d.info || 'USB cihazı')}</span></span></button>`).join('');
+  openConnSheet.list = list;
+  $('#connSheet').classList.add('show');
+  $('#sheetBack').classList.add('show');
+}
+
+async function connect(pre, Cls = pickTransport()) {
+  if (link) return;
   if (!Cls) { toast('Bu tarayıcı USB erişimi sunmuyor. Android Chrome kullanın.'); return; }
   const l = new Cls(onUsbData, onUsbClose);
   try {
     setConn('wait', 'Bağlanıyor…');
-    await l.open();
+    await l.open(pre);
   } catch (e) {
     setConn('off');
     if (e.name !== 'NotFoundError') toast('Bağlanılamadı: ' + e.message, 4000);
     return;
   }
   link = l;
+  closeSheet();
   rxText = '';
   decoder = new TextDecoder();
   logLine('# USB açıldı (' + (Cls === UsbCdcLink ? 'WebUSB' : 'Web Serial') + ')');
@@ -571,6 +625,13 @@ async function connect() {
   clearTimeout(helloTimer);
   helloTimer = setTimeout(() => { if (link && !bridge) { send('HELLO'); toast('Köprü yanıt vermedi, yeniden deneniyor…'); } }, 1800);
   try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {}
+}
+
+// Daha önce izin verilmiş ESP32-S3 takılıysa seçim penceresi açmadan bağlan.
+async function autoConnect() {
+  if (link || settings.autoConnect === false) return;
+  const d = (await knownDevices()).find(x => x.vid === 0x303a);
+  if (d) connect(d.dev, d.Cls);
 }
 
 function onUsbClose() {
@@ -867,6 +928,8 @@ function render() {
 
 const SVG = p => `<svg viewBox="0 0 24 24">${p}</svg>`;
 const ICON = {
+  bulb2: `<svg viewBox="0 0 30 24" style="width:1.3em"><g transform="translate(-5 0)"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></g><g transform="translate(11 0)"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></g></svg>`,
+  usb: SVG('<path d="M12 2v14M12 2l-3 3M12 2l3 3M8 9v3l4 3M16 7v4l-4 3"/><circle cx="12" cy="19" r="2.5"/><rect x="6.5" y="7" width="3" height="2"/><circle cx="16" cy="6.5" r="1.3"/>'),
   bulb: SVG('<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>'),
   shutter: SVG('<path d="M3 4h18M5 4v13h14V4M5 8h14M5 12h14"/><path d="M12 17v4"/>'),
   motion: SVG('<circle cx="14" cy="4" r="2"/><path d="m8 21 3-6 3 2.5V21M6 12l3.5-4 4 1 2.5 3 3 1"/>'),
@@ -883,8 +946,8 @@ const relayOn = (m, n) => m.state['R' + n] === '1';
 const anyOn = m => relayOn(m, 1) || (m.type !== '1R' && relayOn(m, 2));
 function tileIcon(m) {
   if (isShutter(m)) return ICON.shutter;
-  if (m.type === '1R') return ('M' in m.state || 'G1' in m.state) ? ICON.motion : ICON.plug;
-  if (m.type === '2R') return ICON.bulb;
+  if (m.type === '1R') return ICON.bulb;
+  if (m.type === '2R') return ICON.bulb2;
   return ICON.plug;
 }
 const MODE_LABEL = { off: 'Kapalı', listen: 'Dinle', manage: 'Yönet' };
@@ -968,14 +1031,12 @@ function updateTile(el, m) {
     const be = badge.querySelector('[data-k=bt]');
     if (be.textContent !== bt) be.textContent = bt;
   }
-  const typeTxt = m.type === '2R' ? (isShutter(m) ? 'Panjur' : '2 röle') : m.type === '1R' ? '1 röle + sensör' : 'Tür bilinmiyor';
+  const typeTxt = m.type === '2R' ? (isShutter(m) ? 'Panjur' : '2 röle') : m.type === '1R' ? '1 röle' : 'Tür bilinmiyor';
   const sub = `${typeTxt} · ${m.lastSeen ? ago(m.lastSeen) : (m.mode === 'off' ? 'kapalı' : 'bekleniyor')}`;
   const subEl = el.querySelector('[data-k=sub]');
   if (subEl.textContent !== sub) subEl.textContent = sub;
 
   const s = m.state, sens = [];
-  if (s.M === '1') sens.push('<span class="sens hot">Hareket</span>');
-  if (s.G1 === '1' && !('M' in s)) sens.push('<span class="sens hot">Giriş</span>');
   if (m.cpu !== null) sens.push(`<span class="sens">${m.cpu.toFixed(0)}°C</span>`);
   if (m.rssi !== null && m.lastSeen) sens.push(`<span class="sens">${m.rssi} dBm</span>`);
   const sh = sens.join('');
@@ -998,7 +1059,7 @@ function updateTile(el, m) {
   };
   let kh = '';
   if (m.type === '2R') kh = key('Anahtar 1', 'S1') + key('Anahtar 2', 'S2');
-  else if (m.type === '1R') kh = key('Tuş', 'K1', 'Basılı', 'Bırakık') + key('Giriş', 'G1', 'Var', 'Yok');
+  else if (m.type === '1R') kh = key('DC Giriş', 'G1', 'Var', 'Yok') + key('Röle Com', 'K1', 'Var', 'Yok');
   const ke = el.querySelector('[data-k=keys]');
   if (ke.innerHTML !== kh) ke.innerHTML = kh;
 }
@@ -1048,6 +1109,7 @@ function openSheet(mac) {
 function closeSheet() {
   sheetMac = null;
   $('#sheet').classList.remove('show');
+  $('#connSheet').classList.remove('show');
   $('#sheetBack').classList.remove('show');
 }
 
@@ -1116,7 +1178,7 @@ function updateCard(el, m) {
   const b = (k, label, on = 'Açık', off = 'Kapalı') => { if (k in s) c.push(kv(label, s[k] === '1' ? on : off, s[k] === '1')); };
   b('R1', 'Röle 1'); b('R2', 'Röle 2');
   b('S1', 'Anahtar 1'); b('S2', 'Anahtar 2');
-  b('K1', 'Tuş', 'Basılı', 'Bırakık'); b('G1', 'Giriş', 'Var', 'Yok'); b('M', 'Hareket', 'Var', 'Yok');
+  b('G1', 'DC Giriş', 'Var', 'Yok'); b('K1', 'Röle Com', 'Var', 'Yok');
   if ('A0' in s) c.push(kv('Analog', String(+s.A0)));
   if ('DM' in s) c.push(kv('Mod', s.DM === '1' ? 'Bağımsız' : 'Seri'));
   if ('LR' in s) c.push(kv('Menzil', s.LR === '1' ? 'Uzun (LR)' : 'Normal', s.LR === '1'));
@@ -1339,7 +1401,20 @@ function switchTab(tab) {
 }
 
 $('#tabs').addEventListener('click', e => { const b = e.target.closest('button[data-tab]'); if (b) switchTab(b.dataset.tab); });
-$('#connectBtn').addEventListener('click', connect);
+$('#connectBtn').addEventListener('click', async () => {
+  if (link) { if (confirm('Köprü bağlantısı kesilsin mi?')) await link.close(); return; }
+  openConnSheet();
+});
+$('#pickDev').addEventListener('click', () => connect());
+$('#knownList').addEventListener('click', e => {
+  const b = e.target.closest('[data-dev]');
+  const d = b && openConnSheet.list?.[+b.dataset.dev];
+  if (d) connect(d.dev, d.Cls);
+});
+$('#connSheet [data-close]').addEventListener('click', closeSheet);
+$('#autoConn').addEventListener('change', e => { settings.autoConnect = e.target.checked; save(); });
+navigator.usb?.addEventListener('connect', () => setTimeout(autoConnect, 400));
+navigator.serial?.addEventListener('connect', () => setTimeout(autoConnect, 400));
 
 function doAction(m, act, t) {
   const needManage = () => {
@@ -1540,6 +1615,7 @@ $('#autoListen').checked = settings.autoListen;
 }
 setConn('off');
 render();
+autoConnect();
 setInterval(() => { if (activeTab === 'dash' || activeTab === 'discover') scheduleRender(); }, 1000);
 </script>
 </body>
