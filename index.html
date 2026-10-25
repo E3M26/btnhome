@@ -112,17 +112,19 @@ section{display:none}section.act{display:block}
 #zoom{position:fixed;inset:0;z-index:60;display:none;place-items:center;padding:16px;background:rgba(8,4,2,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);pointer-events:none}
 #zoom.show{display:grid;animation:zin .14s ease-out}
 @keyframes zin{from{opacity:0}}
-#zoom .zc{width:100%;max-width:560px;background:var(--sheet);border-radius:22px;border-left:8px solid var(--acc);padding:18px 20px;box-shadow:0 20px 50px rgba(0,0,0,.5);transform:scale(1);animation:zsc .16s ease-out}
+#zoom .zc{width:100%;max-width:560px;background:var(--sheet);border-radius:18px;border-left:6px solid var(--acc);padding:14px 16px;box-shadow:0 20px 50px rgba(0,0,0,.5);transform:scale(1);animation:zsc .16s ease-out}
 @keyframes zsc{from{transform:scale(.92)}}
 #zoom .zc.out{border-left-color:var(--bad)}#zoom .zc.in{border-left-color:var(--ok)}#zoom .zc.err{border-left-color:var(--bad)}
-#zoom .zh{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:14px;color:var(--mut)}
-#zoom .zh b{font-size:15px;padding:3px 10px;border-radius:99px;background:var(--chip);color:var(--fg)}
+#zoom .zh{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px;color:var(--mut)}
+#zoom .zh b{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--chip);color:var(--fg)}
 #zoom .zc.out .zh b{background:var(--bad-soft);color:var(--bad)}
 #zoom .zc.in .zh b{background:color-mix(in srgb,var(--ok) 16%,var(--card));color:var(--ok)}
-#zoom .zt{font-size:21px;line-height:1.35;font-weight:600;overflow-wrap:anywhere}
-#zoom .zd{font-size:16px;color:var(--mut);margin-top:8px;overflow-wrap:anywhere}
-#zoom .zr{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--sheet-in);word-break:break-all}
-#zoom .zf{font-size:12.5px;color:var(--mut);margin-top:12px;text-align:center}
+#zoom .zc.info .zh b{background:var(--acc-soft);color:var(--acc)}
+#zoom .zc.err .zh b{background:var(--bad);color:#fff}
+#zoom .zt{font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+#zoom .zd{font-size:12.5px;color:var(--mut);margin-top:4px;overflow-wrap:anywhere}
+#zoom .zr{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;margin-top:8px;padding:8px 10px;border-radius:12px;background:var(--sheet-in);word-break:break-all}
+#zoom .zf{font-size:11.5px;color:var(--mut);margin-top:8px;text-align:center}
 .tile.dim .tseg{opacity:1}
 .t-name{font-weight:700;font-size:16px;line-height:1.25;overflow-wrap:anywhere}
 .t-sub{font-size:12.5px;color:var(--mut);margin-top:-6px}
@@ -759,6 +761,23 @@ let wakeLock = null;
 
 function connected() { return !!(link && bridge); }
 
+// HELLO'ya yanıt gelmezse birkaç kez dene, sonra nedenini açıkla.
+function helloRetry(n) {
+  clearTimeout(helloTimer);
+  helloTimer = setTimeout(() => {
+    if (!link || bridge) return;
+    if (n < 4) { send('HELLO'); if (n === 1) toast('Köprü yanıt vermedi, yeniden deneniyor…'); helloRetry(n + 1); return; }
+    const junk = helloRetry.junk;
+    const why = junk && /waiting for download|DOWNLOAD/i.test(junk)
+      ? 'Kart yükleme (download) modunda kalmış. Kabloyu çıkarıp takın; BOOT düğmesine basmayın.'
+      : junk && /rst:|ESP-ROM|Backtrace|Guru/i.test(junk)
+      ? 'Kart açılırken sürekli yeniden başlıyor. Yazılım bu karta uygun ayarlarla derlenmemiş olabilir (Flash/PSRAM).'
+      : 'Kart USB\'den gelen komutları dinlemiyor. Köprü yazılımı "USB CDC On Boot: Disabled" ile derlenmiş eski bir sürüm olabilir. Köprü yazılımı 1.2 sürümünü yükleyin ya da kabloyu kartın COM portuna takın.';
+    logLine('! Köprü yanıt vermiyor. ' + why);
+    toast('Köprü yanıt vermiyor. Ayrıntı: Ayarlar → Kayıt', 6000);
+  }, n === 1 ? 1500 : 2000);
+}
+
 function send(line) {
   if (!link) return Promise.resolve();
   if ($('#logRx').checked || !/^RAW\t/.test(line)) logLine('> ' + line);
@@ -833,7 +852,7 @@ async function connect(pre, Cls = pickTransport(), auto = false) {
   logLine('# USB açıldı (' + (Cls === UsbCdcLink ? 'WebUSB' : 'Web Serial') + ')');
   send('HELLO');
   clearTimeout(helloTimer);
-  helloTimer = setTimeout(() => { if (link && !bridge) { send('HELLO'); toast('Köprü yanıt vermedi, yeniden deneniyor…'); } }, 1800);
+  helloRetry(1);
   try { wakeLock = await navigator.wakeLock?.request('screen'); } catch (e) {}
   return true;
 }
@@ -971,6 +990,7 @@ function handleLine(line) {
       toast('Köprü: ' + (p[2] || p[1]));
       break;
     default:
+      if (!bridge) helloRetry.junk = line;   // açılış mesajı vb. (tanı için)
       logLine('< ' + line);
   }
 }
@@ -2013,7 +2033,15 @@ document.addEventListener('pointerdown', e => {
 document.addEventListener('pointermove', e => {
   if (hold.timer && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 10) { clearTimeout(hold.timer); hold.timer = 0; }
 });
-for (const ev of ['pointerup', 'pointercancel', 'blur']) window.addEventListener(ev, endHold);
+// Büyük görünüm açıldıktan sonra parmak kaysa bile sayfa kaymasın ve görünüm kapanmasın;
+// yalnızca parmak kalkınca kapanır.
+document.addEventListener('touchmove', e => { if (hold.frozen) e.preventDefault(); }, { passive: false });
+window.addEventListener('pointerup', endHold);
+window.addEventListener('pointercancel', () => { if (!hold.frozen) endHold(); });  // kaydırma başlarsa: dokunma bitince kapanır
+window.addEventListener('touchend', endHold);
+window.addEventListener('touchcancel', endHold);
+window.addEventListener('blur', endHold);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState !== 'visible') endHold(); });
 document.addEventListener('contextmenu', e => { if (e.target.closest('.le, .pe')) e.preventDefault(); });
 
 // ====================================================================== modül ekleme / QR
