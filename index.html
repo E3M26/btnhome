@@ -11,14 +11,28 @@
   --acc:#c2410c;--acc-2:#9a3412;--acc-soft:#fde6d8;--acc-ink:#fff;
   --on:#e8590c;--on-soft:#ffe8d9;--ok:#1f9d55;--warn:#b7700b;--bad:#c0392b;--bad-soft:#fbe9e7;
   --chip:#f3ebe4;--sheet:#fff;--sheet-in:#f7f0ea;--shadow:0 1px 2px rgba(60,30,10,.06),0 6px 18px rgba(60,30,10,.06);
-  --r:20px;
+  --r:20px;--hdr1:#c2410c;--hdr2:#9a3412;--base:#ea580c;
 }
-@media (prefers-color-scheme:dark){:root{
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
   --bg:#13100e;--card:#1d1916;--card2:#241e1a;--fg:#f4ece5;--mut:#a7968a;--line:#342a24;
   --acc:#ea580c;--acc-2:#c2410c;--acc-soft:#3a2216;--acc-ink:#fff;
   --on:#fb7a2c;--on-soft:#3b2214;--ok:#46d184;--warn:#e3a540;--bad:#ef6b5b;--bad-soft:#3a1a16;
-  --chip:#2a221d;--sheet:#2b231e;--sheet-in:#1f1916;--shadow:none;
+  --chip:#2a221d;--sheet:#2b231e;--sheet-in:#1f1916;--shadow:none;color-scheme:dark;
 }}
+:root[data-theme=dark]{
+  --bg:#13100e;--card:#1d1916;--card2:#241e1a;--fg:#f4ece5;--mut:#a7968a;--line:#342a24;
+  --acc:#ea580c;--acc-2:#c2410c;--acc-soft:#3a2216;--acc-ink:#fff;
+  --on:#fb7a2c;--on-soft:#3b2214;--ok:#46d184;--warn:#e3a540;--bad:#ef6b5b;--bad-soft:#3a1a16;
+  --chip:#2a221d;--sheet:#2b231e;--sheet-in:#1f1916;--shadow:none;color-scheme:dark;
+}
+/* Kullanıcının seçtiği ana renk (varsayılan turuncu dışında) */
+:root[data-accent]{--acc:color-mix(in srgb,var(--base) 86%,#000);--acc-2:color-mix(in srgb,var(--base) 66%,#000);
+  --acc-soft:color-mix(in srgb,var(--base) 15%,#fff);--on:var(--base);--on-soft:color-mix(in srgb,var(--base) 15%,#fff);
+  --hdr1:color-mix(in srgb,var(--base) 86%,#000);--hdr2:color-mix(in srgb,var(--base) 62%,#000)}
+@media (prefers-color-scheme:dark){:root[data-accent]:not([data-theme=light]){--acc:var(--base);--acc-2:color-mix(in srgb,var(--base) 80%,#000);
+  --acc-soft:color-mix(in srgb,var(--base) 22%,#1d1916);--on:color-mix(in srgb,var(--base) 85%,#fff);--on-soft:color-mix(in srgb,var(--base) 22%,#1d1916)}}
+:root[data-accent][data-theme=dark]{--acc:var(--base);--acc-2:color-mix(in srgb,var(--base) 80%,#000);
+  --acc-soft:color-mix(in srgb,var(--base) 22%,#1d1916);--on:color-mix(in srgb,var(--base) 85%,#fff);--on-soft:color-mix(in srgb,var(--base) 22%,#1d1916)}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:contain}
@@ -43,7 +57,7 @@ label.chk{display:flex;align-items:center;gap:10px;user-select:none;min-height:4
 h2{font-size:16px;margin:2px 0 10px}
 
 /* ÜST ÇUBUK */
-.top{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#c2410c 0%,#9a3412 100%);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(154,52,18,.25)}
+.top{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--hdr1) 0%,var(--hdr2) 100%);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px color-mix(in srgb,var(--hdr2) 30%,transparent)}
 .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .logo{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:22px}
 .brand h1{font-size:18px;margin:0;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -192,6 +206,31 @@ section{display:none}section.act{display:block}
 .swname{font-size:11.5px;color:var(--mut);text-align:center;margin-top:4px}
 .lookprev{display:flex;align-items:center;gap:14px;margin:4px 0 12px}
 .lookprev .t-ic{width:60px;height:60px;font-size:32px;border-radius:18px;background:var(--pick);color:#fff}
+.brhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.brhead .t-ic{width:48px;height:48px;font-size:24px;border-radius:15px;background:var(--chip);color:var(--mut)}
+.brhead.on .t-ic{background:var(--acc);color:#fff}
+.brhead b{font-size:17px;display:block}
+.updbox{display:flex;gap:12px;align-items:center;border-radius:16px;padding:12px 14px;margin-bottom:12px;background:var(--acc-soft);border:1px solid color-mix(in srgb,var(--acc) 40%,transparent)}
+.updbox .grow b{display:block;color:var(--acc)}
+.updbox .grow span{font-size:13px;color:var(--mut)}
+.logbar{display:flex;align-items:center;gap:6px}
+.logbar h2{flex:1;margin:0}
+.logbar button{min-height:38px;padding:4px 11px;font-size:13.5px}
+.logbar button.act{background:var(--acc);border-color:var(--acc);color:#fff}
+.fchip .n{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--bad);color:#fff;font-size:11px;line-height:18px}
+.pausebar{display:flex;align-items:center;gap:8px;justify-content:center;padding:8px;margin-bottom:6px;border-radius:12px;background:var(--acc-soft);color:var(--acc);font-size:13px;font-weight:600}
+details.adv>summary{list-style:none;display:flex;align-items:center;gap:8px;cursor:pointer;min-height:36px}
+details.adv>summary::-webkit-details-marker{display:none}
+details.adv>summary h2{margin:0;flex:1}
+details.adv>summary::after{content:"▾";color:var(--mut);transition:transform .2s}
+details.adv[open]>summary::after{transform:rotate(180deg)}
+details.adv .advin{display:grid;gap:12px;margin-top:12px}
+#tabs button{position:relative}
+#tabs button .tdot{position:absolute;top:6px;left:calc(50% + 10px);width:9px;height:9px;border-radius:50%;background:var(--bad);box-shadow:0 0 0 2px var(--card)}
+.sitelist{display:grid;gap:6px;margin:8px 0}
+.sitefile{display:flex;align-items:center;gap:10px;text-align:left;min-height:52px;background:var(--card2)}
+.sitefile .t-ic{width:34px;height:34px;font-size:18px;border-radius:10px}
+.sitefile.act{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
 .lockbox{grid-column:1/-1;text-align:center;padding:48px 20px;background:var(--card);border:1px dashed var(--line);border-radius:24px;color:var(--mut)}
 .lockbox .big{width:76px;height:76px;margin:0 auto 14px;border-radius:24px;background:var(--acc-soft);color:var(--acc);display:grid;place-items:center;font-size:38px}
 .lockbox b{display:block;color:var(--fg);font-size:18px;margin-bottom:6px}
@@ -268,7 +307,7 @@ body.grouping main{padding-bottom:calc(330px + env(safe-area-inset-bottom))}
 #photoView .pv-img{flex:1;display:grid;place-items:center;overflow:hidden;padding:0 12px}
 #photoView img{max-width:100%;max-height:100%;border-radius:16px;object-fit:contain}
 #photoView .pv-empty{text-align:center;color:#c9b9ad;padding:20px}
-#photoView .pv-empty svg{font-size:60px;color:#fb923c;margin-bottom:10px}
+#photoView .pv-empty svg{font-size:60px;color:var(--on);margin-bottom:10px}
 #photoView .pv-bar{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 16px calc(16px + env(safe-area-inset-bottom))}
 #photoView button{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:#fff}
 #photoView button.pri{background:var(--acc);border-color:var(--acc)}
@@ -279,7 +318,7 @@ body.grouping main{padding-bottom:calc(330px + env(safe-area-inset-bottom))}
 /* QR */
 .cam{position:relative;background:#000;border-radius:24px;overflow:hidden;aspect-ratio:3/4;max-height:58vh;margin:0 auto 12px;max-width:480px}
 .cam video{width:100%;height:100%;object-fit:cover;display:block}
-.cam .frame{position:absolute;inset:20%;border:3px solid #fb923c;border-radius:20px;box-shadow:0 0 0 999px rgba(0,0,0,.4)}
+.cam .frame{position:absolute;inset:20%;border:3px solid var(--on);border-radius:20px;box-shadow:0 0 0 999px rgba(0,0,0,.4)}
 .cam .msg{position:absolute;left:0;right:0;bottom:14px;text-align:center;color:#fff;font-size:14px;font-weight:600;text-shadow:0 1px 3px #000}
 .scanhero{text-align:center;padding:18px 10px 6px}
 .scanhero .big{font-size:56px;color:var(--acc)}
@@ -402,15 +441,7 @@ body.grouping main{padding-bottom:calc(330px + env(safe-area-inset-bottom))}
         <button class="pri" id="manAdd">Ekle</button>
       </div>
     </div>
-    <div class="card">
-      <h2>Liste yedeği</h2>
-      <p class="hint">Modül listesi bu telefonda saklanır. Başka telefona taşımak için dışa aktarın.</p>
-      <div class="row">
-        <button id="exportBtn" class="grow">Dışa aktar</button>
-        <button id="importBtn" class="grow">İçe aktar</button>
-        <input type="file" id="importFile" accept="application/json,.json" hidden>
-      </div>
-    </div>
+    <p class="hint" style="text-align:center">Modül listesinin yedeği: <b>Ayarlar → Yedekleme</b></p>
   </section>
 
   <!-- KEŞİF -->
@@ -442,12 +473,14 @@ body.grouping main{padding-bottom:calc(330px + env(safe-area-inset-bottom))}
     </div>
     <div class="card">
       <h2>Kumanda veritabanı yükle</h2>
-      <p class="hint" style="margin-top:0">Kumanda ve tuş bilgilerini içeren JSON dosyanızı seçin; içerik kontrol edilip modüle gönderilir.</p>
+      <p class="hint" style="margin-top:0">Kumanda ve tuş bilgilerini içeren JSON dosyasını <b>siteden</b> (adı "ir" ile başlayan dosyalar) ya da telefondan seçin; içerik kontrol edilip seçili modüle gönderilir.</p>
       <div class="row" style="margin-bottom:8px">
-        <button class="grow pri" id="irFileBtn">JSON dosyası seç</button>
+        <button class="grow pri" id="irSiteBtn">Siteden seç</button>
+        <button class="grow" id="irFileBtn">Telefondan</button>
         <button id="irClear" class="sm">Temizle</button>
         <input type="file" id="irFile" accept=".json,application/json,text/plain" hidden>
       </div>
+      <div id="irSite"></div>
       <div id="irInfo"></div>
       <details style="margin-top:6px"><summary class="mut" style="cursor:pointer;min-height:36px;display:flex;align-items:center">JSON içeriğini göster / düzenle</summary>
       <textarea id="irDb" spellcheck="false" placeholder='{"remotes":{"TV":{"power":{"proto":"NEC","hex":"20DF10EF","bits":32}}}}'></textarea></details>
@@ -458,20 +491,54 @@ body.grouping main{padding-bottom:calc(330px + env(safe-area-inset-bottom))}
     </div>
   </section>
 
-  <!-- AYARLAR / KAYIT -->
+  <!-- AYARLAR -->
   <section id="tab-log">
-    <div class="card">
-      <h2>Ayarlar</h2>
-      <p class="hint" style="margin-top:0">Uzun menzil (LR) artık her modülün kendi kartından seçiliyor (Yönet modunda: LR / Normal).</p>
-      <div class="row" style="margin-top:8px">
-        <span class="mut grow">Bağlantı yöntemi</span>
-        <select id="transportSel" style="width:auto">
-          <option value="auto">Otomatik</option>
-          <option value="usb">WebUSB (Android)</option>
-          <option value="serial">Web Serial (bilgisayar)</option>
-        </select>
+    <!-- Köprü -->
+    <div class="card" id="brCard">
+      <div class="brhead" id="brHead"><span class="t-ic" id="brIc"></span>
+        <div class="grow"><b>Köprü</b><div class="meta" id="brSub">Bağlı değil</div></div></div>
+      <div id="brUpd"></div>
+      <div class="kvs" id="brKv"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="grow" id="brReboot">Yeniden başlat</button>
+        <button class="grow" id="brRefresh">Bilgileri yenile</button>
       </div>
     </div>
+
+    <!-- Kayıt -->
+    <div class="card">
+      <div class="logbar"><h2>Kayıt</h2>
+        <button id="logPause">Duraklat</button><button id="logShare">Paylaş</button><button id="logClear">Temizle</button></div>
+      <div class="filters" id="logFilters" style="margin:10px 0 4px"></div>
+      <label class="chk"><input type="checkbox" id="logRx"> Modül paketlerini de kaydet (çok satır üretir)</label>
+      <div class="plegend"><span><i style="background:var(--bad)"></i>Gönderilen</span><span><i style="background:var(--ok)"></i>Gelen</span><span><i style="background:var(--acc)"></i>Bilgi</span></div>
+      <p class="hint" style="margin:0 0 8px">Bir satırı <b>basılı tutun</b>: büyür ve akış durur. Bırakınca akış devam eder.</p>
+      <div id="logbox"></div>
+    </div>
+
+    <!-- Yedekleme -->
+    <div class="card">
+      <h2>Yedekleme</h2>
+      <p class="hint" style="margin-top:0">Modüller, kurulum fotoğrafları, IR kumanda listeleri, simge/renk ve menzil seçimleri tek bir dosyada. Başka telefona taşımak ya da sıfırlamadan önce yedek alın.</p>
+      <div class="row">
+        <button id="exportBtn" class="grow pri">Yedek al</button>
+        <button id="importBtn" class="grow">Geri yükle</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <p class="hint" id="bkInfo" style="margin-bottom:0"></p>
+    </div>
+
+    <!-- Görünüm -->
+    <div class="card">
+      <h2>Görünüm</h2>
+      <div class="seg" id="themeSeg" role="group" aria-label="Tema">
+        <button data-theme="auto">Otomatik</button><button data-theme="light">Açık</button><button data-theme="dark">Koyu</button>
+      </div>
+      <h2 style="font-size:14px;margin:4px 0 10px">Ana renk</h2>
+      <div class="swgrid" id="accentGrid"></div>
+      <p class="hint" style="margin-bottom:0">Ana renk; üst çubuğu, düğmeleri ve kendine renk seçilmemiş modüllerin "açık" rengini belirler.</p>
+    </div>
+
     <div class="card" id="flashCard">
       <h2>Köprü yazılımı yükle</h2>
       <p class="hint" style="margin-top:0">Boş veya eski bir ESP32-S3'e köprü yazılımını telefondan yükler. Kartın içindeki program silinip yerine köprü yazılımı yazılır; ayarlar (NVS) korunur.</p>
@@ -489,21 +556,30 @@ body.grouping main{padding-bottom:calc(330px + env(safe-area-inset-bottom))}
       <p class="hint" id="flStatus" style="margin-bottom:6px">Hazır.</p>
       <div class="log mono" id="flLog" hidden style="max-height:180px"></div>
     </div>
-    <div class="card">
-      <h2>Kayıt</h2>
-      <div class="row" style="margin-bottom:8px">
-        <input type="text" id="rawCmd" class="grow mono" placeholder="Köprüye ham komut (örn. LIST)">
-        <button id="rawSend">Gönder</button>
+
+    <!-- Gelişmiş -->
+    <details class="card adv">
+      <summary><h2>Gelişmiş</h2></summary>
+      <div class="advin">
+        <label class="chk"><input type="checkbox" id="autoConnAdv"> Kart takılınca otomatik bağlan</label>
+        <div class="row">
+          <span class="mut grow">Bağlantı yöntemi</span>
+          <select id="transportSel" style="width:auto">
+            <option value="auto">Otomatik</option>
+            <option value="usb">WebUSB (Android)</option>
+            <option value="serial">Web Serial (bilgisayar)</option>
+          </select>
+        </div>
+        <label class="chk"><input type="checkbox" id="logRawShow"> Kayıtta ham protokol satırlarını da göster</label>
+        <div>
+          <div class="mut" style="font-size:13px;margin-bottom:6px">Köprüye ham komut (örn. LIST, INFO)</div>
+          <div class="row">
+            <input type="text" id="rawCmd" class="grow mono" placeholder="LIST">
+            <button id="rawSend">Gönder</button>
+          </div>
+        </div>
       </div>
-      <div class="row" style="margin-bottom:8px">
-        <button id="logClear" class="sm">Temizle</button>
-      </div>
-      <label class="chk"><input type="checkbox" id="logRx"> Modül paketlerini de göster (çok satır üretir)</label>
-      <label class="chk" style="margin-bottom:8px"><input type="checkbox" id="logRawShow"> Ham protokol satırlarını da göster</label>
-      <div class="plegend"><span><i style="background:var(--bad)"></i>Gönderilen</span><span><i style="background:var(--ok)"></i>Gelen</span><span><i style="background:var(--acc)"></i>Bilgi</span></div>
-      <p class="hint" style="margin:0 0 8px">Bir satırı <b>basılı tutun</b>: büyür ve akış durur. Bırakınca akış devam eder.</p>
-      <div id="logbox"></div>
-    </div>
+    </details>
   </section>
 </main>
 
@@ -692,6 +768,12 @@ class SerialLink {
     this.finish();
   }
   async write(str) { await this.writer.write(enc.encode(str)); }
+  async pulseReset() {
+    await this.port.setSignals({ dataTerminalReady: false, requestToSend: true });
+    await new Promise(r => setTimeout(r, 150));
+    await this.port.setSignals({ requestToSend: false });
+    try { await this.port.setSignals({ dataTerminalReady: true }); } catch (e) {}
+  }
   finish() { if (this.done) return; this.done = true; this.closed = true; this.onClose(); }
   async close() {
     this.closed = true;
@@ -728,6 +810,7 @@ class UsbCdcLink {
     if (!epIn || !epOut) throw new Error('USB uç noktaları bulunamadı');
     this.inEp = epIn.endpointNumber;
     this.outEp = epOut.endpointNumber;
+    this.ctrl = ctrl;
     if (ctrl !== null) {
       const setup = (request, value) => ({ requestType: 'class', recipient: 'interface', request, value, index: ctrl });
       // 115200 8N1 ve DTR=1, RTS=0 (RTS'yi kaldırmak S3'ü yeniden başlatmaz)
@@ -746,6 +829,15 @@ class UsbCdcLink {
     this.finish();
   }
   async write(str) { await this.dev.transferOut(this.outEp, enc.encode(str)); }
+  // RTS ile çipi yeniden başlat (DTR=0 → normal açılış). USB-Serial-JTAG ve otomatik reset devreli COM çipleri için.
+  async pulseReset() {
+    if (this.ctrl == null) throw new Error('Kontrol arayüzü yok');
+    const setup = v => ({ requestType: 'class', recipient: 'interface', request: 0x22, value: v, index: this.ctrl });
+    await this.dev.controlTransferOut(setup(0x02));
+    await new Promise(r => setTimeout(r, 150));
+    await this.dev.controlTransferOut(setup(0x00));
+    try { await this.dev.controlTransferOut(setup(0x01)); } catch (e) {}
+  }
   finish() { if (this.done) return; this.done = true; this.closed = true; this.onClose(); }
   async close() {
     this.closed = true;
@@ -782,9 +874,9 @@ function helloRetry(n) {
   }, n === 1 ? 1500 : 2000);
 }
 
-function send(line) {
+function send(line, quiet) {
   if (!link) return Promise.resolve();
-  if ($('#logRx').checked || !/^RAW\t/.test(line)) logLine('> ' + line);
+  if (!quiet && ($('#logRx').checked || !/^RAW\t/.test(line))) logLine('> ' + line);
   writeChain = writeChain.then(() => link && link.write(line + '\n')).catch(e => logLine('! yazma hatası: ' + e.message));
   return writeChain;
 }
@@ -969,11 +1061,13 @@ function handleLine(line) {
   const p = line.split('\t');
   switch (p[0]) {
     case 'HELLO':
-      bridge = { mac: p[1], ch: p[2], fw: p[3], lr: p[4] === '1' };
+      bridge = { mac: p[1], ch: p[2], fw: p[3], lr: p[4] === '1', port: p[5] || '', info: null };
       clearTimeout(helloTimer);
       setConn('on');
       logLine('< ' + line);
       syncBridge();
+      if (bridgeVer() >= 103) send('INFO', true);
+      checkSiteFw();
       scheduleRender();
       break;
     case 'RX':
@@ -983,6 +1077,10 @@ function handleLine(line) {
     case 'RXB':
       if ($('#logRx').checked) logLine('< ' + line);
       onRxBin(p[1], p[2], +p[3], p[4], p[5] || '');
+      break;
+    case 'INFO':
+      if (bridge) { bridge.info = { up: +p[1], heap: +p[2], peers: +p[3], watch: +p[4], dropped: +p[5], port: p[6], sniff: p[7] === '1', at: Date.now() }; if (p[6]) bridge.port = p[6]; }
+      if (activeTab === 'log') renderBridge();
       break;
     case 'TXS': {
       const m = modules.get(p[1]);
@@ -1328,6 +1426,7 @@ function render() {
   if (activeTab === 'discover') renderDiscover();
   if (activeTab === 'ir') renderIrTargets();
   if (activeTab === 'health') renderHealth();
+  if (activeTab === 'log') { renderBridge(); renderLogFilters(); renderBackupInfo(); }
 }
 
 // ---------------------------------------------------------------- sağlık (sıcaklık / sinyal)
@@ -1404,7 +1503,7 @@ const ICON_CHOICES = [['auto', 'Otomatik'], ['bulb', 'Tek lamba'], ['bulb2', 'Ç
   ['heat', 'Isıtıcı'], ['water', 'Su / vana'], ['lock', 'Kilit']];
 const COLORS = [['#ea580c', 'Turuncu'], ['#dc2626', 'Kırmızı'], ['#db2777', 'Pembe'], ['#9333ea', 'Mor'], ['#4f46e5', 'Lacivert'],
   ['#2563eb', 'Mavi'], ['#0891b2', 'Turkuaz'], ['#16a34a', 'Yeşil'], ['#ca8a04', 'Altın'], ['#64748b', 'Gri']];
-const modColor = m => m.color || COLORS[0][0];
+const modColor = m => m.color || settings.accent || COLORS[0][0];
 function colorVars(m, base = 'var(--card)') {
   if (!m.color) return '';
   return `--on:${m.color};--on-soft:color-mix(in srgb, ${m.color} 22%, ${base})`;
@@ -1973,8 +2072,11 @@ function logEntryHtml(e, fresh) {
     <div class="lx">${esc(e.text)}</div>${e.detail ? `<div class="ld">${esc(e.detail)}</div>` : ''}${$('#logRawShow').checked ? `<div class="lr">${esc(e.raw)}</div>` : ''}</div>`;
 }
 function renderLog() {
-  $('#logbox').innerHTML = logEntries.length ? logEntries.map(e => logEntryHtml(e)).join('')
-    : '<div class="empty">Henüz kayıt yok.</div>';
+  const list = logEntries.filter(logMatch);
+  logPausedNew = 0;
+  $('#logbox').innerHTML = (logPaused ? '<div class="pausebar">Kayıt duraklatıldı — yeni satırlar bekletiliyor</div>' : '') +
+    (list.length ? list.map(e => logEntryHtml(e)).join('') : `<div class="empty">${logEntries.length ? 'Bu filtrede kayıt yok.' : 'Henüz kayıt yok.'}</div>`);
+  if (activeTab === 'log') renderLogFilters();
 }
 function logLine(raw) {
   const e = parseLog(raw);
@@ -1983,8 +2085,11 @@ function logLine(raw) {
   e.id = ++entrySeq;
   logEntries.unshift(e);
   if (logEntries.length > LOG_MAX) logEntries.length = LOG_MAX;
+  if (logPaused) { if (logMatch(e)) logPausedNew++; if (activeTab === 'log') renderLogFilters(); return; }
   if (hold.frozen) { hold.logDirty = true; return; }
   if (activeTab === 'log') {
+    if (e.cat === 'err') renderLogFilters();
+    if (!logMatch(e)) return;
     const box = $('#logbox');
     box.querySelector('.empty')?.remove();
     box.insertAdjacentHTML('afterbegin', logEntryHtml(e, true));
@@ -2027,7 +2132,7 @@ function endHold() {
   hold.el?.classList.remove('held');
   hold.el = null;
   $('#zoom').classList.remove('show');
-  if (hold.logDirty && activeTab === 'log') renderLog();
+  if (hold.logDirty && activeTab === 'log' && !logPaused) renderLog();
   hold.logDirty = false;
   scheduleRender();
 }
@@ -2346,10 +2451,10 @@ async function flLoadImage() {
   return buf;
 }
 
-async function flStart() {
+async function flStart(confirmed) {
   if (flashing) return;
   if (!fl.dev) { toast('Önce "Kartı seç" ile hedef kartı seçin'); return; }
-  if (!confirm('Seçilen ESP32-S3\'ün içindeki program silinip köprü yazılımı yazılacak. Yükleme bitene kadar kabloyu çıkarmayın. Devam edilsin mi?')) return;
+  if (confirmed !== true && !confirm('Seçilen ESP32-S3\'ün içindeki program silinip köprü yazılımı yazılacak. Yükleme bitene kadar kabloyu çıkarmayın. Devam edilsin mi?')) return;
   const btn = $('#flStart'), bar = $('#flProg');
   flashing = true;
   btn.disabled = true;
@@ -2414,13 +2519,227 @@ async function flStart() {
   }
 }
 
+// ====================================================================== Ayarlar: köprü kartı
+function fmtUptime(sec) {
+  const d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600), m = Math.floor(sec % 3600 / 60);
+  return d ? `${d} g ${h} sa` : h ? `${h} sa ${m} dk` : m ? `${m} dk` : `${sec} sn`;
+}
+function linkDesc() {
+  if (!link) return '';
+  if (link instanceof UsbCdcLink) {
+    const v = link.dev?.vendorId;
+    const kind = v === 0x303a ? 'USB (kartın kendi USB\'si)' : v === 0x1a86 ? 'COM (CH34x)' : v === 0x10c4 ? 'COM (CP210x)' : 'USB';
+    return kind;
+  }
+  return 'Web Serial';
+}
+function renderBridge() {
+  const on = connected();
+  $('#brHead').classList.toggle('on', on);
+  $('#brIc').innerHTML = ICON.usb;
+  $('#brSub').textContent = on ? `${bridge.fw.replace('BTN-S3-BRIDGE/', 'Sürüm ')} · ${linkDesc()}` : link ? 'Bağlanıyor…' : 'Bağlı değil';
+  const kv = (l, v, hot, wide) => `<div class="kv${hot ? ' on' : ''}"${wide ? ' style="grid-column:1/-1"' : ''}><span>${esc(l)}</span><b>${esc(v)}</b></div>`;
+  let h = '';
+  if (on) {
+    const i = bridge.info;
+    h += kv('MAC adresi', bridge.mac, false, true) + kv('Kanal', bridge.ch);
+    h += kv('Port', bridge.port || (link?.dev?.vendorId === 0x303a ? 'USB' : 'COM'));
+    h += kv('LR desteği', bridge.lr ? 'Var' : 'Yok');
+    if (i) {
+      h += kv('Açık kalma', fmtUptime(i.up)) + kv('Boş bellek', Math.round(i.heap / 1024) + ' KB');
+      h += kv('Yönetilen', `${i.peers} / ${MAX_MANAGED}`) + kv('Dinlenen', String(i.watch));
+      h += kv('Kaçırılan olay', String(i.dropped), i.dropped > 0) + kv('Keşif', i.sniff ? 'Açık' : 'Kapalı');
+    } else if (bridgeVer() < 103) {
+      h += `<div class="kv" style="grid-column:1/-1"><span>Ayrıntılı bilgi</span><b>Köprü 1.3+ gerekir</b></div>`;
+    }
+  } else {
+    h = `<p class="hint" style="grid-column:1/-1;margin:0">Köprü takılınca bilgileri burada görünür.</p>`;
+  }
+  if ($('#brKv').innerHTML !== h) $('#brKv').innerHTML = h;
+  $('#brReboot').disabled = !link;
+  $('#brRefresh').disabled = !on;
+  renderUpdate();
+}
+
+// Sitedeki kopru.bin içinden sürüm metnini ("BTN-S3-BRIDGE/x.y") okuyup bağlı köprüyle karşılaştır.
+const siteFw = { ver: '', at: 0, err: '', busy: false };
+const verNum = v => { const m = /(\d+)\.(\d+)/.exec(v || ''); return m ? +m[1] * 100 + +m[2] : 0; };
+async function checkSiteFw(force) {
+  if (siteFw.busy || (!force && Date.now() - siteFw.at < 10 * 60 * 1000)) { renderUpdate(); return; }
+  siteFw.busy = true;
+  try {
+    const r = await fetch(FW_URL, { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const txt = new TextDecoder('latin1').decode(new Uint8Array(await r.arrayBuffer()));
+    const m = /BTN-S3-BRIDGE\/(\d+\.\d+)/.exec(txt);
+    siteFw.ver = m ? m[1] : '';
+    siteFw.err = m ? '' : 'sürüm bilgisi bulunamadı';
+  } catch (e) { siteFw.err = e.message; siteFw.ver = ''; }
+  siteFw.at = Date.now();
+  siteFw.busy = false;
+  renderUpdate();
+}
+function updateAvailable() { return connected() && siteFw.ver && verNum(siteFw.ver) > bridgeVer(); }
+function renderUpdate() {
+  const box = $('#brUpd');
+  const up = updateAvailable();
+  const h = up ? `<div class="updbox"><div class="grow"><b>Yeni köprü yazılımı var: ${esc(siteFw.ver)}</b>
+      <span>Bağlı köprü: ${esc(bridge.fw.replace('BTN-S3-BRIDGE/', ''))}. Güncelleme yaklaşık 1 dakika sürer.</span></div>
+      <button class="pri sm" id="brUpdate">Güncelle</button></div>` : '';
+  if (box.innerHTML !== h) box.innerHTML = h;
+  // Ayarlar sekmesinde kırmızı nokta
+  const tab = document.querySelector('#tabs [data-tab=log]');
+  let dot = tab.querySelector('.tdot');
+  if (up && !dot) { dot = document.createElement('i'); dot.className = 'tdot'; tab.appendChild(dot); }
+  if (!up && dot) dot.remove();
+}
+async function updateBridgeNow() {
+  if (!link) return;
+  if (!confirm(`Köprü yazılımı ${siteFw.ver} sürümüne güncellenecek. Bitene kadar kabloyu çıkarmayın. Devam edilsin mi?`)) return;
+  fl.file = null;
+  if (link instanceof UsbCdcLink) { fl.dev = link.dev; fl.isUsb = true; } else { fl.dev = link.port; fl.isUsb = false; }
+  flRender();
+  $('#flashCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  await flStart(true);
+}
+async function rebootBridge() {
+  if (!link) return;
+  if (!confirm('Köprü yeniden başlatılsın mı? Birkaç saniye içinde kendiliğinden yeniden bağlanır.')) return;
+  if (bridgeVer() >= 103) { send('REBOOT'); toast('Köprü yeniden başlatılıyor…'); return; }
+  try { await link.pulseReset(); logLine('# Köprü donanımsal olarak yeniden başlatıldı (RTS)'); toast('Köprü yeniden başlatılıyor…'); }
+  catch (e) { toast('Yeniden başlatılamadı: ' + e.message); }
+}
+
+// ====================================================================== Ayarlar: görünüm
+const THEME_LABEL = { auto: 'Otomatik', light: 'Açık', dark: 'Koyu' };
+function hexDarken(hex, k) {
+  const n = parseInt(hex.slice(1), 16);
+  const f = c => Math.round(c * k).toString(16).padStart(2, '0');
+  return '#' + f(n >> 16 & 255) + f(n >> 8 & 255) + f(n & 255);
+}
+function applyLook() {
+  const root = document.documentElement;
+  const th = settings.theme || 'auto';
+  if (th === 'auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', th);
+  const ac = settings.accent || COLORS[0][0];
+  if (ac === COLORS[0][0]) { root.removeAttribute('data-accent'); root.style.removeProperty('--base'); }
+  else { root.setAttribute('data-accent', ''); root.style.setProperty('--base', ac); }
+  document.querySelector('meta[name=theme-color]').content = hexDarken(ac, ac === COLORS[0][0] ? .66 : .62);
+  document.querySelectorAll('#themeSeg button').forEach(b => b.classList.toggle('act', b.dataset.theme === th));
+  $('#accentGrid').innerHTML = COLORS.map(([c, l]) => `<div><button class="swatch${ac === c ? ' act' : ''}" style="--c:${c}" data-accent="${c}" aria-label="${l}">${ac === c ? '✓' : ''}</button><div class="swname">${l}</div></div>`).join('');
+}
+
+// ====================================================================== Ayarlar: kayıt filtreleri / duraklat / paylaş
+const LOG_FILTERS = [['all', 'Tümü'], ['err', 'Hatalar'], ['cmd', 'Komutlar'], ['pkt', 'Modül paketleri'], ['info', 'Bilgi']];
+let logFilter = 'all', logPaused = false, logPausedNew = 0;
+function logMatch(e) {
+  switch (logFilter) {
+    case 'err': return e.cat === 'err';
+    case 'cmd': return e.cat === 'out';
+    case 'pkt': return e.tag === 'Modülden' || e.tag === 'Teslim';
+    case 'info': return e.cat === 'info' || e.cat === 'ok' || e.tag === 'Köprüden';
+    default: return true;
+  }
+}
+function renderLogFilters() {
+  const errs = logEntries.filter(e => e.cat === 'err').length;
+  const h = LOG_FILTERS.map(([k, l]) => `<button class="fchip${logFilter === k ? ' act' : ''}" data-lf="${k}">${l}${k === 'err' && errs ? `<span class="n">${errs}</span>` : ''}</button>`).join('');
+  if ($('#logFilters').innerHTML !== h) $('#logFilters').innerHTML = h;
+  const pb = $('#logPause');
+  pb.textContent = logPaused ? (logPausedNew ? `Devam (${logPausedNew})` : 'Devam') : 'Duraklat';
+  pb.classList.toggle('act', logPaused);
+}
+function shareLogText() {
+  const now = new Date();
+  const head = [`BTNHome by MNB — kayıt`, `Tarih: ${now.toLocaleString('tr-TR')}`,
+    bridge ? `Köprü: ${bridge.fw} · ${bridge.mac} · kanal ${bridge.ch} · ${linkDesc()}` : 'Köprü: bağlı değil',
+    `Modül sayısı: ${modules.size}`, '-'.repeat(60)];
+  const rows = [...logEntries].reverse().map(e => `${e.t}  [${e.tag}]  ${e.text}${e.detail ? '  · ' + e.detail : ''}\n          ${e.raw}`);
+  return head.concat(rows).join('\n') + '\n';
+}
+async function shareLog() {
+  if (!logEntries.length) { toast('Kayıt boş'); return; }
+  const d = new Date(), z = n => String(n).padStart(2, '0');
+  const name = `btnhome-kayit-${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}_${z(d.getHours())}${z(d.getMinutes())}.txt`;
+  const file = new File([shareLogText()], name, { type: 'text/plain' });
+  try {
+    if (navigator.canShare?.({ files: [file] })) { await navigator.share({ files: [file], title: 'BTNHome kayıt' }); return; }
+  } catch (e) { if (e.name === 'AbortError') return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(file); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast('Kayıt dosyası indirildi');
+}
+
+// ====================================================================== IR: siteden dosya seçme
+// GitHub Pages: deposundaki "ir" ile başlayan dosyalar GitHub API ile listelenir.
+const irSite = { files: null, err: '', loaded: '', busy: false };
+function ghRepo() {
+  const m = /^([^.]+)\.github\.io$/i.exec(location.hostname);
+  if (!m) return null;
+  const seg = location.pathname.split('/').filter(Boolean);
+  const repo = seg.length && !/\.[a-z0-9]+$/i.test(seg[0]) ? seg[0] : `${m[1]}.github.io`;
+  return { owner: m[1], repo };
+}
+async function listSiteIr() {
+  const gh = ghRepo();
+  if (!gh) throw new Error('Dosya listesi yalnızca GitHub Pages sitesinde alınabilir.');
+  const api = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/`;
+  let list = null;
+  for (const dir of ['', 'docs']) {
+    const r = await fetch(api + dir, { headers: { Accept: 'application/vnd.github+json' } });
+    if (r.status === 403) throw new Error('GitHub şu an liste vermiyor (saatlik sınır). Birazdan tekrar deneyin ya da dosya adını yazın.');
+    if (!r.ok) continue;
+    const j = await r.json();
+    if (!Array.isArray(j)) continue;
+    if (dir === '' && !j.some(f => f.name === 'index.html') && j.some(f => f.name === 'docs' && f.type === 'dir')) continue;
+    list = j; break;
+  }
+  if (!list) throw new Error('Depo bulunamadı ya da gizli.');
+  return list.filter(f => f.type === 'file' && /^ir/i.test(f.name)).map(f => ({ name: f.name, size: f.size }));
+}
+function renderIrSite() {
+  const box = $('#irSite');
+  if (irSite.files === null && !irSite.err && !irSite.busy) { box.innerHTML = ''; return; }
+  let h = '';
+  if (irSite.busy) h = '<p class="hint">Sitedeki dosyalar aranıyor…</p>';
+  else if (irSite.err) h = `<div class="banner">${esc(irSite.err)}</div>`;
+  else if (!irSite.files.length) h = '<p class="hint">Sitede adı "ir" ile başlayan dosya bulunamadı.</p>';
+  else h = `<div class="sitelist">${irSite.files.map(f => `<button class="sitefile${irSite.loaded === f.name ? ' act' : ''}" data-sitefile="${esc(f.name)}">
+      <span class="t-ic">${ICON.ir}</span><span class="grow"><b>${esc(f.name)}</b><span class="meta" style="display:block">${(f.size / 1024).toFixed(1)} KB${irSite.loaded === f.name ? ' · seçili' : ''}</span></span></button>`).join('')}</div>`;
+  h += `<div class="row" style="margin-bottom:8px"><input type="text" id="irSiteName" class="grow mono" placeholder="ya da dosya adı: ir_tv.json"><button class="sm" id="irSiteGo">Yükle</button></div>`;
+  box.innerHTML = h;
+}
+async function openSiteIr() {
+  irSite.busy = true; irSite.err = ''; renderIrSite();
+  try { irSite.files = await listSiteIr(); } catch (e) { irSite.files = []; irSite.err = e.message; }
+  irSite.busy = false; renderIrSite();
+}
+async function loadSiteIr(name) {
+  name = name.trim().replace(/^\/+/, '');
+  if (!name || /[\\:]|\.\./.test(name)) { toast('Geçerli bir dosya adı girin'); return; }
+  try {
+    const r = await fetch(encodeURI(name), { cache: 'no-cache' });
+    if (!r.ok) throw new Error(`sitede bulunamadı (HTTP ${r.status})`);
+    const db = irNormalize(JSON.parse(await r.text()));
+    $('#irDb').value = JSON.stringify(db, null, 2);
+    irSite.loaded = name;
+    irRefresh();
+    renderIrSite();
+    toast(`${name} yüklendi — "Modüle gönder ve programla" ile aktarın`, 3500);
+    $('#irInfo').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (e) {
+    toast(`${name}: ${e instanceof SyntaxError ? 'geçersiz JSON' : e.message}`, 4000);
+  }
+}
+
 // ====================================================================== olaylar
 function switchTab(tab) {
   activeTab = tab;
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('act', b.dataset.tab === tab));
   document.querySelectorAll('main section').forEach(s => s.classList.toggle('act', s.id === 'tab-' + tab));
   if (tab !== 'scan' && scan.stream) stopScan();
-  if (tab === 'log') { renderLog(); $('#logbox').scrollTop = 0; }
+  if (tab === 'log') { renderLog(); $('#logbox').scrollTop = 0; renderBridge(); if (connected()) { if (bridgeVer() >= 103) send('INFO', true); checkSiteFw(); } }
   window.scrollTo(0, 0);
   render();
 }
@@ -2446,7 +2765,7 @@ $('#knownList').addEventListener('click', e => {
   if (d) connect(d.dev, d.Cls);
 });
 $('#connSheet [data-close]').addEventListener('click', closeSheet);
-$('#autoConn').addEventListener('change', e => { settings.autoConnect = e.target.checked; save(); });
+$('#autoConn').addEventListener('change', e => { settings.autoConnect = e.target.checked; $('#autoConnAdv').checked = e.target.checked; save(); });
 navigator.usb?.addEventListener('connect', () => setTimeout(() => autoConnect('kart takıldı'), 600));
 navigator.serial?.addEventListener('connect', () => setTimeout(() => autoConnect('kart takıldı'), 600));
 
@@ -2534,14 +2853,14 @@ $('#sheetBack').addEventListener('click', closeSheet);
 $('#flPickDev').addEventListener('click', flPickDevice);
 $('#flPickFile').addEventListener('click', () => $('#flFileIn').click());
 $('#flFileIn').addEventListener('change', e => { fl.file = e.target.files[0] || null; e.target.value = ''; flRender(); });
-$('#flStart').addEventListener('click', flStart);
+$('#flStart').addEventListener('click', () => flStart());
 $('#lookClose').addEventListener('click', closeLook);
 $('#lookBody').addEventListener('click', e => {
   const m = modules.get(lookMac);
   if (!m) return;
   const ic = e.target.closest('[data-icon]'), co = e.target.closest('[data-color]');
   if (ic) m.icon = ic.dataset.icon === 'auto' ? '' : ic.dataset.icon;
-  else if (co) m.color = co.dataset.color === COLORS[0][0] ? '' : co.dataset.color;
+  else if (co) m.color = co.dataset.color === (settings.accent || COLORS[0][0]) ? '' : co.dataset.color;
   else if (e.target.closest('#lookReset')) { m.icon = ''; m.color = ''; }
   else return;
   try { navigator.vibrate?.(10); } catch (err) {}
@@ -2624,39 +2943,67 @@ $('#exportBtn').addEventListener('click', async () => {
     if (m.hasPhoto) { try { const b = await photoDB.get(m.mac); if (b) { x.photo = await blobToDataUrl(b); x.photoAt = m.photoAt; } } catch (e) {} }
     out.push(x);
   }
-  const data = JSON.stringify({ version: 2, modules: out }, null, 2);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
-  a.download = 'btnhome-moduller.json';
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  const data = JSON.stringify({ version: 3, app: 'BTNHome by MNB', at: new Date().toISOString(),
+    look: { theme: settings.theme || 'auto', accent: settings.accent || '' }, modules: out }, null, 2);
+  const d = new Date(), z = n => String(n).padStart(2, '0');
+  const name = `btnhome-yedek-${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}.json`;
+  const file = new File([data], name, { type: 'application/json' });
+  const photos = out.filter(x => x.photo).length, irs = out.filter(x => x.ir).length;
+  try {
+    if (navigator.canShare?.({ files: [file] }) && confirm('Yedek dosyası paylaşılsın mı (Drive, WhatsApp, e-posta…)?\n"İptal" derseniz telefona indirilir.')) {
+      await navigator.share({ files: [file], title: 'BTNHome yedek' });
+    } else {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(file); a.download = name; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }
+    settings.lastBackup = Date.now(); save(); renderBackupInfo();
+    toast(`Yedek alındı: ${out.length} modül, ${photos} fotoğraf, ${irs} IR listesi`);
+  } catch (e) { if (e.name !== 'AbortError') toast('Yedek alınamadı: ' + e.message); }
 });
+function renderBackupInfo() {
+  $('#bkInfo').textContent = `Bu telefonda ${modules.size} modül kayıtlı.` +
+    (settings.lastBackup ? ` Son yedek: ${new Date(settings.lastBackup).toLocaleString('tr-TR')}.` : ' Henüz yedek alınmadı.');
+}
 $('#importBtn').addEventListener('click', () => $('#importFile').click());
 $('#importFile').addEventListener('change', async e => {
   const f = e.target.files[0];
   if (!f) return;
   try {
     const d = JSON.parse(await f.text());
-    let n = 0;
-    for (const x of d.modules || []) {
+    const list = (d.modules || []).filter(x => extractMac(x.mac));
+    if (!list.length) throw new Error('dosyada modül yok');
+    const existing = list.filter(x => modules.has(extractMac(x.mac))).length;
+    const updateExisting = existing > 0 && confirm(`${existing} modül bu telefonda zaten kayıtlı.\nYedekteki ad, simge, renk, menzil, fotoğraf ve IR listesiyle güncellensin mi?\n("İptal": yalnızca yeni modüller eklenir)`);
+    let n = 0, u = 0;
+    for (const x of list) {
       const mac = extractMac(x.mac);
-      if (!mac || modules.has(mac)) continue;
-      const m = newModule(mac, x.name);
-      m.shutter = !!x.shutter; m.type = x.type || '';
+      const isNew = !modules.has(mac);
+      if (!isNew && !updateExisting) continue;
+      const m = isNew ? newModule(mac, x.name) : modules.get(mac);
+      if (!isNew && x.name) m.name = x.name;
+      m.shutter = !!x.shutter; m.type = x.type || m.type || '';
       m.icon = ICON_CHOICES.some(c => c[0] === x.icon) ? x.icon : '';
       m.range = x.range === 'normal' ? 'normal' : 'lr';
       m.color = COLORS.some(c => c[0] === x.color) ? x.color : '';
-      modules.set(mac, m);
+      if (isNew) modules.set(mac, m);
       if (x.ir && x.ir.remotes && typeof x.ir.remotes === 'object') { irStore[mac] = { remotes: x.ir.remotes, at: x.ir.at || Date.now() }; irStoreSave(); }
       if (typeof x.photo === 'string' && x.photo.startsWith('data:image/')) {
         try { await photoDB.put(mac, await (await fetch(x.photo)).blob()); m.hasPhoto = true; m.photoAt = x.photoAt || Date.now(); } catch (err) {}
       }
-      if (x.mode === 'listen' || x.mode === 'manage') setMode(m, x.mode);
-      n++;
+      if (isNew && (x.mode === 'listen' || x.mode === 'manage')) setMode(m, x.mode);
+      if (!isNew && m.mode === 'manage') sendRange(m);
+      isNew ? n++ : u++;
+    }
+    if (d.look && (d.look.theme || d.look.accent)) {
+      if (['auto', 'light', 'dark'].includes(d.look.theme)) settings.theme = d.look.theme;
+      if (!d.look.accent || COLORS.some(c => c[0] === d.look.accent)) settings.accent = d.look.accent || '';
+      applyLook();
     }
     save();
     scheduleRender();
-    toast(n + ' modül içe aktarıldı');
+    renderBackupInfo();
+    toast([n ? `${n} modül eklendi` : '', u ? `${u} modül güncellendi` : ''].filter(Boolean).join(', ') || 'Değişiklik yapılmadı');
   } catch (err) { toast('Dosya okunamadı: ' + err.message); }
   e.target.value = '';
 });
@@ -2732,7 +3079,24 @@ $('#rawSend').addEventListener('click', () => {
   $('#rawCmd').value = '';
 });
 $('#rawCmd').addEventListener('keydown', e => { if (e.key === 'Enter') $('#rawSend').click(); });
-$('#logClear').addEventListener('click', () => { logEntries.length = 0; renderLog(); });
+$('#logClear').addEventListener('click', () => { if (!logEntries.length || confirm('Kayıt temizlensin mi?')) { logEntries.length = 0; renderLog(); } });
+$('#logPause').addEventListener('click', () => { logPaused = !logPaused; renderLog(); });
+$('#logShare').addEventListener('click', shareLog);
+$('#logFilters').addEventListener('click', e => { const b = e.target.closest('[data-lf]'); if (b) { logFilter = b.dataset.lf; renderLog(); } });
+$('#brReboot').addEventListener('click', rebootBridge);
+$('#brRefresh').addEventListener('click', () => { if (bridgeVer() >= 103) send('INFO', true); else send('LIST'); checkSiteFw(true); toast('Bilgiler yenilendi'); });
+$('#brUpd').addEventListener('click', e => { if (e.target.closest('#brUpdate')) updateBridgeNow(); });
+$('#themeSeg').addEventListener('click', e => { const b = e.target.closest('[data-theme]'); if (b) { settings.theme = b.dataset.theme; save(); applyLook(); } });
+$('#accentGrid').addEventListener('click', e => { const b = e.target.closest('[data-accent]'); if (b) { settings.accent = b.dataset.accent; save(); applyLook(); scheduleRender(); } });
+$('#autoConnAdv').addEventListener('change', e => { settings.autoConnect = e.target.checked; save(); if (settings.autoConnect) autoConnect('ayar açıldı'); });
+$('#irSiteBtn').addEventListener('click', openSiteIr);
+$('#irSite').addEventListener('click', e => {
+  const f = e.target.closest('[data-sitefile]');
+  if (f) { loadSiteIr(f.dataset.sitefile); return; }
+  if (e.target.closest('#irSiteGo')) loadSiteIr($('#irSiteName').value);
+});
+$('#irSite').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'irSiteName') loadSiteIr(e.target.value); });
+setInterval(() => { if (activeTab === 'log' && connected() && bridgeVer() >= 103 && document.visibilityState === 'visible') send('INFO', true); }, 5000);
 $('#logRawShow').addEventListener('change', renderLog);
 
 navigator.usb?.addEventListener('disconnect', e => { if (link instanceof UsbCdcLink && link.dev === e.device) link.close(); });
@@ -2747,6 +3111,8 @@ document.addEventListener('visibilitychange', async () => {
 load();
 $('#sniffAll').checked = settings.sniffAll;
 $('#transportSel').value = settings.transport;
+$('#autoConnAdv').checked = settings.autoConnect !== false;
+applyLook();
 $('#autoListen').checked = settings.autoListen;
 {
   const notes = [];
