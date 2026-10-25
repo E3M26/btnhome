@@ -46,13 +46,16 @@ h2{font-size:16px;margin:2px 0 10px}
 .top{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#c2410c 0%,#9a3412 100%);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(154,52,18,.25)}
 .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .logo{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:22px}
-.brand h1{font-size:18px;margin:0;letter-spacing:-.01em}
+.brand h1{font-size:18px;margin:0;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand h1 .by{font-size:12.5px;font-weight:600;opacity:.8;letter-spacing:.04em;margin-left:2px}
 .brand small{display:block;font-size:12px;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .conn{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:99px;display:flex;align-items:center;gap:8px;padding:8px 14px;min-height:42px}
 .conn[data-state=off]{background:#fff;color:var(--acc-2);border-color:#fff}
 .cdot{width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.5}
 .conn[data-state=on] .cdot{background:#5cf09a;opacity:1;box-shadow:0 0 0 3px rgba(92,240,154,.25)}
+.kes{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:99px;display:flex;align-items:center;gap:6px;padding:8px 12px;min-height:42px;font-size:14px}
+.kes svg{font-size:17px}
+@media (max-width:420px){.top.on .logo{display:none}}
 .conn[data-state=wait] .cdot{background:#ffd27a;opacity:1;animation:pulse 1s infinite}
 @keyframes pulse{50%{opacity:.3}}
 
@@ -253,7 +256,50 @@ section{display:none}section.act{display:block}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 .progress{height:10px;background:var(--chip);border-radius:99px;overflow:hidden;margin:10px 0}
 .progress div{height:100%;width:0;background:var(--acc);transition:width .2s}
-#logbox{height:52vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;white-space:pre-wrap;word-break:break-all}
+#logbox{max-height:62vh;overflow:auto;background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:6px}
+.le{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding:9px 10px;border-radius:12px;border-left:4px solid var(--line);background:var(--card);margin-bottom:6px}
+.le:last-child{margin-bottom:0}
+.le .lt{font-size:11.5px;color:var(--mut);font-variant-numeric:tabular-nums;white-space:nowrap;padding-top:2px}
+.le .lb{justify-self:start;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--chip);color:var(--mut);white-space:nowrap}
+.le .lx{grid-column:1/-1;font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.le .ld{grid-column:1/-1;font-size:12.5px;color:var(--mut);overflow-wrap:anywhere}
+.le .lr{grid-column:1/-1;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:var(--mut);opacity:.85;word-break:break-all}
+.le.out{border-left-color:var(--bad)}.le.out .lb{background:var(--bad-soft);color:var(--bad)}
+.le.in{border-left-color:var(--ok)}.le.in .lb{background:color-mix(in srgb,var(--ok) 16%,var(--card));color:var(--ok)}
+.le.ok{border-left-color:var(--line);opacity:.8}
+.le.err{border-left-color:var(--bad);background:var(--bad-soft)}.le.err .lb{background:var(--bad);color:#fff}
+.le.info .lb{background:var(--acc-soft);color:var(--acc)}.le.info{border-left-color:var(--acc)}
+.le.new{animation:lein .5s ease-out}
+@keyframes lein{from{background:var(--acc-soft)}}
+.plog{max-height:300px;overflow:auto;display:grid;gap:6px}
+.pe{border-left:4px solid var(--line);background:var(--sheet-in);border-radius:10px;padding:7px 10px}
+.pe .ph{display:flex;gap:8px;align-items:center;font-size:11.5px;font-weight:700}
+.pe .ph time{color:var(--mut);font-weight:500;font-variant-numeric:tabular-nums}
+.pe .pt{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;word-break:break-all;margin-top:2px}
+.pe .pd{font-size:12.5px;color:var(--mut);margin-top:2px}
+.pe.out{border-left-color:var(--bad)}.pe.out .ph b{color:var(--bad)}
+.pe.in{border-left-color:var(--ok)}.pe.in .ph b{color:var(--ok)}
+.plegend{display:flex;gap:14px;font-size:12px;color:var(--mut);margin:10px 0 6px}
+.plegend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.dcard{border-left:5px solid var(--line)}
+.dcard.k-new{background:var(--acc-soft);border-color:var(--acc);border-left-color:var(--acc)}
+.dcard.k-main{border-left-color:#2563eb;background:color-mix(in srgb,#2563eb 10%,var(--card))}
+.dcard.k-known{opacity:.62}
+.dcard.k-other{border-left-color:#8a7b70}
+.dbadge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+.k-new .dbadge{background:var(--acc);color:#fff}
+.k-main .dbadge{background:#2563eb;color:#fff}
+.k-known .dbadge{background:var(--chip);color:var(--mut)}
+.k-other .dbadge{background:var(--chip);color:var(--mut)}
+.dlive{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ok);margin-right:6px;animation:pulse 1s infinite}
+.dlegend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.dlegend span{font-size:12px;font-weight:600;padding:5px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line)}
+.dlegend b{margin-left:4px}
+.irkeys{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.irkeys button{min-height:38px;padding:4px 12px;font-size:13.5px;border-radius:12px}
+.irrem{font-size:12.5px;font-weight:700;color:var(--mut);margin:10px 0 2px;text-transform:uppercase;letter-spacing:.03em}
+.irsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.irsum .stat b{font-size:20px}
 .type{font-size:11px;font-weight:700;padding:2px 7px;border-radius:7px;background:var(--acc-soft);color:var(--acc);margin-left:6px;vertical-align:2px}
 </style>
 </head>
@@ -264,6 +310,7 @@ section{display:none}section.act{display:block}
     <div style="min-width:0"><h1>BTNHome <span class="by">by MNB</span></h1><small id="bridgeInfo">Köprü bağlı değil</small></div>
   </div>
   <button class="conn" id="connectBtn" data-state="off"><span class="cdot"></span><span id="connText">Bağlan</span></button>
+  <button class="kes" id="discBtn" hidden aria-label="Bağlantıyı kes"><svg viewBox="0 0 24 24"><path d="M18.4 6.6a9 9 0 1 1-12.8 0"/><path d="M12 2v10"/></svg>Kes</button>
 </header>
 
 <main>
@@ -299,7 +346,7 @@ section{display:none}section.act{display:block}
       <p class="mut" style="margin:4px 0 14px">Modül etiketindeki QR kodu okutun, modül panoya eklensin.</p>
     </div>
     <div class="row" style="justify-content:center;margin-bottom:12px">
-      <button class="pri" id="scanStart" style="min-width:220px;min-height:52px">Kamerayı aç</button>
+      <button class="pri" id="scanStart" style="min-width:220px;min-height:52px">Kamerayı aç ve okut</button>
       <button id="scanStop" hidden style="min-width:220px;min-height:52px">Kamerayı kapat</button>
     </div>
     <div class="card"><label class="chk"><input type="checkbox" id="autoListen" checked> Okutulan modülü hemen dinlemeye al</label></div>
@@ -350,12 +397,21 @@ section{display:none}section.act{display:block}
         <button class="pri" id="irSend">Gönder</button>
       </div>
       <p class="hint" id="irSendStatus"></p>
+      <div id="irKeyList"></div>
     </div>
     <div class="card">
       <h2>Kumanda veritabanı yükle</h2>
-      <textarea id="irDb" spellcheck="false" placeholder='{"remotes":{"TV":{"power":{"proto":"NEC","hex":"20DF10EF","bits":32}}}}'></textarea>
+      <p class="hint" style="margin-top:0">Kumanda ve tuş bilgilerini içeren JSON dosyanızı seçin; içerik kontrol edilip modüle gönderilir.</p>
+      <div class="row" style="margin-bottom:8px">
+        <button class="grow pri" id="irFileBtn">JSON dosyası seç</button>
+        <button id="irClear" class="sm">Temizle</button>
+        <input type="file" id="irFile" accept=".json,application/json,text/plain" hidden>
+      </div>
+      <div id="irInfo"></div>
+      <details style="margin-top:6px"><summary class="mut" style="cursor:pointer;min-height:36px;display:flex;align-items:center">JSON içeriğini göster / düzenle</summary>
+      <textarea id="irDb" spellcheck="false" placeholder='{"remotes":{"TV":{"power":{"proto":"NEC","hex":"20DF10EF","bits":32}}}}'></textarea></details>
       <label class="chk" style="margin-top:6px"><input type="checkbox" id="irReplace"> Mevcut veritabanını tamamen değiştir</label>
-      <button class="pri" id="irUpload" style="width:100%;margin-top:6px">Yükle</button>
+      <button class="pri" id="irUpload" style="width:100%;margin-top:6px">Modüle gönder ve programla</button>
       <div class="progress"><div id="irProg"></div></div>
       <p class="hint" id="irUpStatus">En fazla 16 KB. Varsayılan olarak mevcut kayıtlarla birleştirilir.</p>
     </div>
@@ -399,10 +455,12 @@ section{display:none}section.act{display:block}
         <button id="rawSend">Gönder</button>
       </div>
       <div class="row" style="margin-bottom:8px">
-        <label class="chk grow"><input type="checkbox" id="logRx"> Paketleri de yaz</label>
         <button id="logClear" class="sm">Temizle</button>
       </div>
-      <div id="logbox" class="mono"></div>
+      <label class="chk"><input type="checkbox" id="logRx"> Modül paketlerini de göster (çok satır üretir)</label>
+      <label class="chk" style="margin-bottom:8px"><input type="checkbox" id="logRawShow"> Ham protokol satırlarını da göster</label>
+      <div class="plegend"><span><i style="background:var(--bad)"></i>Gönderilen</span><span><i style="background:var(--ok)"></i>Gelen</span><span><i style="background:var(--acc)"></i>Bilgi</span></div>
+      <div id="logbox"></div>
     </div>
   </section>
 </main>
@@ -439,6 +497,7 @@ section{display:none}section.act{display:block}
   <div class="grab"><i></i><button data-close aria-label="Kapat">✕</button></div>
   <div class="d-head"><span class="t-ic" id="connIc"></span>
     <div class="grow"><b>Köprüye bağlan</b><div class="meta">ESP32-S3 USB köprüsü</div></div></div>
+  <div class="banner" id="holdNote" hidden style="background:var(--acc-soft);color:var(--fg)">Bağlantıyı elle kestiğiniz için otomatik bağlanma beklemede. Aşağıdan bağlandığınızda yeniden açılır.</div>
   <div class="card" id="knownCard" hidden>
     <h2>Daha önce bağlanan</h2>
     <div id="knownList"></div>
@@ -524,7 +583,7 @@ function fields(text) {
 // ====================================================================== kalıcı durum
 const modules = new Map();     // mac -> modül
 const discovered = new Map();  // mac -> {mac, rssi, text, dst, seen}
-const settings = { lr: true, sniffAll: false, transport: 'auto', autoListen: true, autoConnect: true };
+const settings = { lr: true, sniffAll: false, transport: 'auto', autoListen: true, autoConnect: true, holdAuto: false };
 
 function save() {
   try {
@@ -662,7 +721,7 @@ function connected() { return !!(link && bridge); }
 
 function send(line) {
   if (!link) return Promise.resolve();
-  if ($('#logRx').checked || !/^(TX|RAW)\t/.test(line)) logLine('> ' + line);
+  if ($('#logRx').checked || !/^RAW\t/.test(line)) logLine('> ' + line);
   writeChain = writeChain.then(() => link && link.write(line + '\n')).catch(e => logLine('! yazma hatası: ' + e.message));
   return writeChain;
 }
@@ -699,6 +758,7 @@ async function openConnSheet() {
     <button class="dev" data-dev="${i}"><span class="t-ic">${ICON.usb}</span>
       <span class="grow"><b>${esc(d.name)}</b><span class="meta">${d.vid === 0x303a ? 'Espressif · dokunun, hemen bağlanır' : esc(d.info || 'USB cihazı')}</span></span></button>`).join('');
   openConnSheet.list = list;
+  $('#holdNote').hidden = !settings.holdAuto;
   const esp = list.filter(d => d.vid === 0x303a);
   $('#autoNote').textContent = esp.length
     ? 'Bu telefonda izinli köprü var. Sayfa açıkken kartı taktığınızda birkaç saniye içinde kendiliğinden bağlanır.'
@@ -723,6 +783,7 @@ async function connect(pre, Cls = pickTransport(), auto = false) {
     return false;
   }
   link = l;
+  if (!auto && settings.holdAuto) { settings.holdAuto = false; save(); logLine('# Elle bağlanıldı: otomatik bağlanma yeniden açık'); }
   const serial = l.dev?.serialNumber;
   if (serial && settings.bridgeSerial !== serial) { settings.bridgeSerial = serial; save(); }
   if (auto) toast('Köprüye otomatik bağlanıldı');
@@ -740,7 +801,7 @@ async function connect(pre, Cls = pickTransport(), auto = false) {
 // Daha önce izin verilmiş ESP32-S3 takılıysa seçim penceresi açmadan bağlan.
 let autoBusy = false, autoLastFail = 0, autoLastNote = '';
 async function autoConnect(reason) {
-  if (link || autoBusy || flashing || settings.autoConnect === false || document.visibilityState !== 'visible') return;
+  if (link || autoBusy || flashing || settings.autoConnect === false || settings.holdAuto || document.visibilityState !== 'visible') return;
   autoBusy = true;
   try {
     const list = (await knownDevices()).filter(x => x.vid === 0x303a);
@@ -783,6 +844,8 @@ function onUsbData(bytes) {
 function setConn(state, text) {
   const btn = $('#connectBtn');
   btn.dataset.state = state;
+  $('#discBtn').hidden = state === 'off';
+  document.querySelector('.top').classList.toggle('on', state !== 'off');
   $('#connText').textContent = text || (state === 'on' ? 'Bağlı' : 'Bağlan');
   $('#bridgeInfo').textContent = bridge ? `Köprü ${bridge.mac} · kanal ${bridge.ch}` : 'Köprü bağlı değil';
 }
@@ -847,10 +910,11 @@ function handleLine(line) {
   }
 }
 
-function pushLog(m, text) {
-  const t = new Date();
-  m.log.unshift(`${t.toLocaleTimeString('tr-TR')}  ${text}`);
-  if (m.log.length > 40) m.log.length = 40;
+// dir: 'out' = modüle giden (kırmızı), 'in' = modülden gelen (yeşil)
+function pushLog(m, dir, who, text) {
+  m.log.unshift({ t: new Date().toLocaleTimeString('tr-TR'), dir, who, text, desc: describeMsg(text) });
+  if (m.log.length > 60) m.log.length = 60;
+  m.logVer = (m.logVer || 0) + 1;
 }
 
 function onRx(src, dst, rssi, via, text) {
@@ -881,7 +945,8 @@ function onRx(src, dst, rssi, via, text) {
         send(`TX\t${m.mac}\tDMACK:1`);
       }
     }
-    pushLog(m, `${via === 'D' ? '⇢ köprü' : '⇢ ' + dst}  ${text}`);
+    pushLog(m, 'in', via === 'D' ? 'Modül → köprü' : 'Modül → kendi ana kartı (dinlendi)', text);
+    if (settings.sniffAll) noteDiscovered(src, dst, rssi, text, now);
     scheduleRender();
     return;
   }
@@ -889,11 +954,12 @@ function onRx(src, dst, rssi, via, text) {
   if (target) {
     // modülün mevcut ana kartından modüle giden komut (havadan dinlendi)
     target.pairedWith = src;
-    pushLog(target, `⇠ ${src}  ${text}`);
+    pushLog(target, 'out', 'Ana kart → modül (dinlendi)', text);
+    noteDiscovered(src, dst, rssi, text, now, 'main');
     scheduleRender();
     return;
   }
-  discovered.set(src, { mac: src, rssi, text, dst, seen: now });
+  noteDiscovered(src, dst, rssi, text, now);
   if (activeTab === 'discover') scheduleRender();
 }
 
@@ -910,9 +976,9 @@ function onRxBin(src, dst, rssi, via, hex) {
     const key = `${src}|${b[1]}|${seq}`;
     const resolve = pendingAcks.get(key);
     if (resolve) { pendingAcks.delete(key); resolve(b[7]); }
-    if (m) pushLog(m, `IR ACK oturum ${b[1]} sıra ${seq} → ${b[7] === 0 ? 'tamam' : 'hata'}`);
+    if (m) pushLog(m, 'in', 'Modül → köprü', `IR onayı · oturum ${b[1]} · sıra ${seq} · ${b[7] === 0 ? 'tamam' : 'hata'}`);
   } else if (m) {
-    pushLog(m, `ikili ${hex.slice(0, 40)}${hex.length > 40 ? '…' : ''}`);
+    pushLog(m, 'in', 'Modül → köprü', `ikili veri ${hex.slice(0, 40)}${hex.length > 40 ? '…' : ''}`);
   }
   if (m) { m.lastSeen = Date.now(); m.rssi = rssi; scheduleRender(); }
 }
@@ -938,6 +1004,8 @@ function crc32(bytes) {
 
 async function irExchange(mac, pkt, retries = 4, timeout = 800) {
   const key = `${mac}|${pkt[1]}|${pkt[2] | (pkt[3] << 8)}`;
+  const lm = modules.get(mac);
+  if (lm && pkt[0] !== 2) pushLog(lm, 'out', 'Köprü → modül', describeIr(pkt));
   for (let attempt = 0; attempt <= retries; attempt++) {
     const status = await new Promise(resolve => {
       pendingAcks.set(key, resolve);
@@ -976,14 +1044,84 @@ async function irSendKey() {
   } catch (e) { st.textContent = e.message; }
 }
 
+// IR veritabanı: dosyadan okuma, biçim düzeltme ve doğrulama.
+function irNormalize(obj) {
+  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+    if (obj.remotes && typeof obj.remotes === 'object' && !Array.isArray(obj.remotes)) return { remotes: obj.remotes };
+    // {"TV":{"power":{...}}} gibi sarmalayıcısız dosyayı kabul et
+    const vals = Object.values(obj);
+    if (vals.length && vals.every(v => v && typeof v === 'object' && !Array.isArray(v) &&
+        Object.values(v).every(k => k && typeof k === 'object' && !Array.isArray(k)))) return { remotes: obj };
+  }
+  throw new Error('Dosyada kumanda listesi bulunamadı. Beklenen biçim: {"remotes":{"Kumanda":{"tuş":{...}}}}');
+}
+function irCheck(db) {
+  const problems = [];
+  let keys = 0;
+  const enc2 = new TextEncoder();
+  for (const [rn, rv] of Object.entries(db.remotes)) {
+    if (enc2.encode(rn).length > 64) problems.push(`"${rn}": kumanda adı 64 bayttan uzun`);
+    if (!rv || typeof rv !== 'object' || Array.isArray(rv)) { problems.push(`"${rn}": tuş listesi değil`); continue; }
+    for (const [kn, kv] of Object.entries(rv)) {
+      keys++;
+      const w = `${rn} / ${kn}`;
+      if (enc2.encode(kn).length > 64) problems.push(`${w}: tuş adı 64 bayttan uzun`);
+      if (enc2.encode(rn).length + enc2.encode(kn).length + 2 > 240) problems.push(`${w}: ad çok uzun`);
+      if (!kv || typeof kv !== 'object' || Array.isArray(kv)) { problems.push(`${w}: tuş bilgisi nesne değil`); continue; }
+      if (!kv.proto) { problems.push(`${w}: "proto" yok`); continue; }
+      if (kv.proto === 'UNKNOWN') {
+        if (!Array.isArray(kv.raw) || kv.raw.length < 2 || kv.raw.length > 1024) problems.push(`${w}: "raw" dizisi geçersiz`);
+      } else if (typeof kv.state === 'string') {
+        if (!/^([0-9a-f]{2})+$/i.test(kv.state) || kv.state.length > 512) problems.push(`${w}: "state" onaltılık değil`);
+      } else if (!kv.hex || !/^[0-9a-f]{1,16}$/i.test(kv.hex) || !(kv.bits > 0 && kv.bits <= 64)) {
+        problems.push(`${w}: "hex"/"bits" eksik veya geçersiz`);
+      }
+    }
+  }
+  return { remotes: Object.keys(db.remotes).length, keys, problems };
+}
+let irDbCache = null;
+function irRefresh() {
+  const info = $('#irInfo');
+  const txt = $('#irDb').value.trim();
+  irDbCache = null;
+  if (!txt) { info.innerHTML = '<p class="hint">Henüz dosya seçilmedi.</p>'; renderIrKeys(); return; }
+  try {
+    const db = irNormalize(JSON.parse(txt));
+    const size = new TextEncoder().encode(JSON.stringify(db)).length;
+    const c = irCheck(db);
+    irDbCache = db;
+    const over = size > 16384;
+    info.innerHTML = `<div class="irsum">
+        <div class="stat"><b>${c.remotes}</b><span>Kumanda</span></div>
+        <div class="stat"><b>${c.keys}</b><span>Tuş</span></div>
+        <div class="stat${over ? ' hot' : ''}"><b>${(size / 1024).toFixed(1)}</b><span>KB / 16 KB</span></div></div>
+      ${over ? '<div class="banner">Dosya modülün 16 KB sınırını aşıyor. Kullanılmayan tuşları çıkarın veya kumandaları ayrı modüllere bölün.</div>' : ''}
+      ${c.problems.length ? `<div class="banner">${c.problems.length} sorun bulundu; bu tuşlar modülde çalışmayabilir:<br>${c.problems.slice(0, 6).map(esc).join('<br>')}${c.problems.length > 6 ? '<br>…' : ''}</div>`
+        : '<p class="hint" style="margin:0">İçerik geçerli görünüyor.</p>'}`;
+  } catch (e) {
+    info.innerHTML = `<div class="banner">${esc(e.message)}</div>`;
+  }
+  renderIrKeys();
+}
+function renderIrKeys() {
+  const box = $('#irKeyList');
+  if (!irDbCache) { box.innerHTML = ''; return; }
+  box.innerHTML = '<p class="hint" style="margin-bottom:0">Yüklediğiniz dosyadaki tuşlar — dokununca seçili modüle gönderilir:</p>' +
+    Object.entries(irDbCache.remotes).map(([rn, rv]) => `<div class="irrem">${esc(rn)}</div><div class="irkeys">${
+      Object.keys(rv || {}).map(kn => `<button data-irr="${esc(rn)}" data-irk="${esc(kn)}">${esc(kn)}</button>`).join('')}</div>`).join('');
+}
+
 async function irUpload() {
   const st = $('#irUpStatus'), bar = $('#irProg'), btn = $('#irUpload');
   try {
     const m = irModule();
     const json = $('#irDb').value.trim();
+    if (!json) throw new Error('Önce "JSON dosyası seç" ile kumanda dosyanızı seçin');
     let obj;
-    try { obj = JSON.parse(json); } catch (e) { throw new Error('Geçersiz JSON: ' + e.message); }
-    if (!obj || typeof obj.remotes !== 'object' || Array.isArray(obj.remotes)) throw new Error('JSON içinde "remotes" nesnesi olmalı');
+    try { obj = irNormalize(JSON.parse(json)); } catch (e) { throw new Error(e instanceof SyntaxError ? 'Geçersiz JSON: ' + e.message : e.message); }
+    const chk = irCheck(obj);
+    if (chk.problems.length && !confirm(`${chk.problems.length} tuşta sorun var; bunlar modülde çalışmayabilir. Yine de gönderilsin mi?`)) return;
     const data = enc.encode(JSON.stringify(obj));
     if (data.length > 16384) throw new Error('Veritabanı 16 KB sınırını aşıyor');
     const total = Math.ceil(data.length / 240);
@@ -1006,7 +1144,8 @@ async function irUpload() {
     if (await irExchange(m.mac, irPacket(3, session, total + 1, total, new Uint8Array(0)), 4, 2500) !== 0)
       throw new Error('Modül kaydedemedi (CRC, JSON ya da 16 KB sınırı)');
     bar.style.width = '100%';
-    st.textContent = `Yüklendi: ${data.length} bayt, ${total} parça.`;
+    st.textContent = `Modül programlandı: ${chk.remotes} kumanda, ${chk.keys} tuş (${data.length} bayt).`;
+    toast('IR veritabanı modüle yüklendi');
   } catch (e) {
     st.textContent = 'Hata: ' + e.message;
   } finally { btn.disabled = false; }
@@ -1017,7 +1156,7 @@ function sendTx(m, text) {
   if (!connected()) { toast('Köprü bağlı değil'); return false; }
   if (m.mode !== 'manage') { toast(m.name + ': önce Yönet moduna alın'); return false; }
   send(`TX\t${m.mac}\t${text}`);
-  pushLog(m, `⇠ köprü  ${text}`);
+  pushLog(m, 'out', 'Köprü → modül', text);
   return true;
 }
 
@@ -1398,7 +1537,8 @@ function buildCard(m) {
       <button class="sm" data-act="rename">Adını değiştir</button>
       <button class="sm danger" data-act="del">Sil</button>
     </div>
-    ${m.open ? '<div class="log mono" data-k="log" style="margin-top:10px"></div>' : ''}`;
+    ${m.open ? `<div class="plegend"><span><i style="background:var(--bad)"></i>Gönderilen (modüle giden)</span><span><i style="background:var(--ok)"></i>Gelen (modülden)</span></div>
+      <div class="plog" data-k="log"></div>` : ''}`;
   return el;
 }
 
@@ -1445,9 +1585,12 @@ function updateCard(el, m) {
   el.querySelector('[data-k=down]')?.classList.toggle('on', relayOn(m, 2));
   el.querySelectorAll('.big2 button, .dshut button, [data-act=modeS], [data-act=modeI], [data-act=custom]').forEach(x => x.disabled = !connected());
   const log = el.querySelector('[data-k=log]');
-  if (log) {
-    const t = m.log.join('\n') || 'Henüz paket yok.';
-    if (log.textContent !== t) log.textContent = t;
+  if (log && log.dataset.v !== String(m.logVer || 0)) {
+    log.dataset.v = String(m.logVer || 0);
+    log.innerHTML = m.log.length ? m.log.map(e => `
+      <div class="pe ${e.dir}"><div class="ph"><b>${e.dir === 'out' ? '▲ Gönderilen' : '▼ Gelen'}</b><span class="mut">${esc(e.who)}</span><time style="margin-left:auto">${e.t}</time></div>
+        ${e.desc && e.desc !== e.text ? `<div class="pd">${esc(e.desc)}</div>` : ''}<div class="pt">${esc(e.text)}</div></div>`).join('')
+      : '<div class="mut" style="padding:8px">Henüz paket yok.</div>';
   }
 }
 
@@ -1478,23 +1621,60 @@ function renderGroup() {
   document.querySelectorAll('#group .gb button').forEach(b => b.disabled = !sel.length || (/^r|alloff/.test(b.dataset.g) && !connected()));
 }
 
+function classifyMsg(text) {
+  if (/^([0-9A-F]{2}:){5}[0-9A-F]{2} A0:/.test(text)) return '2R';
+  if (/(^|#)R1:/.test(text)) {
+    const f = fields(text);
+    if ('R2' in f) return '2R';
+    if ('G1' in f || f.V === '2') return '1R';
+    return 'mod';
+  }
+  if (/^CPU10:/.test(text)) return 'mod';
+  if (/^(R[12]=[SR]|LRACK|DMACK|MODE:|ANN:)/.test(text)) return 'main';
+  return 'other';
+}
+function noteDiscovered(src, dst, rssi, text, now, hint) {
+  const prev = discovered.get(src);
+  let kind = hint || classifyMsg(text);
+  if (prev && ['2R', '1R', 'main'].includes(prev.kind) && (kind === 'mod' || kind === 'other')) kind = prev.kind;
+  if (prev && prev.kind === 'mod' && kind === 'other') kind = 'mod';
+  discovered.set(src, { mac: src, rssi, text, dst, seen: now, kind, count: (prev?.count || 0) + 1, first: prev?.first || now });
+}
+
 function renderDiscover() {
   const box = $('#discList');
-  const items = [...discovered.values()].filter(d => !modules.has(d.mac)).sort((a, b) => b.seen - a.seen);
-  if (!items.length) {
-    box.innerHTML = `<div class="empty">${settings.sniffAll ? (connected() ? 'Dinleniyor… Henüz bilinmeyen gönderici yok.' : 'Köprü bağlı değil.') : 'Taramayı açın.'}</div>`;
+  const all = [...discovered.values()];
+  const cls = d => modules.has(d.mac) ? 'known' : ['2R', '1R', 'mod'].includes(d.kind) ? 'new' : d.kind === 'main' ? 'main' : 'other';
+  const order = { new: 0, main: 1, other: 2, known: 3 };
+  all.sort((a, b) => order[cls(a)] - order[cls(b)] || b.seen - a.seen);
+  const cnt = { new: 0, main: 0, other: 0, known: 0 };
+  all.forEach(d => cnt[cls(d)]++);
+  if (!all.length) {
+    box.innerHTML = `<div class="empty">${settings.sniffAll ? (connected() ? 'Dinleniyor… Henüz gönderici yok.' : 'Köprü bağlı değil.') : 'Taramayı açın.'}</div>`;
     return;
   }
-  box.innerHTML = items.map(d => {
-    const f = fields(d.text);
-    const guess = 'R2' in f ? '2R' : ('G1' in f ? '1R' : '');
-    return `<div class="card"><div class="row">
-      <div class="grow"><b class="mono">${esc(d.mac)}</b>${guess ? `<span class="type">${guess}</span>` : ''}
-        <div class="meta">${esc(ago(d.seen))} · ${d.rssi} dBm · hedef ${esc(d.dst)}</div>
-        <div class="meta mono">${esc(d.text.slice(0, 64))}</div></div>
-      <button class="pri sm" data-add="${esc(d.mac)}">Ekle</button></div></div>`;
+  const label = { new: 'Yeni modül', main: 'Ana kart', other: 'Bilinmeyen cihaz', known: 'Listede' };
+  const legend = `<div class="dlegend">
+    <span class="k-new" style="border-color:var(--acc);color:var(--acc)">Yeni modül<b>${cnt.new}</b></span>
+    <span style="border-color:#2563eb;color:#2563eb">Ana kart<b>${cnt.main}</b></span>
+    <span>Bilinmeyen<b>${cnt.other}</b></span>
+    <span>Listede<b>${cnt.known}</b></span></div>`;
+  box.innerHTML = legend + all.map(d => {
+    const k = cls(d);
+    const typ = d.kind === '2R' ? ' · 2 röle' : d.kind === '1R' ? ' · 1 röle' : '';
+    const live = Date.now() - d.seen < 4000;
+    const name = k === 'known' ? esc(modules.get(d.mac).name) : `<span class="mono">${esc(d.mac)}</span>`;
+    const btn = k === 'known' ? `<button class="sm" data-openmod="${esc(d.mac)}">Aç</button>`
+      : k === 'main' ? '' : `<button class="pri sm" data-add="${esc(d.mac)}">Ekle</button>`;
+    return `<div class="card dcard k-${k}"><div class="row">
+      <div class="grow"><span class="dbadge" style="margin-left:0">${label[k]}${typ}</span>
+        <div style="margin-top:6px">${live ? '<span class="dlive"></span>' : ''}<b>${name}</b></div>
+        <div class="meta">${esc(ago(d.seen))} · ${d.rssi} dBm · ${d.count} paket${k === 'known' ? ' · ' + esc(d.mac) : ''}</div>
+        <div class="meta">${esc(describeMsg(d.text))}</div></div>
+      ${btn}</div></div>`;
   }).join('');
 }
+
 
 function renderIrTargets() {
   const sel = $('#irTarget');
@@ -1506,17 +1686,130 @@ function renderIrTargets() {
   if (sel.innerHTML !== html) { sel.innerHTML = html; if (opts.some(m => m.mac === cur)) sel.value = cur; }
 }
 
-// ====================================================================== kayıt
-const logLines = [];
-function logLine(s) {
-  const t = new Date().toLocaleTimeString('tr-TR');
-  logLines.push(`${t} ${s}`);
-  if (logLines.length > 400) logLines.splice(0, logLines.length - 400);
+// ====================================================================== kayıt (okunabilir)
+const logEntries = [];          // en yeni başta
+const LOG_MAX = 300;
+const CMD_NAME = { PEER: 'yönetim', WATCH: 'dinleme', SNIFFALL: 'keşif taraması', LR: 'uzun menzil ayarı', TX: 'komut',
+  RAW: 'IR paketi', CLEAR: 'liste sıfırlama', LINE: 'satır', INIT: 'başlatma', HELLO: 'tanışma', LIST: 'durum listesi' };
+const nm = mac => (bridge && mac === bridge.mac) ? 'Köprü' : (modules.get(mac)?.name || mac);
+
+// Modüller arası metin mesajını Türkçe açıkla.
+function explainCmd(t) {
+  const out = [];
+  for (const part of String(t).split('#')) {
+    let m;
+    if ((m = part.match(/^R([12])=([SR])$/))) out.push(`Röle ${m[1]} ${m[2] === 'S' ? 'aç' : 'kapat'}`);
+    else if (part === 'SH:1') out.push('(panjur kilidi ile)');
+    else if (part === 'MODE:S') out.push('Röle modunu seri (kilitli) yap');
+    else if (part === 'MODE:I') out.push('Röle modunu bağımsız yap');
+    else if (part === 'DMACK:1') out.push('Bağımsız mod onayı');
+    else if (part === 'LRACK:1') out.push('Uzun menzil (LR) isteği onaylandı');
+    else if (part === 'ANN:1') out.push('Köprü kendini ana kart olarak tanıttı');
+    else if (part) out.push(part);
+  }
+  return out.join(' ');
+}
+function describeMsg(text) {
+  if (!text) return '';
+  if (text.startsWith('CPU10:')) {
+    const f = fields(text);
+    return f.CPUV === '1' ? `İşlemci sıcaklığı ${(+f.CPU10 / 10).toFixed(1)} °C` : 'İşlemci sıcaklığı okunamadı';
+  }
+  let m = text.match(/^([0-9A-F]{2}:){5}[0-9A-F]{2} A0:\s*(-?\d+)\s*RS:\s*(-?\d+)/);
+  if (m) return `Canlılık sinyali · analog ${+m[2]} · modülün duyduğu sinyal ${+m[3]} dBm`;
+  if (/(^|#)R1:/.test(text)) {
+    const f = fields(text), o = [];
+    const oc = (k, l, a = 'açık', b = 'kapalı') => { if (k in f) o.push(`${l} ${f[k] === '1' ? a : b}`); };
+    oc('R1', 'Röle 1'); oc('R2', 'Röle 2'); oc('S1', 'Anahtar 1'); oc('S2', 'Anahtar 2');
+    oc('G1', 'DC giriş', 'var', 'yok'); oc('K1', 'Röle Com', 'var', 'yok');
+    if ('DM' in f) o.push(`mod ${f.DM === '1' ? 'bağımsız' : 'seri'}`);
+    if ('LR' in f) o.push(f.LR === '1' ? 'uzun menzil (LR) istiyor/kullanıyor' : 'normal menzil');
+    return 'Durum: ' + o.join(' · ');
+  }
+  if (/^(R[12]=[SR]|LRACK|DMACK|MODE:|ANN:)/.test(text)) return 'Komut: ' + explainCmd(text);
+  if (text.startsWith('IR onayı') || text.startsWith('ikili')) return '';
+  return '';
+}
+function describeIr(pkt) {
+  const b = pkt instanceof Uint8Array ? pkt : fromHex(pkt);
+  const seq = b[2] | (b[3] << 8), total = b[4] | (b[5] << 8);
+  switch (b[0]) {
+    case 1: return `IR veritabanı yüklemesi başladı (${total} parça)`;
+    case 2: return `IR veri parçası ${seq}/${total}`;
+    case 3: return 'IR yüklemesi bitti, kaydetme istendi';
+    case 4: return 'IR onayı';
+    case 5: {
+      const d = b.subarray(7, 7 + b[6]);
+      const z = d.indexOf(0);
+      const dec = new TextDecoder();
+      return `IR tuşu gönder: ${dec.decode(d.subarray(0, z))} / ${dec.decode(d.subarray(z + 1, d.length - 1))}`;
+    }
+    default: return 'IR paketi';
+  }
+}
+
+// Ham protokol satırını {tür, başlık, ayrıntı} biçimine çevir.
+function parseLog(raw) {
+  const pre = raw.slice(0, 2);
+  if (raw.startsWith('[yükleme] ')) return { cat: 'info', tag: 'Yükleme', text: raw.slice(10) };
+  if (pre === '# ') return { cat: 'info', tag: 'Bilgi', text: raw.slice(2) };
+  if (pre === '! ') return { cat: 'err', tag: 'Hata', text: raw.slice(2) };
+  const p = raw.slice(2).split('\t');
+  if (pre === '> ') {
+    const tag = 'Köprüye';
+    switch (p[0]) {
+      case 'HELLO': return { cat: 'out', tag, text: 'Köprüye "orada mısın?" sorusu gönderildi' };
+      case 'CLEAR': return { cat: 'out', tag, text: 'Köprüdeki modül listesi sıfırlandı (hemen yeniden kurulur)' };
+      case 'LR': return { cat: 'out', tag, text: `Uzun menzil (LR) isteklerini kabul etme: ${p[1] === '1' ? 'açık' : 'kapalı'}` };
+      case 'SNIFFALL': return { cat: 'out', tag, text: `Keşif taraması ${p[1] === '1' ? 'açıldı' : 'kapatıldı'}` };
+      case 'WATCH': return { cat: 'out', tag, text: `${nm(p[1])}: dinleme ${p[2] === '1' ? 'başlatıldı' : 'durduruldu'}` };
+      case 'PEER': return { cat: 'out', tag, text: `${nm(p[1])}: ${p[2] === '1' ? 'yönetim başlatıldı (köprü bu modülün ana kartı oluyor)' : 'yönetim bırakıldı'}` };
+      case 'TX': return { cat: 'out', tag: 'Modüle', text: `${nm(p[1])}: ${explainCmd(p[2])}` };
+      case 'RAW': return { cat: 'out', tag: 'Modüle', text: `${nm(p[1])}: ${describeIr(p[2] || '')}` };
+      case 'LIST': return { cat: 'out', tag, text: 'Köprüden durum listesi istendi' };
+      default: return { cat: 'out', tag, text: 'Köprüye komut: ' + p.join(' ') };
+    }
+  }
+  if (pre === '< ') {
+    switch (p[0]) {
+      case 'HELLO': return { cat: 'in', tag: 'Köprüden', text: 'Köprü yanıt verdi, bağlantı hazır',
+        detail: `MAC ${p[1]} · kanal ${p[2]} · ${p[3]} · LR ${p[4] === '1' ? 'destekleniyor' : 'kapalı'}` };
+      case 'OK': return { cat: 'ok', tag: 'Onay', text: `Köprü onayladı: ${CMD_NAME[p[1]] || p[1]}${p[2] && /:/.test(p[2]) ? ' · ' + nm(p[2]) : ''}` };
+      case 'ERR': return { cat: 'err', tag: 'Hata', text: `Köprü hatası (${CMD_NAME[p[1]] || p[1]}): ${p[2] || ''}` };
+      case 'RX': {
+        const via = p[4] === 'D' ? 'köprüye' : `${nm(p[2])} hedefine (dinlendi)`;
+        const text = p.slice(5).join('\t');
+        return { cat: 'in', tag: 'Modülden', text: `${nm(p[1])} → ${via}: ${describeMsg(text) || text}`, detail: `sinyal ${p[3]} dBm` };
+      }
+      case 'RXB': return { cat: 'in', tag: 'Modülden', text: `${nm(p[1])}: ${(p[5] || '').startsWith('04') ? 'IR onayı' : 'ikili paket'}` };
+      case 'TXS': return { cat: p[2] === '1' ? 'ok' : 'err', tag: 'Teslim', text: `${nm(p[1])}: paket ${p[2] === '1' ? 'ulaştı' : 'ULAŞMADI'}` };
+      case 'LST': return { cat: 'info', tag: 'Durum', text: p[1] === 'PEER' ? `Yönetimde: ${nm(p[2])}${p[3] === '1' ? ' (LR)' : ''}`
+        : p[1] === 'WATCH' ? `Dinleniyor: ${nm(p[2])}` : `Keşif ${p[2] === '1' ? 'açık' : 'kapalı'} · kaçırılan olay ${p[3]}` };
+      default: return { cat: 'in', tag: 'Köprüden', text: p.join(' ') };
+    }
+  }
+  return { cat: 'info', tag: 'Bilgi', text: raw };
+}
+
+function logEntryHtml(e, fresh) {
+  return `<div class="le ${e.cat}${fresh ? ' new' : ''}"><span class="lt">${e.t}</span><span class="lb">${esc(e.tag)}</span>
+    <div class="lx">${esc(e.text)}</div>${e.detail ? `<div class="ld">${esc(e.detail)}</div>` : ''}${$('#logRawShow').checked ? `<div class="lr">${esc(e.raw)}</div>` : ''}</div>`;
+}
+function renderLog() {
+  $('#logbox').innerHTML = logEntries.length ? logEntries.map(e => logEntryHtml(e)).join('')
+    : '<div class="empty">Henüz kayıt yok.</div>';
+}
+function logLine(raw) {
+  const e = parseLog(raw);
+  e.t = new Date().toLocaleTimeString('tr-TR');
+  e.raw = raw.replace(/\t/g, '  ');
+  logEntries.unshift(e);
+  if (logEntries.length > LOG_MAX) logEntries.length = LOG_MAX;
   if (activeTab === 'log') {
     const box = $('#logbox');
-    const stick = box.scrollTop + box.clientHeight >= box.scrollHeight - 30;
-    box.textContent = logLines.join('\n');
-    if (stick) box.scrollTop = box.scrollHeight;
+    box.querySelector('.empty')?.remove();
+    box.insertAdjacentHTML('afterbegin', logEntryHtml(e, true));
+    while (box.children.length > LOG_MAX) box.lastElementChild.remove();
   }
 }
 
@@ -1614,6 +1907,11 @@ function onQr(text) {
   try { navigator.vibrate?.(isNew ? 60 : [30, 60, 30]); } catch (e) {}
   $('#camMsg').textContent = isNew ? `Eklendi: ${mac}` : `Zaten kayıtlı: ${mod.name}`;
   if (isNew) addScannedRow(mod);
+  toast(isNew ? `Eklendi: ${mod.name}` : `Zaten kayıtlı: ${mod.name}`, 2600);
+  // Okuma başarılı: kamerayı kısa bir süre sonra kapat (sonuç yazısı görünsün).
+  clearInterval(scan.timer);
+  scan.timer = null;
+  setTimeout(stopScan, 700);
 }
 
 function addScannedRow(m) {
@@ -1853,6 +2151,7 @@ async function flStart() {
     try { await transport.disconnect(); } catch (e) {}
     transport = null;
     bar.style.width = '100%';
+    if (settings.holdAuto) { settings.holdAuto = false; save(); }
     flStatus('Yükleme tamamlandı. Kart açılınca otomatik bağlanılacak.');
     toast('Köprü yazılımı yüklendi');
     try { navigator.vibrate?.([60, 80, 60]); } catch (e) {}
@@ -1875,15 +2174,24 @@ function switchTab(tab) {
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('act', b.dataset.tab === tab));
   document.querySelectorAll('main section').forEach(s => s.classList.toggle('act', s.id === 'tab-' + tab));
   if (tab !== 'scan' && scan.stream) stopScan();
-  if (tab === 'log') { const box = $('#logbox'); box.textContent = logLines.join('\n'); box.scrollTop = box.scrollHeight; }
+  if (tab === 'log') { renderLog(); $('#logbox').scrollTop = 0; }
   window.scrollTo(0, 0);
   render();
 }
 
 $('#tabs').addEventListener('click', e => { const b = e.target.closest('button[data-tab]'); if (b) switchTab(b.dataset.tab); });
-$('#connectBtn').addEventListener('click', async () => {
-  if (link) { if (confirm('Köprü bağlantısı kesilsin mi?')) await link.close(); return; }
+$('#connectBtn').addEventListener('click', () => {
+  if (link) { toast(bridge ? `Köprü bağlı: ${bridge.mac}` : 'Köprüye bağlanılıyor…'); return; }
   openConnSheet();
+});
+$('#discBtn').addEventListener('click', async () => {
+  if (!link) return;
+  if (!confirm('Köprü bağlantısı kesilsin mi?\n\nSiz yeniden "Bağlan" diyene kadar otomatik bağlanma yapılmaz.')) return;
+  settings.holdAuto = true;
+  save();
+  logLine('# Bağlantı elle kesildi: otomatik bağlanma beklemede');
+  await link.close();
+  if (link) onUsbClose();
 });
 $('#pickDev').addEventListener('click', () => connect());
 $('#knownList').addEventListener('click', e => {
@@ -2028,6 +2336,8 @@ $('#group').addEventListener('click', e => {
 });
 
 $('#discList').addEventListener('click', e => {
+  const o = e.target.closest('[data-openmod]');
+  if (o) { if (connected()) openSheet(o.dataset.openmod); return; }
   const b = e.target.closest('[data-add]');
   if (!b) return;
   const { mod } = addModule(b.dataset.add, '', { listen: true });
@@ -2111,6 +2421,31 @@ $('#transportSel').addEventListener('change', e => { settings.transport = e.targ
 
 $('#irSend').addEventListener('click', irSendKey);
 $('#irUpload').addEventListener('click', irUpload);
+$('#irFileBtn').addEventListener('click', () => $('#irFile').click());
+$('#irFile').addEventListener('change', async e => {
+  const f = e.target.files[0];
+  e.target.value = '';
+  if (!f) return;
+  try {
+    const txt = await f.text();
+    const db = irNormalize(JSON.parse(txt));
+    $('#irDb').value = JSON.stringify(db, null, 2);
+    irRefresh();
+    toast(`${f.name} okundu`);
+  } catch (err) {
+    $('#irInfo').innerHTML = `<div class="banner">${esc(f.name)}: ${esc(err instanceof SyntaxError ? 'Geçersiz JSON — ' + err.message : err.message)}</div>`;
+  }
+});
+$('#irClear').addEventListener('click', () => { $('#irDb').value = ''; irRefresh(); });
+let irT = 0;
+$('#irDb').addEventListener('input', () => { clearTimeout(irT); irT = setTimeout(irRefresh, 400); });
+$('#irKeyList').addEventListener('click', e => {
+  const b = e.target.closest('[data-irk]');
+  if (!b) return;
+  $('#irRemote').value = b.dataset.irr;
+  $('#irKey').value = b.dataset.irk;
+  irSendKey();
+});
 
 $('#rawSend').addEventListener('click', () => {
   const v = $('#rawCmd').value.trim();
@@ -2120,7 +2455,8 @@ $('#rawSend').addEventListener('click', () => {
   $('#rawCmd').value = '';
 });
 $('#rawCmd').addEventListener('keydown', e => { if (e.key === 'Enter') $('#rawSend').click(); });
-$('#logClear').addEventListener('click', () => { logLines.length = 0; $('#logbox').textContent = ''; });
+$('#logClear').addEventListener('click', () => { logEntries.length = 0; renderLog(); });
+$('#logRawShow').addEventListener('change', renderLog);
 
 navigator.usb?.addEventListener('disconnect', e => { if (link instanceof UsbCdcLink && link.dev === e.device) link.close(); });
 navigator.serial?.addEventListener('disconnect', e => { if (link instanceof SerialLink && link.port === e.target) link.close(); });
@@ -2143,6 +2479,7 @@ $('#autoListen').checked = settings.autoListen;
   $('#envBanner').innerHTML = notes.join('');
 }
 setConn('off');
+irRefresh();
 render();
 autoConnect('sayfa açıldı');
 // Bazı Android sürümlerinde 'takıldı' olayı gelmiyor; sayfa açıkken izinli köprüyü düzenli yokla.
