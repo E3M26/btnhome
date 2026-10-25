@@ -87,6 +87,10 @@ section{display:none}section.act{display:block}
 .t-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .t-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:var(--chip);color:var(--mut);transition:.2s}
 .tile.on .t-ic{background:var(--on);color:#fff}
+.t-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.t-rng{min-width:24px;height:22px;padding:0 7px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;letter-spacing:.02em;background:var(--chip);color:var(--mut)}
+.t-rng:empty{display:none}
+.t-rng.l{background:var(--on-soft);color:var(--on)}
 .t-badge{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:99px;background:var(--chip);color:var(--mut);display:flex;align-items:center;gap:6px;white-space:nowrap}
 .t-badge em{font-style:normal}
 .t-badge i{width:8px;height:8px;border-radius:50%;background:#9a8b80}
@@ -1491,13 +1495,12 @@ function buildTile(m) {
       <button class="sw${ro}" data-act="tog${n}" data-k="sw${n}"><span>${ns.length > 1 ? 'Röle ' + n : 'Röle'}</span><b data-k="sv${n}">—</b></button>`).join('')}</div>`;
   }
   el.innerHTML = `
-    <div class="t-top"><span class="t-ic" data-act="look" title="Simge ve renk">${tileIcon(m)}</span>${selectMode ? '<span class="t-check" data-k="chk"></span>' : '<span class="t-badge" data-k="badge"><i></i><em data-k="bt"></em></span>'}</div>
+    <div class="t-top"><span class="t-ic" data-act="look" title="Simge ve renk">${tileIcon(m)}</span>${selectMode ? '<span class="t-check" data-k="chk"></span>' : '<span class="t-right"><span class="t-badge" data-k="badge"><i></i><em data-k="bt"></em></span><span class="t-rng" data-k="rng"></span></span>'}</div>
     <div class="t-name">${esc(m.name)}</div>
     <div class="t-sub" data-k="sub"></div>
     <div class="t-sens" data-k="sens"></div>
     ${ctl}
     <div class="keys" data-k="keys"></div>
-    ${!selectMode && m.mode === 'manage' ? rangeHtml(m) : ''}
     ${selectMode ? '' : `<div class="tseg">${['off', 'listen', 'manage'].map(v => `<button data-act="mode" data-v="${v}" class="${m.mode === v ? 'act' : ''}">${MODE_LABEL[v]}</button>`).join('')}</div>`}`;
   return el;
 }
@@ -1516,6 +1519,16 @@ function updateTile(el, m) {
     const bt = m.mode === 'off' ? 'Kapalı' : age < 15000 ? 'Canlı' : age < 60000 ? 'Gecikmeli' : 'Sinyal yok';
     const be = badge.querySelector('[data-k=bt]');
     if (be.textContent !== bt) be.textContent = bt;
+  }
+  // Menzil harfi: modülün kendi bildirdiği durum (L = uzun menzil, N = normal).
+  const rng = el.querySelector('[data-k=rng]');
+  if (rng) {
+    const known = m.mode !== 'off' && 'LR' in m.state;
+    const lr = known && m.state.LR === '1';
+    const t = known ? (lr ? 'L' : 'N') : '';
+    if (rng.textContent !== t) rng.textContent = t;
+    rng.className = 't-rng' + (lr ? ' l' : '');
+    rng.title = known ? (lr ? 'Uzun menzil (LR)' : 'Normal menzil') : '';
   }
   const typeTxt = m.type === '2R' ? (isShutter(m) ? 'Panjur' : '2 röle') : m.type === '1R' ? '1 röle' : 'Tür bilinmiyor';
   const sub = `${typeTxt} · ${m.lastSeen ? ago(m.lastSeen) : (m.mode === 'off' ? 'kapalı' : 'bekleniyor')}`;
