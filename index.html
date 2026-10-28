@@ -231,6 +231,55 @@ details.adv .advin{display:grid;gap:12px;margin-top:12px}
 .sitefile{display:flex;align-items:center;gap:10px;text-align:left;min-height:52px;background:var(--card2)}
 .sitefile .t-ic{width:34px;height:34px;font-size:18px;border-radius:10px}
 .sitefile.act{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.vseg{display:grid;grid-template-columns:1fr 1fr;background:var(--chip);border-radius:14px;padding:3px;gap:3px;margin:10px 0}
+.vseg button{border:0;background:none;min-height:38px;padding:4px;font-size:13.5px;border-radius:11px;color:var(--mut)}
+.vseg button.act{background:var(--card);color:var(--acc);box-shadow:var(--shadow)}
+#sheet .vseg{background:var(--sheet-in)}
+#sheet .vseg button.act{background:var(--sheet)}
+.lrow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 12px;margin-bottom:7px;-webkit-user-select:none;user-select:none}
+.lrow.flash{animation:lflash .8s ease-out}
+@keyframes lflash{from{background:var(--acc-soft);border-color:var(--acc)}}
+.lrow .lh{display:flex;align-items:center;gap:8px;cursor:pointer;min-height:26px}
+.lrow .lh b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14.5px}
+.lrow .lh .chev{color:var(--mut);font-size:12px;transition:transform .2s}
+.lrow.open .lh .chev{transform:rotate(180deg)}
+.ldot{width:9px;height:9px;border-radius:50%;background:#8a7b70;flex:none}
+.ldot.live{background:var(--ok)}.ldot.stale{background:var(--warn)}
+.lcnt{display:flex;gap:7px;font-size:11.5px;font-weight:700;color:var(--mut);white-space:nowrap;font-variant-numeric:tabular-nums}
+.lcnt .ci{color:var(--ok)}.lcnt .co{color:var(--bad)}.lcnt .ce{color:#fff;background:var(--bad);border-radius:99px;padding:0 6px}
+.lcnt .ce:empty{display:none}
+.lrow time{font-size:11.5px;color:var(--mut);min-width:54px;text-align:right;font-variant-numeric:tabular-nums}
+.lrow .ll{margin-top:6px;border-left:3px solid var(--line);padding:1px 0 1px 9px;font-size:13.5px;line-height:1.35;height:2.7em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.ll.in{border-left-color:var(--ok)}.ll.out{border-left-color:var(--bad)}.ll.err{border-left-color:var(--bad);color:var(--bad)}.ll.info{border-left-color:var(--acc)}
+.ll .ar{font-weight:800;margin-right:5px}
+.ll.in .ar{color:var(--ok)}.ll.out .ar{color:var(--bad)}.ll.info .ar{color:var(--acc)}
+.ll:empty::before{content:"Henüz mesaj yok";color:var(--mut)}
+.lrow .lmore{display:none;margin-top:8px}
+.lrow.open .lmore{display:block}
+.lrow .lmore{border-top:1px dashed var(--line);padding-top:6px}
+.lrow .lmore .lc{display:flex;gap:8px;align-items:baseline;padding:5px 6px;border-radius:8px;font-size:12.5px;border-left:3px solid var(--line);margin-bottom:3px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y}
+.lrow .lmore .lc.in{border-left-color:var(--ok)}.lrow .lmore .lc.out,.lrow .lmore .lc.err{border-left-color:var(--bad)}.lrow .lmore .lc.info{border-left-color:var(--acc)}
+.lrow .lmore .lc time{color:var(--mut);font-variant-numeric:tabular-nums;min-width:0;text-align:left;flex:none;font-size:11.5px}
+.lrow .lmore .lc span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lrow .lmore .lc.held{outline:2px solid var(--acc);outline-offset:-2px}
+.dact{display:grid;gap:6px;min-width:96px}
+.dact button{min-height:38px;padding:4px 10px;font-size:13.5px}
+.dcard{transition:none}
+.dcard [data-k=meta]{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dcard [data-k=desc]{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.8em;line-height:1.4}
+.dcard [data-k=name]{display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
+.dcard.flash{animation:lflash .8s ease-out}
+.pe.ptype .ph b{color:var(--fg)}
+.pe.ptype .pc{font-size:11.5px;font-weight:700;color:var(--mut);background:var(--chip);border-radius:99px;padding:1px 7px;font-variant-numeric:tabular-nums}
+.pe.ptype .ad{font-weight:800}
+.pe.ptype.in .ad{color:var(--ok)}.pe.ptype.out .ad{color:var(--bad)}
+.pe.ptype.flash{animation:lflash .8s ease-out}
+.plog>.pe{min-width:0}
+.pe.ptype .ph{min-width:0}
+.pe.ptype .ph b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pe.ptype time{white-space:nowrap;font-weight:500;color:var(--mut)}
+.pe.ptype .pd{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pe.ptype .pt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;height:2.8em;line-height:1.4}
 .lockbox{grid-column:1/-1;text-align:center;padding:48px 20px;background:var(--card);border:1px dashed var(--line);border-radius:24px;color:var(--mut)}
 .lockbox .big{width:76px;height:76px;margin:0 auto 14px;border-radius:24px;background:var(--acc-soft);color:var(--acc);display:grid;place-items:center;font-size:38px}
 .lockbox b{display:block;color:var(--fg);font-size:18px;margin-bottom:6px}
@@ -355,14 +404,10 @@ body.grouping main{padding-bottom:calc(330px + env(safe-area-inset-bottom))}
 .plegend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .dcard{border-left:5px solid var(--line)}
 .dcard.k-new{background:var(--acc-soft);border-color:var(--acc);border-left-color:var(--acc)}
-.dcard.k-main{border-left-color:#2563eb;background:color-mix(in srgb,#2563eb 10%,var(--card))}
 .dcard.k-known{opacity:.62}
-.dcard.k-other{border-left-color:#8a7b70}
 .dbadge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:99px;margin-left:6px;vertical-align:2px;white-space:nowrap}
 .k-new .dbadge{background:var(--acc);color:#fff}
-.k-main .dbadge{background:#2563eb;color:#fff}
 .k-known .dbadge{background:var(--chip);color:var(--mut)}
-.k-other .dbadge{background:var(--chip);color:var(--mut)}
 .dlive{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ok);margin-right:6px;animation:pulse 1s infinite}
 .dlegend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .dlegend span{font-size:12px;font-weight:600;padding:5px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line)}
@@ -509,10 +554,14 @@ body.grouping main{padding-bottom:calc(330px + env(safe-area-inset-bottom))}
     <div class="card">
       <div class="logbar"><h2>Kayıt</h2>
         <button id="logPause">Duraklat</button><button id="logShare">Paylaş</button><button id="logClear">Temizle</button></div>
-      <div class="filters" id="logFilters" style="margin:10px 0 4px"></div>
-      <label class="chk"><input type="checkbox" id="logRx"> Modül paketlerini de kaydet (çok satır üretir)</label>
+      <div class="vseg" id="logView"><button data-lv="live">Modüllere göre</button><button data-lv="flow">Akış (zaman sırası)</button></div>
+      <div id="logFlowOpts">
+        <div class="filters" id="logFilters" style="margin:0 0 4px"></div>
+        <label class="chk"><input type="checkbox" id="logRx"> Modül paketlerini de akışa yaz (çok satır üretir)</label>
+      </div>
       <div class="plegend"><span><i style="background:var(--bad)"></i>Gönderilen</span><span><i style="background:var(--ok)"></i>Gelen</span><span><i style="background:var(--acc)"></i>Bilgi</span></div>
-      <p class="hint" style="margin:0 0 8px">Bir satırı <b>basılı tutun</b>: büyür ve akış durur. Bırakınca akış devam eder.</p>
+      <p class="hint" style="margin:0 0 8px" id="logHint"></p>
+      <div id="logLive"></div>
       <div id="logbox"></div>
     </div>
 
@@ -704,7 +753,7 @@ function fields(text) {
 // ====================================================================== kalıcı durum
 const modules = new Map();     // mac -> modül
 const discovered = new Map();  // mac -> {mac, rssi, text, dst, seen}
-const settings = { lr: true, sniffAll: false, transport: 'auto', autoListen: true, autoConnect: true, holdAuto: false };
+const settings = { lr: true, sniffAll: false, transport: 'auto', autoListen: true, autoConnect: true, holdAuto: false, logView: 'live', pktView: 'type' };
 
 function save() {
   try {
@@ -1070,12 +1119,17 @@ function handleLine(line) {
       checkSiteFw();
       scheduleRender();
       break;
-    case 'RX':
+    case 'RX': {
       if ($('#logRx').checked) logLine('< ' + line);
-      onRx(p[1], p[2], +p[3], p[4], p.slice(5).join('\t'));
+      const text = p.slice(5).join('\t');
+      if (modules.has(p[1])) trackLive(p[1], 'in', describeMsg(text) || text, line, `sinyal ${p[3]} dBm${p[4] === 'S' ? ' · dinlendi' : ''}`);
+      else if (modules.has(p[2])) trackLive(p[2], 'out', 'Ana kart → modül: ' + (describeMsg(text) || text), line, `ana kart ${p[1]} · dinlendi`);
+      onRx(p[1], p[2], +p[3], p[4], text);
       break;
+    }
     case 'RXB':
       if ($('#logRx').checked) logLine('< ' + line);
+      if (modules.has(p[1])) trackLive(p[1], 'in', (p[5] || '').startsWith('04') ? 'IR onayı' : 'İkili veri', line);
       onRxBin(p[1], p[2], +p[3], p[4], p[5] || '');
       break;
     case 'INFO':
@@ -1083,6 +1137,7 @@ function handleLine(line) {
       if (activeTab === 'log') renderBridge();
       break;
     case 'TXS': {
+      if (p[2] !== '1' && modules.has(p[1])) trackLive(p[1], 'err', 'Gönderilen paket modüle ulaşmadı', line);
       const m = modules.get(p[1]);
       if (m) { p[2] === '1' ? m.txOk++ : m.txFail++; scheduleRender(); }
       break;
@@ -1100,9 +1155,38 @@ function handleLine(line) {
 let entrySeq = 0;
 // dir: 'out' = modüle giden (kırmızı), 'in' = modülden gelen (yeşil)
 function pushLog(m, dir, who, text) {
-  m.log.unshift({ id: ++entrySeq, t: new Date().toLocaleTimeString('tr-TR'), dir, who, text, desc: describeMsg(text) });
+  const e = { id: ++entrySeq, t: new Date().toLocaleTimeString('tr-TR'), at: Date.now(), dir, who, text, desc: describeMsg(text) };
+  m.log.unshift(e);
   if (m.log.length > 60) m.log.length = 60;
   m.logVer = (m.logVer || 0) + 1;
+  // Türe göre görünüm: her mesaj türü için tek, sabit satır
+  const [key, label] = pktType(dir, who, text);
+  if (!m.pkt) m.pkt = new Map();
+  let r = m.pkt.get(key);
+  if (!r) { r = { key, label, count: 0 }; m.pkt.set(key, r); }
+  r.count++; r.dir = dir; r.last = e; r.who = who;
+}
+// Mesajı türüne göre sınıflandır (satır anahtarı, başlık).
+function pktType(dir, who, text) {
+  const t = String(text);
+  const main = /Ana kart/.test(who);
+  if (dir === 'in') {
+    if (t.startsWith('CPU10:')) return ['cpu', 'İşlemci sıcaklığı'];
+    if (/^([0-9A-F]{2}:){5}[0-9A-F]{2} A0:/.test(t)) return ['ping', 'Canlılık sinyali'];
+    if (/(^|#)R1:/.test(t)) return ['status', 'Durum'];
+    if (t.startsWith('IR onayı')) return ['irack', 'IR onayı'];
+    if (t.startsWith('ikili')) return ['bin', 'İkili veri'];
+    return ['in-other', 'Diğer gelen'];
+  }
+  const pre = main ? 'main-' : '', lp = main ? 'Ana kart: ' : '';
+  let m;
+  if ((m = t.match(/^R([12])=/))) return [pre + 'r' + m[1], lp + `Röle ${m[1]} komutu`];
+  if (t.startsWith('MODE:')) return [pre + 'mode', lp + 'Röle modu'];
+  if (t.startsWith('DMACK')) return [pre + 'dmack', lp + 'Bağımsız mod onayı'];
+  if (t.startsWith('LRACK')) return [pre + 'lrack', lp + 'Uzun menzil onayı'];
+  if (t.startsWith('ANN')) return [pre + 'ann', lp + 'Duyuru'];
+  if (t.startsWith('IR ')) return ['ir', 'IR komutu'];
+  return [pre + 'custom', lp + 'Özel komut'];
 }
 
 function onRx(src, dst, rssi, via, text) {
@@ -1760,7 +1844,7 @@ function closeSheet() {
   $('#sheetBack').classList.remove('show');
 }
 
-function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, m.hasPhoto, m.icon, m.color, m.range, connected()].join('|'); }
+function cardSig(m) { return [m.mode, m.type, m.open, m.shutter, m.name, m.hasPhoto, m.icon, m.color, m.range, settings.pktView, connected()].join('|'); }
 
 function buildCard(m) {
   const el = document.createElement('div');
@@ -1809,7 +1893,8 @@ function buildCard(m) {
       <button class="sm danger" data-act="del">Sil</button>
     </div>
     ${m.open ? `<div class="plegend"><span><i style="background:var(--bad)"></i>Gönderilen (modüle giden)</span><span><i style="background:var(--ok)"></i>Gelen (modülden)</span></div>
-      <p class="hint" style="margin:0 0 6px">Bir satırı basılı tutun: büyür ve akış durur.</p>
+      <div class="vseg"><button data-act="pview" data-v="type" class="${settings.pktView !== 'flow' ? 'act' : ''}">Türe göre</button><button data-act="pview" data-v="flow" class="${settings.pktView === 'flow' ? 'act' : ''}">Akış</button></div>
+      <p class="hint" style="margin:0 0 6px">${settings.pktView === 'flow' ? 'En yeni üstte. Bir satırı basılı tutun: büyür ve akış durur.' : 'Her mesaj türü için tek, sabit satır: son değer, kaç kez geldiği ve ne zaman geldiği yerinde güncellenir. Basılı tutun: büyür.'}</p>
       <div class="plog" data-k="log"></div>` : ''}`;
   return el;
 }
@@ -1858,12 +1943,44 @@ function updateCard(el, m) {
   el.querySelectorAll('.big2 button, .dshut button, [data-act=modeS], [data-act=modeI], [data-act=custom]').forEach(x => x.disabled = !connected());
   updateLrNow(el, m);
   const log = el.querySelector('[data-k=log]');
-  if (log && !hold.frozen && log.dataset.v !== String(m.logVer || 0)) {
+  if (log && !holdBusy() && settings.pktView !== 'flow') { renderPktTypes(log, m); return; }
+  if (log && !holdBusy() && log.dataset.v !== String(m.logVer || 0)) {
     log.dataset.v = String(m.logVer || 0);
     log.innerHTML = m.log.length ? m.log.map(e => `
       <div class="pe ${e.dir}" data-eid="${e.id}"><div class="ph"><b>${e.dir === 'out' ? '▲ Gönderilen' : '▼ Gelen'}</b><span class="mut">${esc(e.who)}</span><time style="margin-left:auto">${e.t}</time></div>
         ${e.desc && e.desc !== e.text ? `<div class="pd">${esc(e.desc)}</div>` : ''}<div class="pt">${esc(e.text)}</div></div>`).join('')
       : '<div class="mut" style="padding:8px">Henüz paket yok.</div>';
+  }
+}
+
+function renderPktTypes(box, m) {
+  const rows = m.pkt ? [...m.pkt.values()] : [];
+  if (!rows.length) { if (!box.querySelector('.mut')) box.innerHTML = '<div class="mut" style="padding:8px">Henüz paket yok.</div>'; return; }
+  box.querySelector('.mut')?.remove();
+  let prev = null;
+  for (const r of rows) {     // Map ekleme sırası = ilk görülme sırası → satırlar yer değiştirmez
+    let el = box.querySelector(`.ptype[data-pk="${r.key}"]`);
+    if (!el) {
+      el = document.createElement('div');
+      el.dataset.pk = r.key;
+      el.innerHTML = `<div class="ph"><span class="ad" data-k="ad"></span><b data-k="lb"></b><span class="pc" data-k="c"></span><time style="margin-left:auto" data-k="t"></time></div>
+        <div class="pd" data-k="d"></div><div class="pt" data-k="raw"></div>`;
+    }
+    if (prev ? prev.nextElementSibling !== el : box.firstElementChild !== el) prev ? prev.after(el) : box.prepend(el);
+    prev = el;
+    const q = n => el.querySelector(`[data-k=${n}]`);
+    const set = (n, v) => { const x = q(n); if (x.textContent !== v) x.textContent = v; };
+    el.className = `pe ptype ${r.dir}` + (el.classList.contains('flash') ? ' flash' : '');
+    el.dataset.eid = r.last.id;
+    set('ad', r.dir === 'out' ? '▲' : '▼');
+    set('lb', r.label);
+    set('c', '×' + r.count);
+    const s = Math.max(0, Math.round((Date.now() - r.last.at) / 1000));
+    set('t', s < 60 ? s + ' sn önce' : s < 3600 ? Math.floor(s / 60) + ' dk önce' : r.last.t);
+    set('d', r.last.desc && r.last.desc !== r.last.text ? r.last.desc : r.who);
+    set('raw', r.last.text);
+    if (el.dataset.c && el.dataset.c !== String(r.count)) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+    el.dataset.c = r.count;
   }
 }
 
@@ -1915,40 +2032,64 @@ function noteDiscovered(src, dst, rssi, text, now, hint) {
   discovered.set(src, { mac: src, rssi, text, dst, seen: now, kind, count: (prev?.count || 0) + 1, first: prev?.first || now });
 }
 
+// Keşif: yalnızca modül türleri; ilk görülme sırasıyla sabit satırlar, yalnızca değerler güncellenir.
+const isModKind = d => ['2R', '1R', 'mod'].includes(d.kind) || modules.has(d.mac);
 function renderDiscover() {
   const box = $('#discList');
-  const all = [...discovered.values()];
-  const cls = d => modules.has(d.mac) ? 'known' : ['2R', '1R', 'mod'].includes(d.kind) ? 'new' : d.kind === 'main' ? 'main' : 'other';
-  const order = { new: 0, main: 1, other: 2, known: 3 };
-  all.sort((a, b) => order[cls(a)] - order[cls(b)] || b.seen - a.seen);
-  const cnt = { new: 0, main: 0, other: 0, known: 0 };
-  all.forEach(d => cnt[cls(d)]++);
+  const all = [...discovered.values()].filter(isModKind).sort((a, b) => a.first - b.first);
   if (!all.length) {
-    box.innerHTML = `<div class="empty">${settings.sniffAll ? (connected() ? 'Dinleniyor… Henüz gönderici yok.' : 'Köprü bağlı değil.') : 'Taramayı açın.'}</div>`;
+    const h = `<div class="empty">${settings.sniffAll ? (connected() ? 'Dinleniyor… Henüz modül bulunamadı.' : 'Köprü bağlı değil.') : 'Taramayı açın.'}</div>`;
+    if (box.dataset.empty !== h) { box.innerHTML = h; box.dataset.empty = h; }
     return;
   }
-  const label = { new: 'Yeni modül', main: 'Ana kart', other: 'Bilinmeyen cihaz', known: 'Listede' };
-  const legend = `<div class="dlegend">
-    <span class="k-new" style="border-color:var(--acc);color:var(--acc)">Yeni modül<b>${cnt.new}</b></span>
-    <span style="border-color:#2563eb;color:#2563eb">Ana kart<b>${cnt.main}</b></span>
-    <span>Bilinmeyen<b>${cnt.other}</b></span>
-    <span>Listede<b>${cnt.known}</b></span></div>`;
-  box.innerHTML = legend + all.map(d => {
-    const k = cls(d);
-    const typ = d.kind === '2R' ? ' · 2 röle' : d.kind === '1R' ? ' · 1 röle' : '';
-    const live = Date.now() - d.seen < 4000;
-    const name = k === 'known' ? esc(modules.get(d.mac).name) : `<span class="mono">${esc(d.mac)}</span>`;
-    const btn = k === 'known' ? `<button class="sm" data-openmod="${esc(d.mac)}">Aç</button>`
-      : k === 'main' ? '' : `<button class="pri sm" data-add="${esc(d.mac)}">Ekle</button>`;
-    return `<div class="card dcard k-${k}"><div class="row">
-      <div class="grow"><span class="dbadge" style="margin-left:0">${label[k]}${typ}</span>
-        <div style="margin-top:6px">${live ? '<span class="dlive"></span>' : ''}<b>${name}</b></div>
-        <div class="meta">${esc(ago(d.seen))} · ${d.rssi} dBm · ${d.count} paket${k === 'known' ? ' · ' + esc(d.mac) : ''}</div>
-        <div class="meta">${esc(describeMsg(d.text))}</div></div>
-      ${btn}</div></div>`;
-  }).join('');
+  if (box.dataset.empty) { box.innerHTML = ''; box.dataset.empty = ''; }
+  let lg = box.querySelector('.dlegend');
+  if (!lg) { lg = document.createElement('div'); lg.className = 'dlegend'; box.prepend(lg); }
+  const nNew = all.filter(d => !modules.has(d.mac)).length;
+  const lgh = `<span style="border-color:var(--acc);color:var(--acc)">Yeni modül<b>${nNew}</b></span><span>Listede<b>${all.length - nNew}</b></span>`;
+  if (lg.innerHTML !== lgh) lg.innerHTML = lgh;
+  let prev = lg;
+  const seen = new Set();
+  for (const d of all) {
+    seen.add(d.mac);
+    let el = box.querySelector(`.dcard[data-mac="${d.mac}"]`);
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'card dcard';
+      el.dataset.mac = d.mac;
+      el.innerHTML = `<div class="row" style="align-items:flex-start;flex-wrap:nowrap">
+        <div class="grow"><span class="dbadge" style="margin-left:0" data-k="badge"></span>
+          <div style="margin-top:6px"><span class="dlive" data-k="live"></span><b data-k="name"></b></div>
+          <div class="meta" data-k="meta"></div><div class="meta" data-k="desc"></div></div>
+        <div class="dact" data-k="act"></div></div>`;
+    }
+    if (prev.nextElementSibling !== el) prev.after(el);
+    updateDiscRow(el, d);
+    prev = el;
+  }
+  for (const el of [...box.querySelectorAll('.dcard')]) if (!seen.has(el.dataset.mac)) el.remove();
 }
-
+function updateDiscRow(el, d) {
+  const m = modules.get(d.mac);
+  const k = m ? 'known' : 'new';
+  el.className = `card dcard k-${k}` + (el.classList.contains('flash') ? ' flash' : '');
+  const q = n => el.querySelector(`[data-k=${n}]`);
+  const set = (n, v) => { const x = q(n); if (x.textContent !== v) x.textContent = v; };
+  const typ = d.kind === '2R' ? ' · 2 röle' : d.kind === '1R' ? ' · 1 röle' : (m?.type === '2R' ? ' · 2 röle' : m?.type === '1R' ? ' · 1 röle' : '');
+  set('badge', (m ? 'Listede' : 'Yeni modül') + typ);
+  q('live').style.display = Date.now() - d.seen < 4000 ? '' : 'none';
+  set('name', m ? m.name : d.mac);
+  q('name').className = m ? '' : 'mono';
+  set('meta', `${ago(d.seen)} · ${d.rssi} dBm · ${d.count} paket${m ? ' · ' + d.mac : ''}`);
+  set('desc', describeMsg(d.text) || '');
+  const act = m
+    ? `<button class="sm" data-openmod="${d.mac}">Aç</button><span class="meta" style="text-align:center">${MODE_LABEL[m.mode]}</span>`
+    : `<button class="sm" data-addmode="listen" data-mac="${d.mac}">Dinle</button><button class="pri sm" data-addmode="manage" data-mac="${d.mac}">Yönet</button>`;
+  const ak = q('act');
+  if (ak.dataset.h !== act) { ak.innerHTML = act; ak.dataset.h = act; }
+  if (el.dataset.cnt && el.dataset.cnt !== String(d.count)) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  el.dataset.cnt = d.count;
+}
 
 function renderIrTargets() {
   const sel = $('#irTarget');
@@ -2036,12 +2177,12 @@ function parseLog(raw) {
       case 'HELLO': return { cat: 'out', tag, text: 'Köprüye "orada mısın?" sorusu gönderildi' };
       case 'CLEAR': return { cat: 'out', tag, text: 'Köprüdeki modül listesi sıfırlandı (hemen yeniden kurulur)' };
       case 'LR': return { cat: 'out', tag, text: `Uzun menzil (LR) genel izni: ${p[1] === '1' ? 'açık' : 'kapalı'}` };
-      case 'PLR': return { cat: 'out', tag, text: `${nm(p[1])}: menzil ${p[2] === '1' ? 'LR (istek gelirse kabul edilir)' : 'Normal (LR istekleri reddedilir)'}` };
+      case 'PLR': return { cat: 'out', tag, mac: p[1], text: `${nm(p[1])}: menzil ${p[2] === '1' ? 'LR (istek gelirse kabul edilir)' : 'Normal (LR istekleri reddedilir)'}` };
       case 'SNIFFALL': return { cat: 'out', tag, text: `Keşif taraması ${p[1] === '1' ? 'açıldı' : 'kapatıldı'}` };
-      case 'WATCH': return { cat: 'out', tag, text: `${nm(p[1])}: dinleme ${p[2] === '1' ? 'başlatıldı' : 'durduruldu'}` };
-      case 'PEER': return { cat: 'out', tag, text: `${nm(p[1])}: ${p[2] === '1' ? 'yönetim başlatıldı (köprü bu modülün ana kartı oluyor)' : 'yönetim bırakıldı'}` };
-      case 'TX': return { cat: 'out', tag: 'Modüle', text: `${nm(p[1])}: ${explainCmd(p[2])}` };
-      case 'RAW': return { cat: 'out', tag: 'Modüle', text: `${nm(p[1])}: ${describeIr(p[2] || '')}` };
+      case 'WATCH': return { cat: 'out', tag, mac: p[1], text: `${nm(p[1])}: dinleme ${p[2] === '1' ? 'başlatıldı' : 'durduruldu'}` };
+      case 'PEER': return { cat: 'out', tag, mac: p[1], text: `${nm(p[1])}: ${p[2] === '1' ? 'yönetim başlatıldı (köprü bu modülün ana kartı oluyor)' : 'yönetim bırakıldı'}` };
+      case 'TX': return { cat: 'out', tag: 'Modüle', mac: p[1], text: `${nm(p[1])}: ${explainCmd(p[2])}` };
+      case 'RAW': return { cat: 'out', tag: 'Modüle', mac: p[1], text: `${nm(p[1])}: ${describeIr(p[2] || '')}` };
       case 'LIST': return { cat: 'out', tag, text: 'Köprüden durum listesi istendi' };
       default: return { cat: 'out', tag, text: 'Köprüye komut: ' + p.join(' ') };
     }
@@ -2072,6 +2213,15 @@ function logEntryHtml(e, fresh) {
     <div class="lx">${esc(e.text)}</div>${e.detail ? `<div class="ld">${esc(e.detail)}</div>` : ''}${$('#logRawShow').checked ? `<div class="lr">${esc(e.raw)}</div>` : ''}</div>`;
 }
 function renderLog() {
+  const live = logView === 'live';
+  document.querySelectorAll('#logView [data-lv]').forEach(b => b.classList.toggle('act', b.dataset.lv === logView));
+  $('#logFlowOpts').hidden = live;
+  $('#logLive').hidden = !live;
+  $('#logbox').hidden = live;
+  $('#logHint').innerHTML = live
+    ? 'Her modülün satırı <b>yerinde sabit</b> kalır; yalnızca son mesaj, sayaçlar (▼ gelen ▲ giden) ve süre güncellenir. Satıra dokunun: son mesajları açılır. Bir mesajı basılı tutun: büyür.'
+    : 'En yeni satır en üstte. Bir satırı <b>basılı tutun</b>: büyür ve akış durur. Bırakınca akış devam eder.';
+  if (live) { renderLive(); if (activeTab === 'log') renderLogFilters(); return; }
   const list = logEntries.filter(logMatch);
   logPausedNew = 0;
   $('#logbox').innerHTML = (logPaused ? '<div class="pausebar">Kayıt duraklatıldı — yeni satırlar bekletiliyor</div>' : '') +
@@ -2085,9 +2235,15 @@ function logLine(raw) {
   e.id = ++entrySeq;
   logEntries.unshift(e);
   if (logEntries.length > LOG_MAX) logEntries.length = LOG_MAX;
+  // Canlı görünüm: modül paketleri handleLine'da işlenir; onaylar gürültü olmasın diye atlanır.
+  if (!/^< (RX|RXB|TXS)\t/.test(raw) && e.cat !== 'ok') {
+    const key = e.mac && modules.has(e.mac) ? e.mac : 'bridge';
+    const prefix = key !== 'bridge' ? nm(key) + ': ' : '';
+    trackLive(key, e.cat, prefix && e.text.startsWith(prefix) ? e.text.slice(prefix.length) : e.text, e.raw, e.detail);
+  }
   if (logPaused) { if (logMatch(e)) logPausedNew++; if (activeTab === 'log') renderLogFilters(); return; }
-  if (hold.frozen) { hold.logDirty = true; return; }
-  if (activeTab === 'log') {
+  if (holdBusy()) { hold.logDirty = true; return; }
+  if (activeTab === 'log' && logView === 'flow') {
     if (e.cat === 'err') renderLogFilters();
     if (!logMatch(e)) return;
     const box = $('#logbox');
@@ -2097,16 +2253,130 @@ function logLine(raw) {
   }
 }
 
+// ---------------------------------------------------------------- canlı görünüm: MAC başına sabit satır
+const liveStats = new Map();     // anahtar ('bridge' ya da MAC) → sayaçlar ve son mesajlar
+const liveDirty = new Set();
+const liveOpen = new Set();
+let liveQueued = false;
+let logView = 'live';
+const LIVE_TAG = { in: 'Gelen', out: 'Gönderilen', err: 'Hata', info: 'Bilgi' };
+function trackLive(key, cat, text, raw, detail) {
+  let st = liveStats.get(key);
+  if (!st) { st = { key, inN: 0, outN: 0, errN: 0, last: null, recent: [] }; liveStats.set(key, st); }
+  const dir = cat === 'in' || cat === 'out' || cat === 'err' ? cat : 'info';
+  const e = { id: ++entrySeq, t: new Date().toLocaleTimeString('tr-TR'), at: Date.now(), cat: dir, tag: LIVE_TAG[dir],
+    text, detail: detail || '', raw: String(raw || '').replace(/\t/g, '  ') };
+  if (dir === 'in') st.inN++; else if (dir === 'out') st.outN++; else if (dir === 'err') st.errN++;
+  st.last = e;
+  st.recent.unshift(e);
+  if (st.recent.length > 12) st.recent.length = 12;
+  liveDirty.add(key);
+  if (!liveQueued) { liveQueued = true; requestAnimationFrame(flushLive); }
+}
+function liveKeys() {
+  const keys = ['bridge'];
+  for (const m of modules.values()) if (m.mode !== 'off' || liveStats.has(m.mac)) keys.push(m.mac);
+  return keys;
+}
+function liveName(k) { return k === 'bridge' ? 'Köprü' + (bridge ? ' · ' + bridge.mac : '') : (modules.get(k)?.name || k); }
+function liveDot(k) {
+  if (k === 'bridge') return connected() ? 'live' : '';
+  const m = modules.get(k);
+  const age = m?.lastSeen ? Date.now() - m.lastSeen : Infinity;
+  return age < 15000 ? 'live' : age < 60000 ? 'stale' : '';
+}
+function liveAgo(st) {
+  if (!st?.last) return '';
+  const s = Math.max(0, Math.round((Date.now() - st.last.at) / 1000));
+  return s < 60 ? s + ' sn' : s < 3600 ? Math.floor(s / 60) + ' dk' : Math.floor(s / 3600) + ' sa';
+}
+function flushLive() {
+  liveQueued = false;
+  if (activeTab !== 'log' || logView !== 'live' || logPaused || holdBusy()) return;   // kirli kalır, sonra işlenir
+  const box = $('#logLive');
+  if (box.dataset.sig !== liveKeys().join(',')) { renderLive(); return; }
+  for (const k of liveDirty) updateLiveRow(k, true);
+  liveDirty.clear();
+}
+function renderLive() {
+  const box = $('#logLive');
+  const keys = liveKeys();
+  const sig = keys.join(',');
+  if (box.dataset.sig !== sig) {
+    const keep = new Map([...box.querySelectorAll('.lrow')].map(el => [el.dataset.key, el]));
+    const frag = document.createDocumentFragment();
+    for (const k of keys) {
+      let el = keep.get(k);
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'lrow';
+        el.dataset.key = k;
+        el.innerHTML = `<div class="lh" data-k="h"><i class="ldot" data-k="dot"></i><b data-k="nm"></b>
+          <span class="lcnt"><span class="ci" data-k="in"></span><span class="co" data-k="out"></span><span class="ce" data-k="err"></span></span>
+          <time data-k="ago"></time><span class="chev">▾</span></div>
+          <div class="ll" data-k="last"></div><div class="lmore" data-k="more"></div>`;
+      }
+      frag.appendChild(el);
+    }
+    box.replaceChildren(frag);
+    box.dataset.sig = sig;
+  }
+  for (const k of keys) updateLiveRow(k, false);
+  liveDirty.clear();
+}
+function updateLiveRow(k, flash) {
+  const el = $('#logLive').querySelector(`.lrow[data-key="${k}"]`);
+  if (!el) return;
+  const st = liveStats.get(k);
+  const q = n => el.querySelector(`[data-k=${n}]`);
+  const set = (n, v) => { const x = q(n); if (x.textContent !== v) x.textContent = v; };
+  set('nm', liveName(k));
+  q('dot').className = 'ldot ' + liveDot(k);
+  set('in', st ? '▼ ' + st.inN : '');
+  set('out', st ? '▲ ' + st.outN : '');
+  set('err', st && st.errN ? '⚠ ' + st.errN : '');
+  set('ago', liveAgo(st));
+  const last = q('last');
+  if (st?.last && last.dataset.id !== String(st.last.id)) {
+    last.dataset.id = st.last.id;
+    last.className = 'll ' + st.last.cat;
+    last.innerHTML = `<span class="ar">${st.last.cat === 'in' ? '▼' : st.last.cat === 'out' ? '▲' : st.last.cat === 'err' ? '!' : '•'}</span>${esc(st.last.text)}`;
+    if (flash) { el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
+  }
+  el.classList.toggle('open', liveOpen.has(k));
+  if (liveOpen.has(k)) {
+    const more = q('more');
+    const v = st ? String(st.recent[0]?.id) : '0';
+    if (more.dataset.v !== v) {
+      more.dataset.v = v;
+      more.innerHTML = st && st.recent.length ? st.recent.slice(0, 10).map(e => `<div class="lc ${e.cat}" data-eid="${e.id}"><time>${e.t}</time><span>${esc(e.text)}</span></div>`).join('')
+        + '<p class="hint" style="margin:4px 0 0;font-size:12px">Ayrıntı için satırı basılı tutun.</p>' : '<p class="hint" style="margin:0">Henüz mesaj yok.</p>';
+    }
+  }
+}
+function tickLiveAges() {
+  if (activeTab !== 'log' || logView !== 'live' || holdBusy()) return;
+  for (const el of $('#logLive').querySelectorAll('.lrow')) {
+    const k = el.dataset.key, t = liveAgo(liveStats.get(k)), a = el.querySelector('[data-k=ago]');
+    if (a.textContent !== t) a.textContent = t;
+    el.querySelector('[data-k=dot]').className = 'ldot ' + liveDot(k);
+  }
+}
+
 // ---------------------------------------------------------------- basılı tut: büyüt ve akışı dondur
-const hold = { timer: 0, el: null, x: 0, y: 0, frozen: false, logDirty: false };
+const hold = { timer: 0, el: null, x: 0, y: 0, frozen: false, touching: false, found: null, logDirty: false };
 function findEntry(el) {
   const id = +el.dataset.eid;
-  if (el.classList.contains('le')) return { kind: 'log', e: logEntries.find(x => x.id === id) };
+  if (el.classList.contains('le') || el.classList.contains('lc')) {
+    let e = logEntries.find(x => x.id === id);
+    if (!e) for (const st of liveStats.values()) { e = st.recent.find(x => x.id === id); if (e) break; }
+    return { kind: 'log', e };
+  }
   const m = modules.get(sheetMac);
   return { kind: 'pkt', e: m?.log.find(x => x.id === id) };
 }
 function showZoom(el) {
-  const { kind, e } = findEntry(el);
+  const { kind, e } = hold.found || findEntry(el);
   if (!e) return false;
   const zc = $('#zoomCard');
   if (kind === 'log') {
@@ -2124,23 +2394,41 @@ function showZoom(el) {
   $('#zoom').classList.add('show');
   return true;
 }
+// Parmak bir mesaj satırına değdiği anda liste durur (satır parmağın altında değişmesin);
+// kaydırmaya başlanırsa ya da parmak kalkarsa akış kaldığı yerden devam eder.
+const holdBusy = () => hold.frozen || hold.touching;
+function releaseTouch() {
+  if (!hold.touching) return;
+  hold.touching = false;
+  hold.found = null;
+  if (hold.frozen) return;
+  if (hold.logDirty && activeTab === 'log' && !logPaused) renderLog();
+  hold.logDirty = false;
+  if (liveDirty.size && !liveQueued) { liveQueued = true; requestAnimationFrame(flushLive); }
+  scheduleRender();
+}
 function endHold() {
   clearTimeout(hold.timer);
   hold.timer = 0;
-  if (!hold.frozen) { hold.el = null; return; }
+  if (!hold.frozen) { hold.el = null; releaseTouch(); return; }
+  hold.touching = false;
+  hold.found = null;
   hold.frozen = false;
   hold.el?.classList.remove('held');
   hold.el = null;
   $('#zoom').classList.remove('show');
   if (hold.logDirty && activeTab === 'log' && !logPaused) renderLog();
+  if (liveDirty.size && !liveQueued) { liveQueued = true; requestAnimationFrame(flushLive); }
   hold.logDirty = false;
   scheduleRender();
 }
 document.addEventListener('pointerdown', e => {
-  const el = e.target.closest('.le[data-eid], .pe[data-eid]');
+  const el = e.target.closest('.le[data-eid], .pe[data-eid], .lc[data-eid]');
   if (!el) return;
   clearTimeout(hold.timer);
   hold.el = el; hold.x = e.clientX; hold.y = e.clientY;
+  hold.touching = true;
+  hold.found = findEntry(el);          // mesaj, listeden düşse bile büyütülebilsin
   hold.timer = setTimeout(() => {
     hold.timer = 0;
     hold.frozen = true;                  // akış burada durur
@@ -2149,18 +2437,18 @@ document.addEventListener('pointerdown', e => {
   }, 320);
 });
 document.addEventListener('pointermove', e => {
-  if (hold.timer && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 10) { clearTimeout(hold.timer); hold.timer = 0; }
+  if (hold.timer && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 10) { clearTimeout(hold.timer); hold.timer = 0; releaseTouch(); }
 });
 // Büyük görünüm açıldıktan sonra parmak kaysa bile sayfa kaymasın ve görünüm kapanmasın;
 // yalnızca parmak kalkınca kapanır.
 document.addEventListener('touchmove', e => { if (hold.frozen) e.preventDefault(); }, { passive: false });
 window.addEventListener('pointerup', endHold);
-window.addEventListener('pointercancel', () => { if (!hold.frozen) endHold(); });  // kaydırma başlarsa: dokunma bitince kapanır
+window.addEventListener('pointercancel', () => { if (!hold.frozen) { clearTimeout(hold.timer); hold.timer = 0; releaseTouch(); } });  // kaydırma başlarsa: dokunma bitince kapanır
 window.addEventListener('touchend', endHold);
 window.addEventListener('touchcancel', endHold);
 window.addEventListener('blur', endHold);
 document.addEventListener('visibilitychange', () => { if (document.visibilityState !== 'visible') endHold(); });
-document.addEventListener('contextmenu', e => { if (e.target.closest('.le, .pe')) e.preventDefault(); });
+document.addEventListener('contextmenu', e => { if (e.target.closest('.le, .pe, .lc')) e.preventDefault(); });
 
 // ====================================================================== modül ekleme / QR
 function addModule(mac, name, opts = {}) {
@@ -2168,7 +2456,6 @@ function addModule(mac, name, opts = {}) {
   const m = newModule(mac, name);
   modules.set(mac, m);
   if (opts.listen) setMode(m, 'listen');
-  discovered.delete(mac);
   save();
   scheduleRender();
   return { mod: m, isNew: true };
@@ -2809,6 +3096,7 @@ function doAction(m, act, t) {
     }
     case 'photo': openPhoto(m); break;
     case 'look': openLook(m); break;
+    case 'pview': settings.pktView = t.dataset.v; save(); scheduleRender(); break;
     case 'range': setRange(m, t.dataset.v); break;
     case 'del':
       if (confirm(`${m.name} silinsin mi?`)) {
@@ -2906,10 +3194,16 @@ $('#group').addEventListener('click', e => {
 $('#discList').addEventListener('click', e => {
   const o = e.target.closest('[data-openmod]');
   if (o) { if (connected()) openSheet(o.dataset.openmod); return; }
-  const b = e.target.closest('[data-add]');
+  const b = e.target.closest('[data-addmode]');
   if (!b) return;
-  const { mod } = addModule(b.dataset.add, '', { listen: true });
-  toast('Eklendi: ' + mod.name);
+  const d = discovered.get(b.dataset.mac);
+  const { mod } = addModule(b.dataset.mac, '', {});
+  if (!mod.type && d && (d.kind === '2R' || d.kind === '1R')) mod.type = d.kind;
+  setMode(mod, b.dataset.addmode);
+  save();
+  try { navigator.vibrate?.(30); } catch (err) {}
+  toast(`Eklendi: ${mod.name} · ${MODE_LABEL[mod.mode]}`);
+  renderDiscover();
 });
 
 $('#scanStart').addEventListener('click', startScan);
@@ -3079,7 +3373,18 @@ $('#rawSend').addEventListener('click', () => {
   $('#rawCmd').value = '';
 });
 $('#rawCmd').addEventListener('keydown', e => { if (e.key === 'Enter') $('#rawSend').click(); });
-$('#logClear').addEventListener('click', () => { if (!logEntries.length || confirm('Kayıt temizlensin mi?')) { logEntries.length = 0; renderLog(); } });
+$('#logClear').addEventListener('click', () => { if ((!logEntries.length && !liveStats.size) || confirm('Kayıt temizlensin mi?')) { logEntries.length = 0; liveStats.clear(); liveOpen.clear(); $('#logLive').dataset.sig = ''; renderLog(); } });
+$('#logView').addEventListener('click', e => { const b = e.target.closest('[data-lv]'); if (b) { logView = settings.logView = b.dataset.lv; save(); renderLog(); } });
+$('#logLive').addEventListener('click', e => {
+  if (e.target.closest('.lmore')) return;
+  const r = e.target.closest('.lrow');
+  if (!r) return;
+  const k = r.dataset.key;
+  liveOpen.has(k) ? liveOpen.delete(k) : liveOpen.add(k);
+  r.querySelector('[data-k=more]').dataset.v = '';
+  updateLiveRow(k, false);
+});
+setInterval(tickLiveAges, 1000);
 $('#logPause').addEventListener('click', () => { logPaused = !logPaused; renderLog(); });
 $('#logShare').addEventListener('click', shareLog);
 $('#logFilters').addEventListener('click', e => { const b = e.target.closest('[data-lf]'); if (b) { logFilter = b.dataset.lf; renderLog(); } });
@@ -3112,6 +3417,7 @@ load();
 $('#sniffAll').checked = settings.sniffAll;
 $('#transportSel').value = settings.transport;
 $('#autoConnAdv').checked = settings.autoConnect !== false;
+logView = settings.logView === 'flow' ? 'flow' : 'live';
 applyLook();
 $('#autoListen').checked = settings.autoListen;
 {
